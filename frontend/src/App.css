@@ -1,0 +1,303 @@
+.App {
+  text-align: center;
+  position: relative; /* Needed for positioning child elements */
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden; /* Prevents scrollbars */
+}
+
+.map-container {
+  height: 100%; /* Map takes full height of the main area */
+  width: 100%;
+}
+
+.App-header {
+  background-color: #1A2C42; /* Dark Blue */
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  position: relative;
+  z-index: 1000; /* Ensure header is above the map */
+}
+
+main {
+  height: calc(100% - 60px);
+  position: relative;
+}
+
+/* ShareConvoy Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100; /* Highest z-index */
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 450px;
+  text-align: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.modal-content p {
+  color: #666;
+  margin-bottom: 25px;
+}
+
+.share-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+.qr-code-container {
+  padding: 15px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.link-container {
+  display: flex;
+  width: 100%;
+}
+
+.link-container input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px 0 0 8px;
+  font-size: 14px;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+.copy-button {
+  padding: 0 20px;
+  border: 1px solid #FE6B8B;
+  background-color: #FE6B8B;
+  color: white;
+  border-radius: 0 8px 8px 0;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.copy-button:hover {
+  background-color: #ff8e53;
+}
+
+.close-button {
+  padding: 12px 25px;
+  border: none;
+  background-color: #6c757d;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s;
+}
+
+.close-button:hover {
+  background-color: #5a6268;
+}
+
+/* Home Screen Styles */
+.home-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: #FFFFFF; /* White background */
+  color: #1A2C42; /* Dark Blue text for contrast */
+  font-family: 'Montserrat', 'Poppins', sans-serif; /* Bold, modern sans-serif */
+}
+
+.home-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.home-logo {
+  width: 150px;
+  height: 150px;
+  margin-bottom: 20px;
+  border-radius: 25%; /* Slightly rounded corners for the logo */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow for white background */
+  filter: brightness(1.5);
+}
+
+.home-header h1 {
+  font-size: 3.5em; /* Slightly larger */
+  color: #1A2C42; /* Dark Blue title */
+  margin: 0;
+  text-shadow: none; /* No text shadow on white background */
+}
+
+.home-main-content {
+  background: #FFFFFF; /* White background for content box */
+  padding: 40px 60px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  text-align: center;
+  max-width: 600px;
+  width: 90%;
+  backdrop-filter: none; /* No blur on white background */
+  border: none; /* No border on white background */
+}
+
+.home-main-content h2 {
+  font-size: 2.5em; /* Slightly larger */
+  color: #1A2C42; /* Dark Blue heading */
+  margin-top: 0;
+  margin-bottom: 20px;
+  text-shadow: none; /* No text shadow */
+}
+
+.slogan {
+  font-size: 1.3em; /* Slightly larger */
+  color: #333; /* Darker text for slogan */
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+/* Adjustments for the start convoy button on home screen */
+.home-main-content .start-convoy-button {
+  position: static;
+  transform: none;
+  margin-top: 20px;
+  width: auto;
+  padding: 15px 40px; /* More padding */
+  font-size: 1.3em; /* Larger font */
+  background: linear-gradient(45deg, #63A4FF 30%, #428BCA 90%); /* Blue gradient */
+  border: none; /* No border */
+  border-radius: 30px; /* Rounded corners */
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4); /* Blue shadow */
+  transition: all 0.3s ease-in-out;
+}
+
+.home-main-content .start-convoy-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 123, 255, 0.6); /* More prominent blue shadow */
+}
+
+/* Join Convoy Screen Styles */
+.join-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  padding: 20px;
+}
+
+.join-form {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+}
+
+.join-form h2 {
+  font-size: 2em;
+  color: #34495e;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.join-form p {
+  font-size: 1em;
+  color: #7f8c8d;
+  margin-bottom: 25px;
+}
+
+.join-form input[type="text"] {
+  width: calc(100% - 24px);
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1em;
+  box-sizing: border-box;
+}
+
+.join-form button[type="submit"] {
+  padding: 12px 30px;
+  font-size: 1.1em;
+  font-weight: bold;
+  color: white;
+  background: linear-gradient(45deg, #007BFF 30%, #0056B3 90%); /* Blue gradient */
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+  transition: all 0.3s ease-in-out;
+}
+
+.join-form button[type="submit"]:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+}
+
+.share-convoy-button {
+  background-color: #fff;
+  border: 2px solid rgba(0,0,0,0.2);
+  background-clip: padding-box;
+  border-radius: 4px;
+  width: 36px;
+  height: 36px;
+  line-height: 36px;
+  text-align: center;
+  cursor: pointer;
+  color: #333;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+  margin-top: 10px; /* To place it below the search control */
+}
+
+.share-convoy-button:hover {
+  background-color: #f4f4f4;
+}
