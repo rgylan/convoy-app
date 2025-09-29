@@ -1,13 +1,62 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Poppins', 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Improve text rendering on mobile devices */
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  /* Prevent font scaling in landscape orientation on iOS */
+  -webkit-text-size-adjust: none;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+/* Global mobile optimizations */
+* {
+  box-sizing: border-box;
+}
+
+/* Improve touch targets on mobile */
+button, input, select, textarea {
+  min-height: 44px; /* Apple's recommended minimum touch target size */
+}
+
+/* Prevent horizontal scrolling on mobile */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Improve focus states for accessibility */
+button:focus, input:focus, select:focus, textarea:focus {
+  outline: 2px solid #63A4FF;
+  outline-offset: 2px;
+}
+
+/* Smooth scrolling for better UX */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Prevent text selection on UI elements */
+.home-screen button,
+.modal-content button,
+.leaflet-control button {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Improve tap highlighting on mobile */
+button, .clickable {
+  -webkit-tap-highlight-color: rgba(99, 164, 255, 0.3);
+  tap-highlight-color: rgba(99, 164, 255, 0.3);
 }

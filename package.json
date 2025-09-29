@@ -1,0 +1,11 @@
+{
+  "name": "convoy-app-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Monorepo for the Convoy App frontend and backend.",
+  "scripts": {
+    "start": "npm start --prefix frontend",
+    "install:frontend": "npm install --prefix frontend",
+    "build": "npm run build --prefix frontend"
+  }
+}
