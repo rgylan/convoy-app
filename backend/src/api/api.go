@@ -4,6 +4,7 @@ import (
 	"context"
 	"convoy-app/backend/src/domain"
 	"convoy-app/backend/src/ierr"
+	"convoy-app/backend/src/monitoring"
 	"convoy-app/backend/src/storage"
 	"convoy-app/backend/src/ws"
 	"encoding/json"
@@ -12,21 +13,75 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"sync"
 	"time"
 )
 
+// BroadcastThrottler manages broadcast throttling to prevent excessive WebSocket messages
+type BroadcastThrottler struct {
+	mu            sync.RWMutex
+	lastBroadcast map[string]time.Time
+	minInterval   time.Duration
+}
+
+// NewBroadcastThrottler creates a new broadcast throttler
+func NewBroadcastThrottler(minInterval time.Duration) *BroadcastThrottler {
+	return &BroadcastThrottler{
+		lastBroadcast: make(map[string]time.Time),
+		minInterval:   minInterval,
+	}
+}
+
+// ShouldBroadcast checks if enough time has passed since the last broadcast for a convoy
+func (bt *BroadcastThrottler) ShouldBroadcast(convoyID string) bool {
+	bt.mu.RLock()
+	lastTime, exists := bt.lastBroadcast[convoyID]
+	bt.mu.RUnlock()
+
+	if !exists {
+		return true
+	}
+
+	return time.Since(lastTime) >= bt.minInterval
+}
+
+// RecordBroadcast records that a broadcast was sent for a convoy
+func (bt *BroadcastThrottler) RecordBroadcast(convoyID string) {
+	bt.mu.Lock()
+	defer bt.mu.Unlock()
+	bt.lastBroadcast[convoyID] = time.Now()
+}
+
 // API provides the handlers for our REST endpoints.
 type API struct {
-	storage storage.Storage
-	wsHub   *ws.Hub
+	storage            storage.Storage
+	wsHub              *ws.Hub
+	monitor            *monitoring.ConvoyMonitor
+	broadcastThrottler *BroadcastThrottler
 }
 
 // New creates a new API instance.
 func New(storage storage.Storage, wsHub *ws.Hub) *API {
+	monitor := monitoring.NewConvoyMonitor(storage, wsHub)
+	// Set up broadcast throttling with 1-second minimum interval
+	throttler := NewBroadcastThrottler(1 * time.Second)
+
 	return &API{
-		storage: storage,
-		wsHub:   wsHub,
+		storage:            storage,
+		wsHub:              wsHub,
+		monitor:            monitor,
+		broadcastThrottler: throttler,
 	}
+}
+
+// StartMonitoring starts the convoy monitoring service
+func (a *API) StartMonitoring() {
+	a.monitor.Start()
+}
+
+// StopMonitoring stops the convoy monitoring service
+func (a *API) StopMonitoring() {
+	a.monitor.Stop()
 }
 
 // HandleCreateConvoy creates a new convoy.
@@ -196,11 +251,33 @@ func (a *API) HandleLeaveConvoy(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *API) broadcastUpdate(ctx context.Context, convoyID string) {
+	// Check if we should throttle this broadcast
+	if !a.broadcastThrottler.ShouldBroadcast(convoyID) {
+		log.Printf("DEBUG: Throttling broadcast for convoy %s", convoyID)
+		return
+	}
+
 	convoy, err := a.storage.GetConvoy(ctx, convoyID)
 	if err != nil {
 		log.Printf("ERROR: failed to get convoy %s for broadcast: %v", convoyID, err)
 		return
 	}
+
+	// Record that we're broadcasting and send the update
+	a.broadcastThrottler.RecordBroadcast(convoyID)
+	a.wsHub.Broadcast(convoyID, convoy)
+}
+
+// broadcastUpdateForced forces a broadcast without throttling (for critical updates)
+func (a *API) broadcastUpdateForced(ctx context.Context, convoyID string) {
+	convoy, err := a.storage.GetConvoy(ctx, convoyID)
+	if err != nil {
+		log.Printf("ERROR: failed to get convoy %s for forced broadcast: %v", convoyID, err)
+		return
+	}
+
+	// Record the broadcast and send
+	a.broadcastThrottler.RecordBroadcast(convoyID)
 	a.wsHub.Broadcast(convoyID, convoy)
 }
 

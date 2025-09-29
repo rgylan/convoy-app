@@ -35,6 +35,19 @@ class ConvoyService {
     });
     if (!response.ok) throw new Error('Failed to set destination');
   }
+
+  async updateMemberLocation(convoyId, memberId, location) {
+    const response = await fetch(API_ENDPOINTS.CONVOY_MEMBER_LOCATION(convoyId, memberId), {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(location),
+    });
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => 'Unknown error');
+      throw new Error(`Failed to update location (HTTP ${response.status}): ${errorText}`);
+    }
+    return response.json();
+  }
 }
 
 export default new ConvoyService();

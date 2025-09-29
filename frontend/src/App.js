@@ -7,6 +7,7 @@ import 'leaflet/dist/leaflet.css';
 import Home from './screens/Home';
 import JoinConvoy from './screens/JoinConvoy';
 import ConvoyMap from './screens/ConvoyMap';
+import DebugPanel from './components/DebugPanel';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/convoy/:convoyId" element={<ConvoyMap />} />
       </Routes>
       <ToastContainer />
+      <DebugPanel />
     </Router>
   );
 }

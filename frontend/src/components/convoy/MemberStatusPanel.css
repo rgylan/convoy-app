@@ -1,0 +1,253 @@
+/* MemberStatusPanel Component Styles */
+.member-status-panel {
+  position: fixed;
+  z-index: 1050;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 250px;
+  max-width: 300px;
+  max-height: 400px;
+  overflow: hidden;
+  animation: slideInPanel 0.3s ease-out;
+}
+
+/* Position variants */
+.member-status-panel--top-left {
+  top: 20px;
+  left: 20px;
+}
+
+.member-status-panel--top-right {
+  top: 20px;
+  right: 20px;
+}
+
+.member-status-panel--bottom-left {
+  bottom: 20px;
+  left: 20px;
+}
+
+.member-status-panel--bottom-right {
+  bottom: 20px;
+  right: 20px;
+}
+
+/* Panel header */
+.member-status-panel-header {
+  padding: 12px 16px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.member-status-panel-header:hover {
+  background: #f0f1f2;
+}
+
+.member-status-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.member-status-panel-title-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.member-status-panel-summary {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.member-status-summary-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 600;
+  color: white;
+}
+
+.member-status-summary-item--connected {
+  background: #27ae60;
+}
+
+.member-status-summary-item--inactive {
+  background: #9b59b6;
+}
+
+.member-status-summary-item--lagging {
+  background: #f39c12;
+}
+
+.member-status-summary-item--disconnected {
+  background: #e74c3c;
+}
+
+.member-status-panel-toggle {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.member-status-panel-toggle:hover {
+  background: #e9ecef;
+  color: #333;
+}
+
+/* Panel content */
+.member-status-panel-content {
+  padding: 8px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+/* Custom scrollbar for panel content */
+.member-status-panel-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.member-status-panel-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.member-status-panel-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+}
+
+.member-status-panel-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Animations */
+@keyframes slideInPanel {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .member-status-panel {
+    min-width: 220px;
+    max-width: 260px;
+    max-height: 300px;
+  }
+  
+  .member-status-panel--top-left,
+  .member-status-panel--top-right {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    max-width: calc(100vw - 20px);
+  }
+  
+  .member-status-panel--bottom-left,
+  .member-status-panel--bottom-right {
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    max-width: calc(100vw - 20px);
+  }
+  
+  .member-status-panel-header {
+    padding: 10px 12px;
+  }
+  
+  .member-status-panel-title-text {
+    font-size: 13px;
+  }
+  
+  .member-status-panel-content {
+    padding: 6px;
+    max-height: 240px;
+  }
+  
+  .member-status-summary-item {
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+  }
+}
+
+/* Compact mode for smaller screens */
+@media (max-width: 480px) {
+  .member-status-panel {
+    min-width: auto;
+    max-height: 250px;
+  }
+  
+  .member-status-panel-header {
+    padding: 8px 10px;
+  }
+  
+  .member-status-panel-title-text {
+    font-size: 12px;
+  }
+  
+  .member-status-panel-content {
+    padding: 4px;
+    max-height: 200px;
+  }
+  
+  .member-status-summary-item {
+    width: 16px;
+    height: 16px;
+    font-size: 9px;
+  }
+}
+
+/* Integration with existing components */
+.member-status-panel .member-status-compact .member-status-card {
+  margin-bottom: 6px;
+  padding: 8px 10px;
+}
+
+.member-status-panel .member-status-compact .member-status-card-header {
+  margin-bottom: 6px;
+}
+
+.member-status-panel .member-status-compact .member-status-card-name {
+  font-size: 12px;
+}
+
+.member-status-panel .member-status-compact .member-status-card-status {
+  font-size: 10px;
+}
+
+.member-status-panel .member-status-compact .member-status-card-detail {
+  font-size: 10px;
+  margin-bottom: 2px;
+}
+
+.member-status-panel .member-status-compact .member-status-card-indicator {
+  width: 18px;
+  height: 18px;
+}
+
+.member-status-panel .member-status-compact .member-status-card-icon {
+  font-size: 11px;
+}

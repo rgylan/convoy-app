@@ -1,0 +1,25 @@
+192.168.1.14:443 {
+	# mkcert certificates for local HTTPS development
+	tls C:\Users\rgyla\AppData\Local\mkcert\192.168.1.14.pem C:\Users\rgyla\AppData\Local\mkcert\192.168.1.14-key.pem
+
+	# Optional: Enable logging for debugging
+	# log {
+	#	output file C:\Users\rgyla\VSCodeProjects\convoy-app\caddy.log
+	#	level INFO
+	# }
+
+	# Proxy API requests to Go backend
+	handle /api* {
+		reverse_proxy 127.0.0.1:8080
+	}
+
+	# Proxy WebSocket connections to Go backend
+	handle /ws* {
+		reverse_proxy 127.0.0.1:8080
+	}
+
+	# Proxy all other requests to React dev server
+	handle {
+		reverse_proxy 127.0.0.1:3000
+	}
+}

@@ -1,12 +1,84 @@
 import { useState, useEffect, useRef } from 'react';
+import { API_ENDPOINTS } from '../config/api';
 
 const useWebSocket = (convoyId) => {
   const [convoyData, setConvoyData] = useState(null);
+  const [alerts, setAlerts] = useState([]);
   const webSocketRef = useRef(null);
   const reconnectTimeoutRef = useRef(null);
   const reconnectAttemptsRef = useRef(0);
   const isConnectingRef = useRef(false);
   const maxReconnectAttempts = 5;
+
+  const createAlertFromEvent = (eventType, data) => {
+    const alertId = Date.now() + Math.random();
+    const timestamp = new Date().toISOString();
+    
+    switch (eventType) {
+      case 'MEMBER_LAGGING':
+        return {
+          id: alertId,
+          type: 'warning',
+          message: `${data.memberName} is falling behind`,
+          details: `Distance: ${data.distance}km from convoy`,
+          timestamp,
+          dismissible: true
+        };
+      
+      case 'MEMBER_DISCONNECTED':
+        return {
+          id: alertId,
+          type: 'error',
+          message: `${data.memberName} has disconnected`,
+          details: `Last seen: ${new Date(data.lastSeen).toLocaleTimeString()}`,
+          timestamp,
+          dismissible: true
+        };
+      
+      case 'CONVOY_SCATTERED':
+        return {
+          id: alertId,
+          type: 'warning',
+          message: 'Convoy is scattered',
+          details: `${data.scatteredCount} members are far from the group`,
+          timestamp,
+          dismissible: true
+        };
+      
+      case 'MEMBER_RECONNECTED':
+        return {
+          id: alertId,
+          type: 'success',
+          message: `${data.memberName} has reconnected`,
+          details: 'Back online and tracking location',
+          timestamp,
+          dismissible: true
+        };
+
+      case 'MEMBER_INACTIVE':
+        return {
+          id: alertId,
+          type: 'info',
+          message: `${data.memberName} stopped location tracking`,
+          details: 'Still connected but not sharing location',
+          timestamp,
+          dismissible: true
+        };
+
+      case 'MEMBER_REACTIVATED':
+        return {
+          id: alertId,
+          type: 'success',
+          message: `${data.memberName} resumed location tracking`,
+          details: 'Now actively sharing location again',
+          timestamp,
+          dismissible: true
+        };
+      
+      default:
+        return null;
+    }
+  };
 
   useEffect(() => {
     if (!convoyId || isConnectingRef.current) {
@@ -21,30 +93,43 @@ const useWebSocket = (convoyId) => {
       isConnectingRef.current = true;
 
       try {
-        if (webSocketRef.current) {
-          webSocketRef.current.close();
-        }
+        // Get member ID from session storage for connection tracking
+        const memberId = sessionStorage.getItem('memberId');
+        const baseWsUrl = API_ENDPOINTS.WS_CONVOY(convoyId);
+        const wsUrl = memberId
+          ? `${baseWsUrl}?memberId=${memberId}`
+          : baseWsUrl;
 
-        const ws = new WebSocket(`ws://localhost:8080/ws/convoys/${convoyId}`);
+        const ws = new WebSocket(wsUrl);
         webSocketRef.current = ws;
 
         ws.onopen = () => {
-          console.log('WebSocket connected');
+          console.log('WebSocket connected to convoy:', convoyId);
           isConnectingRef.current = false;
           reconnectAttemptsRef.current = 0;
         };
 
         ws.onmessage = (event) => {
           const data = JSON.parse(event.data);
+          
+          // Handle alert events
+          if (data.eventType && ['MEMBER_LAGGING', 'MEMBER_DISCONNECTED', 'MEMBER_INACTIVE', 'MEMBER_REACTIVATED', 'CONVOY_SCATTERED', 'MEMBER_RECONNECTED'].includes(data.eventType)) {
+            const alert = createAlertFromEvent(data.eventType, data);
+            if (alert) {
+              setAlerts(prev => [...prev, alert]);
+            }
+            return;
+          }
+          
+          // Handle regular convoy data updates
           const transformedMembers = (data.members || []).map(member => ({
             ...member,
-            location: [member.location.lat, member.location.lng]
+            location: [member.location.lat, member.location.lng],
+            status: member.status || 'connected' // Add status field for visual indicators
           }));
           
-          // Log location updates for testing
-          transformedMembers.forEach(member => {
-            console.log(`WEBSOCKET_LOCATION_UPDATE: Member ${member.id} (${member.name}) at [${member.location[0]}, ${member.location[1]}] - ${new Date().toISOString()}`);
-          });
+          // WebSocket location updates received (logging reduced to prevent duplicates)
+          // Use browser dev tools Network tab to monitor actual WebSocket traffic
           
           let transformedDestination = null;
           if (data.destination) {
@@ -72,13 +157,12 @@ const useWebSocket = (convoyId) => {
             const jitter = Math.random() * 1000; // Add up to 1 second of jitter
             const delay = Math.min(baseDelay + jitter, 30000); // Cap at 30 seconds
             
-            console.log(`Reconnecting in ${Math.round(delay)}ms (attempt ${reconnectAttemptsRef.current + 1})`);
+            console.log(`Attempting to reconnect in ${delay}ms (attempt ${reconnectAttemptsRef.current + 1}/${maxReconnectAttempts})`);
+            
             reconnectTimeoutRef.current = setTimeout(() => {
               reconnectAttemptsRef.current++;
               connect();
             }, delay);
-          } else if (reconnectAttemptsRef.current >= maxReconnectAttempts) {
-            console.error('Max reconnection attempts reached. Please refresh the page.');
           }
         };
 
@@ -86,8 +170,9 @@ const useWebSocket = (convoyId) => {
           console.error('WebSocket error:', error);
           isConnectingRef.current = false;
         };
+
       } catch (error) {
-        console.error('Failed to create WebSocket:', error);
+        console.error('Failed to create WebSocket connection:', error);
         isConnectingRef.current = false;
       }
     };
@@ -118,7 +203,7 @@ const useWebSocket = (convoyId) => {
     };
   }, [convoyId]);
 
-  return convoyData;
+  return { convoyData, alerts };
 };
 
 export default useWebSocket;

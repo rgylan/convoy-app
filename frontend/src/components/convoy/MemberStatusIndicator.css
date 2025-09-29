@@ -1,0 +1,542 @@
+/* MemberStatusIndicator Component Styles */
+
+/* Tooltip variant - for map markers */
+.member-status-tooltip {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.member-status-name {
+  font-weight: 500;
+}
+
+.member-status-icon {
+  margin-left: 4px;
+  font-size: 11px;
+}
+
+/* Badge variant - compact status indicator */
+.member-status-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 12px;
+  min-width: 80px;
+}
+
+.member-status-indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.member-status-badge-icon {
+  font-size: 10px;
+  color: white;
+}
+
+.member-status-badge-name {
+  font-weight: 500;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Card variant - detailed status card */
+.member-status-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 12px;
+  margin-bottom: 8px;
+  transition: box-shadow 0.2s ease;
+}
+
+.member-status-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.member-status-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.member-status-card-indicator {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.member-status-card-icon {
+  font-size: 14px;
+  color: white;
+}
+
+.member-status-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.member-status-card-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.member-status-card-status {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.member-status-card-details {
+  border-top: 1px solid #eee;
+  padding-top: 8px;
+  margin-top: 8px;
+}
+
+.member-status-card-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+  font-size: 11px;
+}
+
+.member-status-card-detail:last-child {
+  margin-bottom: 0;
+}
+
+.member-status-card-label {
+  color: #666;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+.member-status-card-value {
+  color: #333;
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 60%;
+}
+
+/* Member status list */
+.member-status-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.member-status-list-item {
+  width: 100%;
+}
+
+/* Default variant */
+.member-status-default {
+  padding: 4px 8px;
+  font-size: 12px;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Status-specific animations */
+.member-status-card[data-status="disconnected"] .member-status-card-indicator,
+.member-status-badge[data-status="disconnected"] .member-status-indicator {
+  animation: pulse-red 2s infinite;
+}
+
+.member-status-card[data-status="lagging"] .member-status-card-indicator,
+.member-status-badge[data-status="lagging"] .member-status-indicator {
+  animation: pulse-orange 2s infinite;
+}
+
+@keyframes pulse-red {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes pulse-orange {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .member-status-card {
+    padding: 10px;
+  }
+  
+  .member-status-card-name {
+    font-size: 13px;
+  }
+  
+  .member-status-card-status {
+    font-size: 11px;
+  }
+  
+  .member-status-card-detail {
+    font-size: 10px;
+  }
+  
+  .member-status-badge {
+    padding: 3px 6px;
+    font-size: 11px;
+    min-width: 70px;
+  }
+  
+  .member-status-indicator {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .member-status-badge-icon {
+    font-size: 9px;
+  }
+}
+
+/* Compact mode for smaller spaces */
+.member-status-compact .member-status-card {
+  padding: 8px;
+  margin-bottom: 4px;
+}
+
+.member-status-compact .member-status-card-header {
+  margin-bottom: 4px;
+}
+
+.member-status-compact .member-status-card-indicator {
+  width: 20px;
+  height: 20px;
+}
+
+.member-status-compact .member-status-card-icon {
+  font-size: 12px;
+}
+
+.member-status-compact .member-status-card-name {
+  font-size: 13px;
+}
+
+.member-status-compact .member-status-card-status {
+  font-size: 11px;
+}
+
+/* Visual-only tooltip variant - for permanent status display */
+.member-status-visual-tooltip {
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  padding: 4px 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  width: auto;
+  min-width: 60px;
+  height: 22px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  white-space: nowrap;
+}
+
+.member-visual-status-icon {
+  font-size: 12px;
+  line-height: 1;
+  display: block;
+  flex-shrink: 0;
+}
+
+.member-visual-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: white;
+  line-height: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+
+
+/* Enhanced tooltip variant - for improved map marker tooltips */
+.member-status-enhanced-tooltip {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 8px 10px;
+  min-width: 120px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.member-tooltip-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.member-tooltip-status-indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1.5px solid white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.member-tooltip-status-icon {
+  font-size: 10px;
+  line-height: 1;
+}
+
+.member-tooltip-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.member-tooltip-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  line-height: 1.2;
+  margin-bottom: 1px;
+}
+
+.member-tooltip-status {
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.member-tooltip-description {
+  font-size: 11px;
+  color: #666;
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid #f0f0f0;
+  line-height: 1.3;
+}
+
+/* Integration with existing tooltip system */
+.leaflet-tooltip .member-status-tooltip {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Text-only destination tooltip styling */
+.destination-tooltip-text {
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  padding: 4px 8px;
+  display: inline-block;
+  width: auto;
+  min-width: 60px;
+  height: 22px;
+  line-height: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: #333;
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* Enhanced tooltip integration with Leaflet */
+.convoy-member-tooltip.leaflet-tooltip,
+.convoy-destination-tooltip.leaflet-tooltip {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.convoy-member-tooltip.leaflet-tooltip::before,
+.convoy-destination-tooltip.leaflet-tooltip::before {
+  display: none !important;
+}
+
+/* Destination tooltip styling */
+.destination-tooltip-content {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 6px 10px;
+  min-width: 80px;
+  text-align: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.destination-tooltip-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  line-height: 1.2;
+}
+
+/* Visual tooltip status-specific styling */
+.member-status-visual-tooltip[data-status="connected"] {
+  background-color: #27ae60;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 0 4px rgba(39, 174, 96, 0.4);
+}
+
+.member-status-visual-tooltip[data-status="lagging"] {
+  background-color: #f39c12;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 0 4px rgba(243, 156, 18, 0.5);
+}
+
+.member-status-visual-tooltip[data-status="disconnected"] {
+  background-color: #e74c3c;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 0 6px rgba(231, 76, 60, 0.5);
+  animation: visualDisconnectedPulse 2s ease-in-out infinite;
+}
+
+@keyframes visualDisconnectedPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+/* Status-specific tooltip styling */
+.member-status-enhanced-tooltip[data-status="connected"] .member-tooltip-status-indicator {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 4px rgba(39, 174, 96, 0.3);
+}
+
+.member-status-enhanced-tooltip[data-status="lagging"] .member-tooltip-status-indicator {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 4px rgba(243, 156, 18, 0.4);
+}
+
+.member-status-enhanced-tooltip[data-status="disconnected"] .member-tooltip-status-indicator {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 4px rgba(231, 76, 60, 0.4);
+  animation: disconnectedPulse 2s ease-in-out infinite;
+}
+
+@keyframes disconnectedPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+/* Hover effects for enhanced interactivity */
+.member-status-enhanced-tooltip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+/* Responsive design for mobile */
+@media (max-width: 768px) {
+  .member-status-visual-tooltip {
+    min-width: 50px;
+    height: 20px;
+    padding: 3px 6px;
+    gap: 3px;
+  }
+
+  .member-visual-status-icon {
+    font-size: 10px;
+  }
+
+  .member-visual-name {
+    font-size: 10px;
+  }
+
+  .destination-tooltip-text {
+    min-width: 50px;
+    height: 20px;
+    padding: 3px 6px;
+    font-size: 10px;
+    line-height: 14px;
+  }
+
+  .member-status-enhanced-tooltip {
+    min-width: 100px;
+    padding: 6px 8px;
+  }
+
+  .member-tooltip-name {
+    font-size: 12px;
+  }
+
+  .member-tooltip-status {
+    font-size: 10px;
+  }
+
+  .member-tooltip-description {
+    font-size: 10px;
+  }
+
+  .member-tooltip-status-indicator {
+    width: 14px;
+    height: 14px;
+  }
+
+  .member-tooltip-status-icon {
+    font-size: 9px;
+  }
+
+  .destination-tooltip-content {
+    min-width: 70px;
+    padding: 5px 8px;
+  }
+
+  .destination-tooltip-name {
+    font-size: 12px;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .member-status-visual-tooltip[data-status="disconnected"] {
+    animation: none;
+  }
+
+  .member-status-enhanced-tooltip[data-status="disconnected"] .member-tooltip-status-indicator {
+    animation: none;
+  }
+
+  .member-status-enhanced-tooltip:hover {
+    transform: none;
+    transition: box-shadow 0.2s ease;
+  }
+}

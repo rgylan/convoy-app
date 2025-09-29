@@ -2,34 +2,154 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import MapComponent from '../components/map/MapComponent';
 import ShareConvoy from '../components/convoy/ShareConvoy';
+import AlertPanel from '../components/alerts/AlertPanel';
+import ConvoyStatusBar from '../components/convoy/ConvoyStatusBar';
+import MemberStatusPanel from '../components/convoy/MemberStatusPanel';
 import useWebSocket from '../hooks/useWebSocket';
+import useLocationTracking from '../hooks/useLocationTracking';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import ErrorMessage from '../components/common/ErrorMessage';
 import ConvoyLogger from '../utils/logger';
+import { getLocationConfig } from '../config/locationConfig';
+import { API_ENDPOINTS } from '../config/api';
+
+// Import test utilities in development mode
+if (process.env.NODE_ENV === 'development') {
+  import('../utils/testLocationTracking').then(module => {
+    window.locationTrackingTests = module;
+    console.log('🔧 Location tracking tests loaded. Use window.locationTrackingTests to run tests.');
+  });
+}
 
 const ConvoyMap = () => {
   const { convoyId } = useParams();
   const navigate = useNavigate();
-  const wsConvoyData = useWebSocket(convoyId);
+  const { convoyData: wsConvoyData, alerts: wsAlerts } = useWebSocket(convoyId);
 
   const [convoyData, setConvoyData] = useState(null);
+  const [alerts, setAlerts] = useState([]);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [showStatusBar, setShowStatusBar] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Get member ID from session storage
+  const memberId = sessionStorage.getItem('memberId');
+
+  // Get location configuration
+  const locationConfig = getLocationConfig();
+
+  // Initialize location tracking
+  const {
+    isTracking,
+    lastPosition,
+    error: locationError,
+    permissionStatus,
+    updateCount,
+    startTracking,
+    stopTracking,
+    getCurrentPosition,
+    isSupported: isLocationSupported
+  } = useLocationTracking(convoyId, memberId, {
+    ...locationConfig,
+    onLocationUpdate: (position, location) => {
+      // Location update handled - no additional logging needed
+      // (Main logging happens in locationTrackingDebugger)
+    },
+    onError: (error) => {
+      console.error('Location tracking error:', error);
+      // Generate alert for location errors
+      generateConvoyAlert('error', 'Location tracking error', error.message);
+    }
+  });
+
+  // Merge WebSocket alerts with local alerts
+  useEffect(() => {
+    if (wsAlerts && wsAlerts.length > 0) {
+      setAlerts(prevAlerts => {
+        const newAlerts = wsAlerts.filter(wsAlert => 
+          !prevAlerts.some(existing => existing.id === wsAlert.id)
+        );
+        return [...prevAlerts, ...newAlerts];
+      });
+    }
+  }, [wsAlerts]);
+
+  const handleDismissAlert = useCallback((alertId) => {
+    setAlerts(prev => prev.filter(alert => alert.id !== alertId));
+  }, []);
+
+  // Generate alerts for convoy status events
+  const generateConvoyAlert = useCallback((type, message, details = null) => {
+    const alert = {
+      id: Date.now() + Math.random(), // Ensure unique IDs
+      type,
+      message,
+      timestamp: new Date().toISOString(),
+      dismissible: true,
+      details
+    };
+
+    setAlerts(prev => {
+      // Prevent duplicate alerts with same message
+      const isDuplicate = prev.some(existing =>
+        existing.message === message &&
+        Date.now() - new Date(existing.timestamp).getTime() < 30000 // 30 seconds
+      );
+
+      if (isDuplicate) return prev;
+      return [...prev, alert];
+    });
+  }, []);
+
+  // Handle location permission issues
+  useEffect(() => {
+    if (permissionStatus === 'denied') {
+      generateConvoyAlert(
+        'warning',
+        'Location access denied',
+        'Your location won\'t be shared with the convoy. Enable location access in your browser settings to participate fully.'
+      );
+    } else if (!isLocationSupported) {
+      generateConvoyAlert(
+        'warning',
+        'Location not supported',
+        'Your browser doesn\'t support location tracking. Your position won\'t be updated automatically.'
+      );
+    } else if (locationError && !locationError.message.includes('permission')) {
+      generateConvoyAlert(
+        'error',
+        'Location tracking issue',
+        locationError.message
+      );
+    }
+  }, [permissionStatus, isLocationSupported, locationError, generateConvoyAlert]);
+
+  // Show success alert when location tracking starts
+  useEffect(() => {
+    if (isTracking && updateCount === 1) {
+      generateConvoyAlert(
+        'success',
+        'Location tracking active',
+        'Your position is being shared with the convoy automatically.'
+      );
+    }
+  }, [isTracking, updateCount, generateConvoyAlert]);
 
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/convoys/${convoyId}`);
+        const response = await fetch(API_ENDPOINTS.CONVOY_BY_ID(convoyId));
         if (!response.ok) {
           throw new Error('Convoy not found');
         }
         const convoy = await response.json();
 
-        // Transform members' locations
+        // Transform members' locations and ensure status is set
         const transformedMembers = (convoy.members || []).map(member => ({
           ...member,
-          location: [member.location.lat, member.location.lng]
+          location: [member.location.lat, member.location.lng],
+          status: member.status || 'connected' // Ensure all members default to 'connected' status
         }));
         
         // Transform destination location if it exists
@@ -95,7 +215,7 @@ const ConvoyMap = () => {
     };
 
     try {
-      const response = await fetch(`http://localhost:8080/api/convoys/${convoyId}/destination`, {
+      const response = await fetch(API_ENDPOINTS.CONVOY_DESTINATION(convoyId), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newDestination),
@@ -119,6 +239,29 @@ const ConvoyMap = () => {
       alert(`Failed to set destination: ${error.message}`);
     }
   }, [convoyId]);
+
+  // Calculate convoy health status for the status indicator
+  const getConvoyHealthStatus = useCallback(() => {
+    if (!finalConvoyData?.members || finalConvoyData.members.length === 0) return 'empty';
+
+    const totalMembers = finalConvoyData.members.length;
+    const connectedMembers = finalConvoyData.members.filter(member => member.status === 'connected').length;
+    const laggingMembers = finalConvoyData.members.filter(member => member.status === 'lagging').length;
+    const disconnectedMembers = finalConvoyData.members.filter(member => member.status === 'disconnected').length;
+
+    const disconnectedRatio = disconnectedMembers / totalMembers;
+    const laggingRatio = laggingMembers / totalMembers;
+
+    if (disconnectedRatio >= 0.5) return 'critical';
+    if (disconnectedRatio > 0.2 || laggingRatio >= 0.5) return 'warning';
+    if (disconnectedMembers > 0 || laggingMembers > 0) return 'caution';
+    return 'healthy';
+  }, [finalConvoyData]);
+
+  // Toggle status bar visibility
+  const handleToggleStatus = useCallback(() => {
+    setShowStatusBar(prev => !prev);
+  }, []);
 
   const handleLeaveConvoy = async () => {
     if (window.confirm('Are you sure you want to leave this convoy?')) {
@@ -168,6 +311,12 @@ const ConvoyMap = () => {
 
   // Extracted leave convoy logic for reuse
   const performLeaveConvoy = async (memberId) => {
+    // Stop location tracking before leaving
+    if (isTracking) {
+      stopTracking();
+      console.log('Location tracking stopped before leaving convoy');
+    }
+
     // Determine if this is the leader or a regular member
     const currentMember = finalConvoyData?.members?.find(m => m.id.toString() === memberId);
     const isLeader = currentMember?.name === 'You'; // Leaders are named 'You' in this app
@@ -179,7 +328,7 @@ const ConvoyMap = () => {
       convoyId
     });
 
-    const response = await fetch(`http://localhost:8080/api/convoys/${convoyId}/members/${memberId}`, {
+    const response = await fetch(API_ENDPOINTS.CONVOY_MEMBER(convoyId, memberId), {
       method: 'DELETE',
     });
 
@@ -187,19 +336,30 @@ const ConvoyMap = () => {
       const errorText = await response.text().catch(() => 'Unknown error');
       throw new Error(`Failed to leave convoy (HTTP ${response.status}): ${errorText}`);
     }
-    
+
     // Log appropriate leave event
     if (isLeader) {
       console.log(`LEADER_LEFT: Leader left convoy ${convoyId}, member ID ${memberId} at ${new Date().toISOString()}`);
     } else {
       console.log(`MEMBER_LEFT: Member left convoy ${convoyId}, member ID ${memberId} at ${new Date().toISOString()}`);
     }
-    
+
     // Clear session storage and navigate
     sessionStorage.removeItem('memberId');
     console.log('DEBUG: Session cleared, navigating to home');
     navigate('/');
   };
+
+  // Handle location tracking toggle
+  const handleToggleLocationTracking = useCallback(() => {
+    if (isTracking) {
+      stopTracking();
+    } else {
+      startTracking().catch(error => {
+        console.error('Failed to start location tracking:', error);
+      });
+    }
+  }, [isTracking, startTracking, stopTracking]);
 
   return (
     <div className="App">
@@ -210,8 +370,46 @@ const ConvoyMap = () => {
           onDestinationSelect={handleDestinationSelect}
           setShowShareModal={setShowShareModal}
           onLeaveConvoy={handleLeaveConvoy}
+          onToggleStatus={handleToggleStatus}
+          convoyHealth={getConvoyHealthStatus()}
+          locationTracking={{
+            isTracking,
+            permissionStatus,
+            isSupported: isLocationSupported,
+            updateCount,
+            onToggleTracking: handleToggleLocationTracking
+          }}
         />
+
+        {showStatusBar && (
+          <ConvoyStatusBar
+            members={finalConvoyData?.members || []}
+            destination={finalConvoyData?.destination}
+            alerts={alerts}
+            position="top-left"
+            onClose={() => setShowStatusBar(false)}
+          />
+        )}
+
+        <AlertPanel
+          alerts={alerts}
+          onDismiss={handleDismissAlert}
+          position="top-right"
+          autoCloseDelay={5000}
+        />
+
+        {/* Optional: Member Status Panel - uncomment to enable */}
+        {/*
+        <MemberStatusPanel
+          members={finalConvoyData?.members || []}
+          destination={finalConvoyData?.destination}
+          position="bottom-right"
+          collapsible={true}
+          showDetails={false}
+        />
+        */}
       </main>
+      
       {showShareModal && (
         <ShareConvoy convoyId={convoyId} onClose={() => setShowShareModal(false)} />
       )}

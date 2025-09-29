@@ -16,14 +16,16 @@ const (
 
 // Hub manages WebSocket connections.
 type Hub struct {
-	mu          sync.RWMutex
-	connections map[string]map[*websocket.Conn]bool // Multiple connections per convoy
+	mu                sync.RWMutex
+	connections       map[string]map[*websocket.Conn]bool  // Multiple connections per convoy
+	memberConnections map[string]map[int64]*websocket.Conn // Track member-specific connections: convoyID -> memberID -> connection
 }
 
 // NewHub creates a new Hub.
 func NewHub() *Hub {
 	return &Hub{
-		connections: make(map[string]map[*websocket.Conn]bool),
+		connections:       make(map[string]map[*websocket.Conn]bool),
+		memberConnections: make(map[string]map[int64]*websocket.Conn),
 	}
 }
 
@@ -59,6 +61,19 @@ func (h *Hub) Register(convoyID string, conn *websocket.Conn) {
 		convoyID, len(h.connections[convoyID]))
 }
 
+// RegisterMember associates a member ID with a WebSocket connection
+func (h *Hub) RegisterMember(convoyID string, memberID int64, conn *websocket.Conn) {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+
+	if h.memberConnections[convoyID] == nil {
+		h.memberConnections[convoyID] = make(map[int64]*websocket.Conn)
+	}
+
+	h.memberConnections[convoyID][memberID] = conn
+	log.Printf("Member %d registered for convoy %s", memberID, convoyID)
+}
+
 // Unregister removes a connection from the hub.
 func (h *Hub) Unregister(convoyID string, conn *websocket.Conn) {
 	h.mu.Lock()
@@ -70,9 +85,13 @@ func (h *Hub) Unregister(convoyID string, conn *websocket.Conn) {
 			log.Printf("WebSocket connection unregistered for convoy %s (remaining connections for convoy: %d)",
 				convoyID, len(convoyConns))
 
+			// Also remove from member connections
+			h.unregisterMemberConnection(convoyID, conn)
+
 			// Clean up empty convoy entries
 			if len(convoyConns) == 0 {
 				delete(h.connections, convoyID)
+				delete(h.memberConnections, convoyID) // Clean up member connections too
 				log.Printf("All connections closed for convoy %s, removed from hub", convoyID)
 			}
 		} else {
@@ -80,6 +99,35 @@ func (h *Hub) Unregister(convoyID string, conn *websocket.Conn) {
 		}
 	} else {
 		log.Printf("Attempted to unregister connection for non-existent convoy %s", convoyID)
+	}
+}
+
+// UnregisterMember removes a member's connection association
+func (h *Hub) UnregisterMember(convoyID string, memberID int64) {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+
+	if memberConns, exists := h.memberConnections[convoyID]; exists {
+		delete(memberConns, memberID)
+		log.Printf("Member %d unregistered from convoy %s", memberID, convoyID)
+
+		// Clean up empty convoy entries
+		if len(memberConns) == 0 {
+			delete(h.memberConnections, convoyID)
+		}
+	}
+}
+
+// unregisterMemberConnection removes member connection by connection object (internal helper)
+func (h *Hub) unregisterMemberConnection(convoyID string, conn *websocket.Conn) {
+	if memberConns, exists := h.memberConnections[convoyID]; exists {
+		for memberID, memberConn := range memberConns {
+			if memberConn == conn {
+				delete(memberConns, memberID)
+				log.Printf("Member %d connection unregistered from convoy %s", memberID, convoyID)
+				break
+			}
+		}
 	}
 }
 
@@ -134,6 +182,36 @@ func (h *Hub) Broadcast(convoyID string, message interface{}) {
 	}
 
 	log.Printf("Successfully broadcasted message to %d connections for convoy %s", successCount, convoyID)
+}
+
+// HasActiveConnection checks if a specific member has an active WebSocket connection
+func (h *Hub) HasActiveConnection(convoyID string, memberID int64) bool {
+	h.mu.RLock()
+	defer h.mu.RUnlock()
+
+	if memberConns, exists := h.memberConnections[convoyID]; exists {
+		if conn, memberExists := memberConns[memberID]; memberExists {
+			// Verify the connection is still in the active connections map
+			if convoyConns, convoyExists := h.connections[convoyID]; convoyExists {
+				_, connActive := convoyConns[conn]
+				log.Printf("DEBUG: Member %d connection check - exists: %v, active: %v", memberID, memberExists, connActive)
+				return connActive
+			}
+		}
+	}
+	log.Printf("DEBUG: Member %d has no active connection in convoy %s", memberID, convoyID)
+	return false
+}
+
+// GetMemberConnection returns the WebSocket connection for a specific member
+func (h *Hub) GetMemberConnection(convoyID string, memberID int64) *websocket.Conn {
+	h.mu.RLock()
+	defer h.mu.RUnlock()
+
+	if memberConns, exists := h.memberConnections[convoyID]; exists {
+		return memberConns[memberID]
+	}
+	return nil
 }
 
 // GetConnectionCount returns the number of active connections for a convoy

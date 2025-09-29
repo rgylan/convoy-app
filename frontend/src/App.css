@@ -301,3 +301,125 @@ main {
 .share-convoy-button:hover {
   background-color: #f4f4f4;
 }
+
+/* Status Convoy Button */
+.status-convoy-button {
+  background-color: #fff;
+  border: 2px solid rgba(0,0,0,0.2);
+  background-clip: padding-box;
+  border-radius: 4px;
+  width: 36px;
+  height: 36px;
+  line-height: 36px;
+  text-align: center;
+  cursor: pointer;
+  color: #333;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+  margin-top: 10px; /* To place it below the share control */
+  position: relative;
+}
+
+.status-convoy-button:hover {
+  background-color: #f4f4f4;
+}
+
+/* Enhanced hover effect for status indicator */
+.status-convoy-button:hover .status-alert-indicator {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Subtle pulse animation for critical status */
+.status-alert-indicator[data-health="critical"] {
+  animation: criticalPulse 2s ease-in-out infinite;
+}
+
+@keyframes criticalPulse {
+  0%, 100% {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+/* Accessibility: Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .status-alert-indicator[data-health="critical"] {
+    animation: none;
+  }
+
+  .status-alert-indicator {
+    transition: opacity 0.2s ease;
+  }
+}
+
+/* Status button content container */
+.status-button-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* Status alert indicator (colored dot) */
+.status-alert-indicator {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1.5px solid white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  opacity: 0.85;
+  transition: all 0.3s ease;
+}
+
+/* Status indicator colors based on convoy health with glow effects */
+.status-alert-indicator[data-health="healthy"] {
+  background-color: #27ae60; /* Green */
+  box-shadow:
+    0 1px 3px rgba(0,0,0,0.4),
+    0 0 3px rgba(39, 174, 96, 0.6),
+    0 0 6px rgba(39, 174, 96, 0.3);
+}
+
+.status-alert-indicator[data-health="caution"] {
+  background-color: #f39c12; /* Orange */
+  box-shadow:
+    0 1px 3px rgba(0,0,0,0.4),
+    0 0 3px rgba(243, 156, 18, 0.6),
+    0 0 6px rgba(243, 156, 18, 0.3);
+}
+
+.status-alert-indicator[data-health="warning"] {
+  background-color: #e67e22; /* Dark orange */
+  box-shadow:
+    0 1px 3px rgba(0,0,0,0.4),
+    0 0 3px rgba(230, 126, 34, 0.6),
+    0 0 6px rgba(230, 126, 34, 0.3);
+}
+
+.status-alert-indicator[data-health="critical"] {
+  background-color: #e74c3c; /* Red */
+  box-shadow:
+    0 1px 3px rgba(0,0,0,0.4),
+    0 0 3px rgba(231, 76, 60, 0.7),
+    0 0 8px rgba(231, 76, 60, 0.4);
+}
+
+.status-alert-indicator[data-health="empty"] {
+  background-color: #95a5a6; /* Gray */
+  box-shadow:
+    0 1px 3px rgba(0,0,0,0.4),
+    0 0 2px rgba(149, 165, 166, 0.4);
+}

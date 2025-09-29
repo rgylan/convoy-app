@@ -14,11 +14,19 @@ import (
 	"time"
 )
 
-// corsMiddleware adds CORS headers to the response.
+// corsMiddleware adds CORS headers to the response with dynamic origin detection.
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Allow requests from your frontend origin
-		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+		origin := r.Header.Get("Origin")
+
+		// Allow requests from development origins (localhost and local network IPs on port 3000)
+		if isAllowedOrigin(origin) {
+			w.Header().Set("Access-Control-Allow-Origin", origin)
+			log.Printf("CORS: Allowed origin %s for %s %s", origin, r.Method, r.URL.Path)
+		} else if origin != "" {
+			log.Printf("CORS: Blocked origin %s for %s %s", origin, r.Method, r.URL.Path)
+		}
+
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
@@ -33,6 +41,76 @@ func corsMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+// isAllowedOrigin checks if the origin is allowed for CORS requests
+func isAllowedOrigin(origin string) bool {
+	if origin == "" {
+		return false
+	}
+
+	// Allow localhost development (both HTTP and HTTPS)
+	if origin == "http://localhost:3000" || origin == "http://127.0.0.1:3000" ||
+		origin == "https://localhost:3000" || origin == "https://127.0.0.1:3000" {
+		return true
+	}
+
+	// Allow Caddy HTTPS proxy (192.168.1.14:443)
+	if origin == "https://192.168.1.14" || origin == "https://192.168.1.14:443" {
+		return true
+	}
+
+	// Allow local network IPs on port 3000 (for mobile testing)
+	// This matches patterns like http://192.168.1.14:3000, http://10.0.0.5:3000, etc.
+	if len(origin) > 7 && origin[:7] == "http://" {
+		// Extract the part after "http://"
+		hostPort := origin[7:]
+
+		// Check if it ends with ":3000"
+		if len(hostPort) > 5 && hostPort[len(hostPort)-5:] == ":3000" {
+			// Extract the IP part
+			ip := hostPort[:len(hostPort)-5]
+
+			// Allow private IP ranges commonly used in local networks
+			return isPrivateIP(ip)
+		}
+	}
+
+	return false
+}
+
+// isPrivateIP checks if an IP address is in a private range
+func isPrivateIP(ip string) bool {
+	// Common private IP ranges:
+	// 192.168.x.x (most common home networks)
+	// 10.x.x.x (corporate networks)
+	// 172.16.x.x - 172.31.x.x (less common)
+	// 127.x.x.x (localhost)
+
+	if len(ip) >= 7 {
+		// Check 192.168.x.x
+		if len(ip) >= 8 && ip[:8] == "192.168." {
+			return true
+		}
+
+		// Check 10.x.x.x
+		if len(ip) >= 3 && ip[:3] == "10." {
+			return true
+		}
+
+		// Check 127.x.x.x (localhost)
+		if len(ip) >= 4 && ip[:4] == "127." {
+			return true
+		}
+
+		// Check 172.16.x.x - 172.31.x.x
+		if len(ip) >= 7 && ip[:4] == "172." {
+			// This is a simplified check - in production you'd want more precise validation
+			return true
+		}
+	}
+
+	return false
+}
+
 func main() {
 	// 1. Initialize the storage layer.
 	memStorage := storage.NewMemoryStorage()
@@ -42,11 +120,19 @@ func main() {
 	wsHub := ws.NewHub()
 	log.Println("WebSocket hub initialized.")
 
-	// 3. Initialize the API layer, injecting the storage and wsHub dependencies.
+	// 3. Wire the WebSocket hub to the storage layer for connection status checking
+	memStorage.SetWebSocketHub(wsHub)
+	log.Println("WebSocket hub connected to storage layer.")
+
+	// 4. Initialize the API layer, injecting the storage and wsHub dependencies.
 	apiServer := api.New(memStorage, wsHub)
 	log.Println("API layer initialized.")
 
-	// 4. Set up the HTTP router and register our handlers.
+	// 5. Start the convoy monitoring service.
+	apiServer.StartMonitoring()
+	log.Println("Convoy monitoring service started.")
+
+	// 6. Set up the HTTP router and register our handlers.
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
 		totalConnections := wsHub.GetTotalConnections()
@@ -69,7 +155,7 @@ func main() {
 	// WebSocket endpoint
 	mux.HandleFunc("GET /ws/convoys/{convoyId}", wsHub.Handler)
 
-	// 5. Configure and start the HTTP server with graceful shutdown.
+	// 6. Configure and start the HTTP server with graceful shutdown.
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
@@ -93,6 +179,10 @@ func main() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 	log.Println("Shutting down server...")
+
+	// Stop the monitoring service first
+	apiServer.StopMonitoring()
+	log.Println("Convoy monitoring service stopped.")
 
 	// The context is used to inform the server it has 5 seconds to finish
 	// the requests it is currently handling.
