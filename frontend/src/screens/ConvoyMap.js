@@ -394,7 +394,7 @@ const ConvoyMap = () => {
         <AlertPanel
           alerts={alerts}
           onDismiss={handleDismissAlert}
-          position="top-right"
+          position="bottom-right"
           autoCloseDelay={5000}
         />
 
