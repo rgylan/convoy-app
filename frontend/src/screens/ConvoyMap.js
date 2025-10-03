@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import MapComponent from '../components/map/MapComponent';
 import ShareConvoy from '../components/convoy/ShareConvoy';
 import AlertPanel from '../components/alerts/AlertPanel';
-import ConvoyStatusBar from '../components/convoy/ConvoyStatusBar';
+
 import MemberStatusPanel from '../components/convoy/MemberStatusPanel';
 import useWebSocket from '../hooks/useWebSocket';
 import useLocationTracking from '../hooks/useLocationTracking';
@@ -258,9 +258,10 @@ const ConvoyMap = () => {
     return 'healthy';
   }, [finalConvoyData]);
 
-  // Toggle status bar visibility
+  // Toggle status bar visibility (now handled by MapSidebar)
   const handleToggleStatus = useCallback(() => {
-    setShowStatusBar(prev => !prev);
+    // This is now handled by the MapSidebar's StatusPanel
+    // Keep for backward compatibility but functionality moved to sidebar
   }, []);
 
   const handleLeaveConvoy = async () => {
@@ -372,6 +373,7 @@ const ConvoyMap = () => {
           onLeaveConvoy={handleLeaveConvoy}
           onToggleStatus={handleToggleStatus}
           convoyHealth={getConvoyHealthStatus()}
+          alerts={alerts}
           locationTracking={{
             isTracking,
             permissionStatus,
@@ -380,16 +382,6 @@ const ConvoyMap = () => {
             onToggleTracking: handleToggleLocationTracking
           }}
         />
-
-        {showStatusBar && (
-          <ConvoyStatusBar
-            members={finalConvoyData?.members || []}
-            destination={finalConvoyData?.destination}
-            alerts={alerts}
-            position="top-left"
-            onClose={() => setShowStatusBar(false)}
-          />
-        )}
 
         <AlertPanel
           alerts={alerts}

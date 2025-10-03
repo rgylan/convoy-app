@@ -1,0 +1,137 @@
+/* Custom Zoom Control Positioning and Styling */
+
+/* Position zoom controls at bottom-left with proper spacing */
+.leaflet-bottom.leaflet-left {
+  bottom: 20px;
+  left: 20px;
+}
+
+/* Enhanced styling for zoom controls to match the app's glassmorphism design */
+.leaflet-control-zoom {
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+}
+
+.leaflet-control-zoom a {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border: none;
+  color: #1A2C42;
+  font-size: 18px;
+  font-weight: 600;
+  width: 44px;
+  height: 44px;
+  line-height: 44px;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+}
+
+.leaflet-control-zoom a:hover {
+  background: rgba(26, 44, 66, 0.1);
+  color: #1A2C42;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.leaflet-control-zoom a:active {
+  transform: scale(0.95);
+}
+
+/* Ensure proper z-index so zoom controls are always accessible */
+.leaflet-control-zoom {
+  z-index: 1000;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .leaflet-bottom.leaflet-left {
+    bottom: 16px;
+    left: 16px;
+  }
+  
+  .leaflet-control-zoom a {
+    width: 44px;
+    height: 44px;
+    line-height: 44px;
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .leaflet-bottom.leaflet-left {
+    bottom: 12px;
+    left: 12px;
+  }
+  
+  .leaflet-control-zoom a {
+    width: 42px;
+    height: 42px;
+    line-height: 42px;
+    font-size: 18px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .leaflet-control-zoom {
+    background: rgba(26, 44, 66, 0.95);
+  }
+  
+  .leaflet-control-zoom a {
+    background: rgba(26, 44, 66, 0.95);
+    color: white;
+  }
+  
+  .leaflet-control-zoom a:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+}
+
+/* Ensure zoom controls don't conflict with other elements */
+.leaflet-control-zoom {
+  margin-bottom: 0;
+  margin-left: 0;
+}
+
+/* Additional spacing considerations for mobile bottom sheets */
+@media (max-width: 768px) {
+  /* Adjust positioning when mobile panels might be open */
+  .leaflet-bottom.leaflet-left {
+    /* Ensure zoom controls are above any mobile bottom sheets */
+    z-index: 1000;
+    /* Add extra bottom margin to avoid conflicts with mobile panels */
+    bottom: 20px;
+  }
+
+  /* When mobile panels are expanded, move zoom controls higher */
+  .leaflet-bottom.leaflet-left {
+    transition: bottom 0.3s ease;
+  }
+}
+
+/* Very small screens - compact zoom controls */
+@media (max-width: 360px) {
+  .leaflet-bottom.leaflet-left {
+    bottom: 10px;
+    left: 10px;
+  }
+
+  .leaflet-control-zoom a {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 16px;
+  }
+}

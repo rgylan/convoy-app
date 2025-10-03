@@ -1,27 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Tooltip, useMap } from 'react-leaflet';
+import React from 'react';
+import { MapContainer, TileLayer, Marker, Popup, Tooltip } from 'react-leaflet';
 import { Icon } from 'leaflet';
 import MapSidebar from './MapSidebar';
+import ZoomControl from './ZoomControl';
+import SmartZoomManager from './SmartZoomManager';
 
 import LocationStatusControl from './LocationStatusControl';
 import MemberStatusIndicator from '../convoy/MemberStatusIndicator';
 import './LocationStatusControl.css';
+import './ZoomControl.css';
 
-// Component to handle initial destination zoom (only once)
-const InitialDestinationZoom = ({ destination }) => {
-  const map = useMap();
-  const hasZoomedRef = useRef(false);
 
-  useEffect(() => {
-    // Only zoom if we have a destination and haven't zoomed before
-    if (destination && destination.location && !hasZoomedRef.current) {
-      map.setView(destination.location, 13);
-      hasZoomedRef.current = true;
-    }
-  }, [map, destination]);
-
-  return null;
-};
 
 
 
@@ -94,6 +83,7 @@ const MapComponent = ({
   onLeaveConvoy,
   onToggleStatus,
   convoyHealth,
+  alerts = [], // Add alerts prop for StatusPanel
   locationTracking = null // Optional location tracking props
 }) => {
   // Set an initial center
@@ -134,14 +124,27 @@ const MapComponent = ({
 
   return (
     <>
-      <MapContainer center={initialCenter} zoom={13} className="map-container">
+      <MapContainer
+        center={initialCenter}
+        zoom={13}
+        className="map-container"
+        zoomControl={false} // Disable default zoom control
+      >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
 
-        {/* Initial destination zoom - only triggers once when destination is first set */}
-        <InitialDestinationZoom destination={destination} />
+        {/* Custom zoom control positioned at bottom-left */}
+        <ZoomControl />
+
+        {/* Smart zoom management for professional map behavior */}
+        <SmartZoomManager
+          destination={destination}
+          userLocation={locationTracking?.lastPosition}
+          members={members}
+          onDestinationSelect={onDestinationSelect}
+        />
 
         {/* Render destination marker FIRST so it appears underneath member markers */}
         {destination && (
@@ -213,13 +216,16 @@ const MapComponent = ({
         )}
       </MapContainer>
 
-      {/* Map Sidebar with integrated search panel */}
+      {/* Map Sidebar with integrated search and status panels */}
       <MapSidebar
         onShareClick={handleShareClick}
         onStatusClick={handleStatusClick}
         onLeaveClick={handleLeaveClick}
         onDestinationSelect={onDestinationSelect}
         convoyHealth={convoyHealth}
+        members={members}
+        destination={destination}
+        alerts={alerts}
       />
     </>
   );

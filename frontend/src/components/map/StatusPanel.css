@@ -1,0 +1,449 @@
+/* Status Panel - Apple Maps inspired expandable design matching SearchPanel */
+
+.status-panel-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(2px);
+  z-index: 1500;
+  opacity: 0;
+  animation: backdropFadeIn 0.3s ease-out forwards;
+  display: none; /* Hidden on desktop, shown on mobile */
+}
+
+@keyframes backdropFadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+.status-panel {
+  position: fixed;
+  top: 20px;
+  left: 88px; /* Position next to sidebar (68px width + 20px gap) */
+  width: 350px;
+  max-height: calc(100vh - 40px);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 12px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 1600;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  
+  /* Initial collapsed state */
+  transform: translateX(-20px) scale(0.95);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.status-panel.expanded {
+  transform: translateX(0) scale(1);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.status-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+.status-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1A2C42;
+}
+
+.status-panel-title .material-icons {
+  font-size: 20px;
+  color: #1A2C42;
+}
+
+.status-panel-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-panel-alerts-badge {
+  background: #e74c3c;
+  color: white;
+  border-radius: 10px;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  min-width: 20px;
+  text-align: center;
+}
+
+.status-panel-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.status-panel-close:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.status-panel-close .material-icons {
+  font-size: 18px;
+  color: #6c757d;
+}
+
+/* Main status indicator */
+.status-panel-main {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+.status-panel-health {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.status-panel-icon {
+  font-size: 24px !important;
+}
+
+.status-panel-text {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Metrics grid */
+.status-panel-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.status-panel-metric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px;
+  background: rgba(248, 249, 250, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  min-height: 60px;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.status-panel-metric:hover {
+  background: rgba(248, 249, 250, 0.9);
+}
+
+.status-panel-metric-label {
+  font-size: 11px;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.status-panel-metric-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1A2C42;
+}
+
+/* Metric value colors */
+.status-panel-metric-value--connected {
+  color: #27ae60;
+}
+
+.status-panel-metric-value--inactive {
+  color: #9b59b6;
+}
+
+.status-panel-metric-value--lagging {
+  color: #f39c12;
+}
+
+.status-panel-metric-value--disconnected {
+  color: #e74c3c;
+}
+
+/* Destination status */
+.status-panel-destination {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: rgba(232, 245, 232, 0.8);
+  backdrop-filter: blur(10px);
+  margin: 0 20px 16px;
+  border-radius: 10px;
+}
+
+.status-panel-destination-icon {
+  font-size: 16px !important;
+  color: #27ae60;
+}
+
+.status-panel-destination-text {
+  font-size: 14px;
+  color: #2d5a2d;
+  font-weight: 500;
+}
+
+/* Connection summary */
+.status-panel-summary {
+  text-align: center;
+  font-size: 13px;
+  color: #6c757d;
+  padding: 12px 20px 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  font-weight: 500;
+}
+
+/* Enhanced animations and transitions */
+.status-panel {
+  will-change: transform, opacity;
+}
+
+.status-panel.expanded {
+  animation: statusPanelSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes statusPanelSlideIn {
+  from {
+    transform: translateX(-20px) scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Improved scrolling for status panel content */
+.status-panel {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+.status-panel::-webkit-scrollbar {
+  width: 4px;
+}
+
+.status-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.status-panel::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+}
+
+.status-panel::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive Design */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .status-panel {
+    left: 76px; /* Adjust for smaller sidebar */
+    width: 320px;
+  }
+}
+
+/* Mobile devices */
+@media (max-width: 768px) {
+  .status-panel-backdrop {
+    display: block;
+  }
+
+  .status-panel {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-height: 70vh;
+    border-radius: 16px 16px 0 0;
+    
+    /* Mobile slide-up animation */
+    transform: translateY(100%);
+    opacity: 1;
+  }
+
+  .status-panel.expanded {
+    transform: translateY(0);
+    animation: panelSlideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes panelSlideUp {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .status-panel-header {
+    padding: 20px 20px 16px;
+  }
+
+  .status-panel-title {
+    font-size: 18px;
+  }
+
+  .status-panel-main {
+    padding: 16px 20px;
+  }
+
+  .status-panel-metrics {
+    padding: 16px 20px;
+    gap: 10px;
+  }
+
+  .status-panel-metric {
+    min-height: 55px;
+    padding: 10px;
+  }
+
+  .status-panel-destination {
+    margin: 0 20px 12px;
+    padding: 10px 16px;
+  }
+
+  .status-panel-summary {
+    padding: 10px 20px 16px;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .status-panel {
+    max-height: 75vh;
+  }
+
+  .status-panel-header {
+    padding: 16px 16px 12px;
+  }
+
+  .status-panel-main {
+    padding: 12px 16px;
+  }
+
+  .status-panel-metrics {
+    padding: 12px 16px;
+    gap: 8px;
+  }
+
+  .status-panel-metric {
+    min-height: 50px;
+    padding: 8px;
+  }
+
+  .status-panel-metric-value {
+    font-size: 18px;
+  }
+
+  .status-panel-destination {
+    margin: 0 16px 10px;
+    padding: 8px 12px;
+  }
+
+  .status-panel-summary {
+    padding: 8px 16px 12px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .status-panel {
+    background: rgba(26, 44, 66, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .status-panel-header {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .status-panel-title,
+  .status-panel-title .material-icons {
+    color: white;
+  }
+  
+  .status-panel-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .status-panel-close .material-icons {
+    color: #a0aec0;
+  }
+  
+  .status-panel-main {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .status-panel-text {
+    color: white;
+  }
+  
+  .status-panel-metrics {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .status-panel-metric {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .status-panel-metric:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+  
+  .status-panel-metric-label {
+    color: #a0aec0;
+  }
+  
+  .status-panel-metric-value {
+    color: white;
+  }
+  
+  .status-panel-destination {
+    background: rgba(39, 174, 96, 0.2);
+  }
+  
+  .status-panel-destination-text {
+    color: #a0f0a0;
+  }
+  
+  .status-panel-summary {
+    color: #a0aec0;
+    border-top-color: rgba(255, 255, 255, 0.1);
+  }
+}

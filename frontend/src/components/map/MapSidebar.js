@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import SearchPanel from './SearchPanel';
+import StatusPanel from './StatusPanel';
 import './MapSidebar.css';
 
 const MapSidebar = ({
@@ -8,13 +9,22 @@ const MapSidebar = ({
   onStatusClick,
   onLeaveClick,
   onDestinationSelect,
-  convoyHealth = 'healthy'
+  convoyHealth = 'healthy',
+  // StatusPanel props
+  members = [],
+  destination = null,
+  alerts = []
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const [isStatusExpanded, setIsStatusExpanded] = useState(false);
 
   const handleSearchClick = () => {
     setIsSearchExpanded(!isSearchExpanded);
+    // Close status panel if open to avoid conflicts
+    if (isStatusExpanded) {
+      setIsStatusExpanded(false);
+    }
     // Call the original onSearchClick if provided for backward compatibility
     if (onSearchClick) {
       onSearchClick();
@@ -23,6 +33,22 @@ const MapSidebar = ({
 
   const handleSearchPanelClose = () => {
     setIsSearchExpanded(false);
+  };
+
+  const handleStatusClick = () => {
+    setIsStatusExpanded(!isStatusExpanded);
+    // Close search panel if open to avoid conflicts
+    if (isSearchExpanded) {
+      setIsSearchExpanded(false);
+    }
+    // Call the original onStatusClick if provided for backward compatibility
+    if (onStatusClick) {
+      onStatusClick();
+    }
+  };
+
+  const handleStatusPanelClose = () => {
+    setIsStatusExpanded(false);
   };
 
   const sidebarButtons = [
@@ -45,9 +71,10 @@ const MapSidebar = ({
       id: 'status',
       icon: 'dashboard',
       title: 'Convoy Status',
-      onClick: onStatusClick,
+      onClick: handleStatusClick,
       hasIndicator: true,
-      indicatorHealth: convoyHealth
+      indicatorHealth: convoyHealth,
+      isActive: isStatusExpanded
     },
     {
       id: 'leave',
@@ -110,6 +137,15 @@ const MapSidebar = ({
         isExpanded={isSearchExpanded}
         onClose={handleSearchPanelClose}
         onDestinationSelect={onDestinationSelect}
+      />
+
+      {/* Status Panel */}
+      <StatusPanel
+        isExpanded={isStatusExpanded}
+        onClose={handleStatusPanelClose}
+        members={members}
+        destination={destination}
+        alerts={alerts}
       />
     </>
   );

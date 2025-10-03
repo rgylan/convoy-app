@@ -1,14 +1,14 @@
 import React from 'react';
-import './ConvoyStatusBar.css';
+import './StatusPanel.css';
 
-const ConvoyStatusBar = ({
+const StatusPanel = ({ 
+  isExpanded, 
+  onClose, 
   members = [],
   destination = null,
-  alerts = [],
-  position = "top-left",
-  onClose = null
+  alerts = []
 }) => {
-  // Calculate convoy health metrics
+  // Calculate convoy health metrics (same logic as ConvoyStatusBar)
   const totalMembers = members.length;
   const connectedMembers = members.filter(member => member.status === 'connected').length;
   const inactiveMembers = members.filter(member => member.status === 'inactive').length;
@@ -47,17 +47,17 @@ const ConvoyStatusBar = ({
   const getHealthStatusInfo = (status) => {
     switch (status) {
       case 'healthy':
-        return { icon: '✅', text: 'All Good', color: '#27ae60' };
+        return { icon: 'check_circle', text: 'All Good', color: '#27ae60' };
       case 'caution':
-        return { icon: '⚠️', text: 'Minor Issues', color: '#f39c12' };
+        return { icon: 'warning', text: 'Minor Issues', color: '#f39c12' };
       case 'warning':
-        return { icon: '🟡', text: 'Attention Needed', color: '#e67e22' };
+        return { icon: 'error', text: 'Attention Needed', color: '#e67e22' };
       case 'critical':
-        return { icon: '🔴', text: 'Critical', color: '#e74c3c' };
+        return { icon: 'dangerous', text: 'Critical', color: '#e74c3c' };
       case 'empty':
-        return { icon: '⭕', text: 'No Members', color: '#95a5a6' };
+        return { icon: 'group_off', text: 'No Members', color: '#95a5a6' };
       default:
-        return { icon: '❓', text: 'Unknown', color: '#95a5a6' };
+        return { icon: 'help', text: 'Unknown', color: '#95a5a6' };
     }
   };
 
@@ -79,77 +79,90 @@ const ConvoyStatusBar = ({
   };
 
   return (
-    <div className={`convoy-status-bar convoy-status-bar--${position}`}>
-      <div className="convoy-status-content">
-        {/* Header */}
-        <div className="convoy-status-header">
-          <span className="convoy-status-title">Convoy Status</span>
-          <div className="convoy-status-header-actions">
+    <>
+      {/* Backdrop for mobile */}
+      {isExpanded && (
+        <div 
+          className="status-panel-backdrop" 
+          onClick={onClose}
+          aria-hidden="true"
+        />
+      )}
+      
+      <div 
+        className={`status-panel ${isExpanded ? 'expanded' : ''}`}
+        role="dialog"
+        aria-label="Convoy status panel"
+        aria-hidden={!isExpanded}
+      >
+        <div className="status-panel-header">
+          <div className="status-panel-title">
+            <span className="material-icons">dashboard</span>
+            <span>Convoy Status</span>
+          </div>
+          <div className="status-panel-header-actions">
             {criticalAlerts > 0 && (
-              <span className="convoy-status-alerts-badge">
+              <span className="status-panel-alerts-badge">
                 {criticalAlerts}
               </span>
             )}
-            {onClose && (
-              <button
-                className="convoy-status-close-button"
-                onClick={onClose}
-                title="Close Status"
-                aria-label="Close convoy status"
-              >
-                ×
-              </button>
-            )}
+            <button 
+              className="status-panel-close" 
+              onClick={onClose}
+              aria-label="Close status panel"
+            >
+              <span className="material-icons">close</span>
+            </button>
           </div>
         </div>
 
         {/* Main Status Indicator */}
-        <div className="convoy-status-main">
+        <div className="status-panel-main">
           <div 
-            className="convoy-status-health"
+            className="status-panel-health"
             style={{ color: healthInfo.color }}
           >
-            <span className="convoy-status-icon">{healthInfo.icon}</span>
-            <span className="convoy-status-text">{healthInfo.text}</span>
+            <span className="material-icons status-panel-icon">{healthInfo.icon}</span>
+            <span className="status-panel-text">{healthInfo.text}</span>
           </div>
         </div>
 
         {/* Metrics Grid */}
-        <div className="convoy-status-metrics">
-          <div className="convoy-status-metric">
-            <span className="convoy-status-metric-label">Members</span>
-            <span className="convoy-status-metric-value">{totalMembers}</span>
+        <div className="status-panel-metrics">
+          <div className="status-panel-metric">
+            <span className="status-panel-metric-label">Members</span>
+            <span className="status-panel-metric-value">{totalMembers}</span>
           </div>
           
-          <div className="convoy-status-metric">
-            <span className="convoy-status-metric-label">Connected</span>
-            <span className="convoy-status-metric-value convoy-status-metric-value--connected">
+          <div className="status-panel-metric">
+            <span className="status-panel-metric-label">Connected</span>
+            <span className="status-panel-metric-value status-panel-metric-value--connected">
               {connectedMembers}
             </span>
           </div>
 
           {inactiveMembers > 0 && (
-            <div className="convoy-status-metric">
-              <span className="convoy-status-metric-label">Inactive</span>
-              <span className="convoy-status-metric-value convoy-status-metric-value--inactive">
+            <div className="status-panel-metric">
+              <span className="status-panel-metric-label">Inactive</span>
+              <span className="status-panel-metric-value status-panel-metric-value--inactive">
                 {inactiveMembers}
               </span>
             </div>
           )}
 
           {laggingMembers > 0 && (
-            <div className="convoy-status-metric">
-              <span className="convoy-status-metric-label">Lagging</span>
-              <span className="convoy-status-metric-value convoy-status-metric-value--lagging">
+            <div className="status-panel-metric">
+              <span className="status-panel-metric-label">Lagging</span>
+              <span className="status-panel-metric-value status-panel-metric-value--lagging">
                 {laggingMembers}
               </span>
             </div>
           )}
 
           {disconnectedMembers > 0 && (
-            <div className="convoy-status-metric">
-              <span className="convoy-status-metric-label">Disconnected</span>
-              <span className="convoy-status-metric-value convoy-status-metric-value--disconnected">
+            <div className="status-panel-metric">
+              <span className="status-panel-metric-label">Disconnected</span>
+              <span className="status-panel-metric-value status-panel-metric-value--disconnected">
                 {disconnectedMembers}
               </span>
             </div>
@@ -158,21 +171,21 @@ const ConvoyStatusBar = ({
 
         {/* Destination Status */}
         {destination && (
-          <div className="convoy-status-destination">
-            <span className="convoy-status-destination-icon">📍</span>
-            <span className="convoy-status-destination-text">
+          <div className="status-panel-destination">
+            <span className="material-icons status-panel-destination-icon">place</span>
+            <span className="status-panel-destination-text">
               En route to {destination.name}
             </span>
           </div>
         )}
 
         {/* Connection Summary */}
-        <div className="convoy-status-summary">
+        <div className="status-panel-summary">
           {getConnectionSummary()}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
-export default ConvoyStatusBar;
+export default StatusPanel;
