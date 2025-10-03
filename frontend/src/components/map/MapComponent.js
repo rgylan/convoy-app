@@ -1,10 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Tooltip, useMap } from 'react-leaflet';
 import { Icon } from 'leaflet';
-import SearchControl from './SearchControl';
-import ShareConvoyControl from './ShareConvoyControl';
-import LeaveConvoyControl from './LeaveConvoyControl';
-import StatusControl from './StatusControl';
+import MapSidebar from './MapSidebar';
+
 import LocationStatusControl from './LocationStatusControl';
 import MemberStatusIndicator from '../convoy/MemberStatusIndicator';
 import './LocationStatusControl.css';
@@ -101,6 +99,20 @@ const MapComponent = ({
   // Set an initial center
   const initialCenter = [14.5995, 120.9842]; // Manila
 
+  // Sidebar button handlers (search is now handled by MapSidebar)
+
+  const handleShareClick = () => {
+    setShowShareModal(true);
+  };
+
+  const handleStatusClick = () => {
+    onToggleStatus();
+  };
+
+  const handleLeaveClick = () => {
+    onLeaveConvoy();
+  };
+
   // Helper function to apply small offset to prevent marker overlap
   const applyMarkerOffset = (position, destination) => {
     if (!destination) return position;
@@ -121,35 +133,36 @@ const MapComponent = ({
   };
 
   return (
-    <MapContainer center={initialCenter} zoom={13} className="map-container">
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      />
+    <>
+      <MapContainer center={initialCenter} zoom={13} className="map-container">
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        />
 
-      {/* Initial destination zoom - only triggers once when destination is first set */}
-      <InitialDestinationZoom destination={destination} />
+        {/* Initial destination zoom - only triggers once when destination is first set */}
+        <InitialDestinationZoom destination={destination} />
 
-      {/* Render destination marker FIRST so it appears underneath member markers */}
-      {destination && (
-        <Marker position={destination.location} icon={destinationIcon}>
-          <Popup>
-            <strong>Destination:</strong><br />
-            {destination.name}<br />
-            Lat: {destination.location[0].toFixed(4)}, Lng: {destination.location[1].toFixed(4)}
-          </Popup>
-          <Tooltip
-            direction="top"
-            offset={[0, -45]}
-            permanent={true}
-            className="convoy-destination-tooltip"
-          >
-            <div className="destination-tooltip-text">
-              {destination.name}
-            </div>
-          </Tooltip>
-        </Marker>
-      )}
+        {/* Render destination marker FIRST so it appears underneath member markers */}
+        {destination && (
+          <Marker position={destination.location} icon={destinationIcon}>
+            <Popup>
+              <strong>Destination:</strong><br />
+              {destination.name}<br />
+              Lat: {destination.location[0].toFixed(4)}, Lng: {destination.location[1].toFixed(4)}
+            </Popup>
+            <Tooltip
+              direction="top"
+              offset={[0, -45]}
+              permanent={true}
+              className="convoy-destination-tooltip"
+            >
+              <div className="destination-tooltip-text">
+                {destination.name}
+              </div>
+            </Tooltip>
+          </Marker>
+        )}
 
       {/* Markers for each convoy member with status indicators */}
       {members.map(member => {
@@ -188,23 +201,27 @@ const MapComponent = ({
         );
       })}
 
-      {/* This component adds the search bar */}
-      <SearchControl onDestinationSelect={onDestinationSelect} />
-      <ShareConvoyControl setShowShareModal={setShowShareModal} />
-      <StatusControl onToggleStatus={onToggleStatus} convoyHealth={convoyHealth} />
-      <LeaveConvoyControl onLeaveConvoy={onLeaveConvoy} />
+        {/* Location tracking status control - kept separate as requested */}
+        {locationTracking && (
+          <LocationStatusControl
+            isTracking={locationTracking.isTracking}
+            permissionStatus={locationTracking.permissionStatus}
+            isSupported={locationTracking.isSupported}
+            updateCount={locationTracking.updateCount}
+            onToggleTracking={locationTracking.onToggleTracking}
+          />
+        )}
+      </MapContainer>
 
-      {/* Location tracking status control */}
-      {locationTracking && (
-        <LocationStatusControl
-          isTracking={locationTracking.isTracking}
-          permissionStatus={locationTracking.permissionStatus}
-          isSupported={locationTracking.isSupported}
-          updateCount={locationTracking.updateCount}
-          onToggleTracking={locationTracking.onToggleTracking}
-        />
-      )}
-    </MapContainer>
+      {/* Map Sidebar with integrated search panel */}
+      <MapSidebar
+        onShareClick={handleShareClick}
+        onStatusClick={handleStatusClick}
+        onLeaveClick={handleLeaveClick}
+        onDestinationSelect={onDestinationSelect}
+        convoyHealth={convoyHealth}
+      />
+    </>
   );
 };
 
