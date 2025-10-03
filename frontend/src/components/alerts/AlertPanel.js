@@ -5,7 +5,7 @@ const AlertPanel = ({
   alerts = [],
   onDismiss,
   position = "top-right",
-  autoCloseDelay = 5000
+  autoCloseDelay = 10000
 }) => {
   const [alertQueue, setAlertQueue] = useState([]);
   const [currentAlert, setCurrentAlert] = useState(null);
@@ -147,32 +147,41 @@ const AlertPanel = ({
         key={currentAlert.id}
         className={`alert-item alert-item--${currentAlert.type}`}
       >
-        <div className="alert-content">
-          <div className="alert-header">
+        {/* Floating close button in top-right corner */}
+        {currentAlert.dismissible !== false && (
+          <button
+            className="alert-close alert-close--floating"
+            onClick={() => handleDismiss(currentAlert.id)}
+            aria-label="Dismiss alert"
+          >
+            ×
+          </button>
+        )}
+
+        {/* Top bar with timestamp only */}
+        <div className="alert-top-bar">
+          <span className="alert-timestamp">
+            {formatTimestamp(currentAlert.timestamp)}
+          </span>
+        </div>
+
+        {/* Main content area with icon and text */}
+        <div className="alert-main-content">
+          <div className="alert-icon-container">
             <span className="alert-icon">
               {getAlertIcon(currentAlert.type)}
             </span>
-            <span className="alert-timestamp">
-              {formatTimestamp(currentAlert.timestamp)}
-            </span>
-            {currentAlert.dismissible !== false && (
-              <button
-                className="alert-close"
-                onClick={() => handleDismiss(currentAlert.id)}
-                aria-label="Dismiss alert"
-              >
-                ×
-              </button>
+          </div>
+          <div className="alert-text-content">
+            <div className="alert-message">
+              {currentAlert.message}
+            </div>
+            {currentAlert.details && (
+              <div className="alert-details">
+                {currentAlert.details}
+              </div>
             )}
           </div>
-          <div className="alert-message">
-            {currentAlert.message}
-          </div>
-          {currentAlert.details && (
-            <div className="alert-details">
-              {currentAlert.details}
-            </div>
-          )}
         </div>
       </div>
 

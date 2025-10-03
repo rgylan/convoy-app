@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alert Panel Layout Test</title>
+    <style>
+        /* Import the AlertPanel CSS */
+        @import url('./AlertPanel.css');
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(45deg, #4CAF50, #2196F3, #FF9800, #E91E63);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .test-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .test-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .viewport-simulator {
+            border: 2px solid #ddd;
+            margin: 10px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .viewport-label {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 2px 6px;
+            font-size: 12px;
+            border-radius: 3px;
+            z-index: 10;
+        }
+        
+        /* Viewport simulators */
+        .mobile-320 { width: 320px; height: 200px; }
+        .mobile-480 { width: 480px; height: 200px; }
+        .tablet-768 { width: 768px; height: 200px; }
+        .desktop-1024 { width: 1024px; height: 200px; }
+        
+        /* Test alert positioning */
+        .test-alert-panel {
+            position: relative !important;
+            top: 20px !important;
+            right: 20px !important;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Alert Panel Layout Test - Circular Close Button</h1>
+        <p style="background: rgba(255,255,255,0.9); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <strong>Layout Enhancements Applied:</strong><br>
+            ✅ Circular close button (50% border-radius) for modern appearance<br>
+            ✅ Floating close button positioned in top-right corner<br>
+            ✅ Removed close button from top bar for vertical space savings<br>
+            ✅ Maintained translucency (88% opacity) for map visibility<br>
+            ✅ Preserved WCAG AA accessibility standards<br>
+            ✅ Responsive design across all device sizes<br>
+            <em>The colorful animated background simulates a map underneath to demonstrate the translucency effect.</em>
+        </p>
+        
+        <!-- Test 1: Different Alert Types -->
+        <div class="test-section">
+            <div class="test-title">Test 1: Different Alert Types</div>
+            
+            <div class="viewport-simulator desktop-1024">
+                <div class="viewport-label">Desktop 1024px</div>
+                <div class="alert-panel alert-panel--top-right test-alert-panel">
+                    <div class="alert-item alert-item--error">
+                        <button class="alert-close alert-close--floating" aria-label="Dismiss alert">×</button>
+                        <div class="alert-top-bar">
+                            <span class="alert-timestamp">12:34</span>
+                        </div>
+                        <div class="alert-main-content">
+                            <div class="alert-icon-container">
+                                <span class="alert-icon">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                        <circle cx="12" cy="12" r="10" fill="#dc3545"/>
+                                        <path d="M15 9l-6 6m0-6l6 6" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="alert-text-content">
+                                <div class="alert-message">Connection Error</div>
+                                <div class="alert-details">Unable to connect to the server. Please check your internet connection.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Test 2: Mobile Responsiveness -->
+        <div class="test-section">
+            <div class="test-title">Test 2: Mobile Responsiveness</div>
+            
+            <div class="viewport-simulator mobile-320">
+                <div class="viewport-label">Mobile 320px</div>
+                <div class="alert-panel alert-panel--top-right test-alert-panel">
+                    <div class="alert-item alert-item--warning">
+                        <button class="alert-close alert-close--floating" aria-label="Dismiss alert">×</button>
+                        <div class="alert-top-bar">
+                            <span class="alert-timestamp">12:34</span>
+                        </div>
+                        <div class="alert-main-content">
+                            <div class="alert-icon-container">
+                                <span class="alert-icon">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                        <path d="M12 2L2 22h20L12 2z" fill="#fd7e14"/>
+                                        <path d="M12 8v4m0 4h.01" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="alert-text-content">
+                                <div class="alert-message">Low Battery Warning</div>
+                                <div class="alert-details">Device battery is running low</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="viewport-simulator mobile-480">
+                <div class="viewport-label">Mobile 480px</div>
+                <div class="alert-panel alert-panel--top-right test-alert-panel">
+                    <div class="alert-item alert-item--success">
+                        <div class="alert-top-bar">
+                            <span class="alert-timestamp">12:34</span>
+                            <button class="alert-close" aria-label="Dismiss alert">×</button>
+                        </div>
+                        <div class="alert-main-content">
+                            <div class="alert-icon-container">
+                                <span class="alert-icon">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                        <circle cx="12" cy="12" r="10" fill="#198754"/>
+                                        <path d="M9 12l2 2 4-4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="alert-text-content">
+                                <div class="alert-message">Operation Successful</div>
+                                <div class="alert-details">Your changes have been saved successfully</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Test 3: Long Content -->
+        <div class="test-section">
+            <div class="test-title">Test 3: Long Content Handling</div>
+            
+            <div class="viewport-simulator tablet-768">
+                <div class="viewport-label">Tablet 768px</div>
+                <div class="alert-panel alert-panel--top-right test-alert-panel">
+                    <div class="alert-item alert-item--info">
+                        <div class="alert-top-bar">
+                            <span class="alert-timestamp">12:34</span>
+                            <button class="alert-close" aria-label="Dismiss alert">×</button>
+                        </div>
+                        <div class="alert-main-content">
+                            <div class="alert-icon-container">
+                                <span class="alert-icon">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                        <circle cx="12" cy="12" r="10" fill="#0d6efd"/>
+                                        <path d="M12 16v-4m0-4h.01" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="alert-text-content">
+                                <div class="alert-message">This is a very long alert message that should wrap properly across multiple lines</div>
+                                <div class="alert-details">This is also a very long details section that contains additional information about the alert and should also wrap properly to demonstrate how the layout handles longer content gracefully.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
