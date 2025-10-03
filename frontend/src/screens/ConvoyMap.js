@@ -362,7 +362,7 @@ const ConvoyMap = () => {
   }, [isTracking, startTracking, stopTracking]);
 
   return (
-    <div className="App">
+    <div className="map-screen">
       <main>
         <MapComponent
           members={finalConvoyData?.members || []}

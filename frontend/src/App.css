@@ -6,6 +6,20 @@
   overflow: hidden; /* Prevents scrollbars */
 }
 
+/* Full-screen layout for map screens without headers */
+.map-screen {
+  text-align: center;
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden; /* Prevents scrollbars */
+}
+
+.map-screen main {
+  height: 100%; /* Full height for map screens without header */
+  position: relative;
+}
+
 .map-container {
   height: 100%; /* Map takes full height of the main area */
   width: 100%;
@@ -663,6 +677,33 @@ main {
   .home-main-content .start-convoy-button {
     padding: 10px 25px;
     font-size: 1em;
+  }
+}
+
+/* ===== MAP SCREEN RESPONSIVE DESIGN ===== */
+
+/* Ensure map screen works perfectly on all devices */
+@media (max-width: 768px) {
+  .map-screen {
+    /* Ensure full viewport coverage on mobile */
+    height: 100vh;
+    height: 100dvh; /* Use dynamic viewport height on supported browsers */
+  }
+
+  .map-screen main {
+    height: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .map-screen {
+    /* Prevent any potential scrolling issues on small screens */
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
 }
 
