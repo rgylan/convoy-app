@@ -3,7 +3,6 @@ import { MapContainer, TileLayer, Marker, Popup, Tooltip } from 'react-leaflet';
 import { Icon } from 'leaflet';
 import MapSidebar from './MapSidebar';
 import ZoomControl from './ZoomControl';
-import SmartZoomManager from './SmartZoomManager';
 
 import LocationStatusControl from './LocationStatusControl';
 import MemberStatusIndicator from '../convoy/MemberStatusIndicator';
@@ -137,14 +136,6 @@ const MapComponent = ({
 
         {/* Custom zoom control positioned at bottom-left */}
         <ZoomControl />
-
-        {/* Smart zoom management for professional map behavior */}
-        <SmartZoomManager
-          destination={destination}
-          userLocation={locationTracking?.lastPosition}
-          members={members}
-          onDestinationSelect={onDestinationSelect}
-        />
 
         {/* Render destination marker FIRST so it appears underneath member markers */}
         {destination && (
