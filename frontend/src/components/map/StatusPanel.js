@@ -82,18 +82,28 @@ const StatusPanel = ({
     <>
       {/* Backdrop for mobile */}
       {isExpanded && (
-        <div 
-          className="status-panel-backdrop" 
+        <div
+          className="status-panel-backdrop"
           onClick={onClose}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') {
+              onClose();
+            }
+          }}
           aria-hidden="true"
         />
       )}
       
-      <div 
+      <div
         className={`status-panel ${isExpanded ? 'expanded' : ''}`}
         role="dialog"
         aria-label="Convoy status panel"
         aria-hidden={!isExpanded}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') {
+            onClose();
+          }
+        }}
       >
         <div className="status-panel-header">
           <div className="status-panel-title">
@@ -102,14 +112,25 @@ const StatusPanel = ({
           </div>
           <div className="status-panel-header-actions">
             {criticalAlerts > 0 && (
-              <span className="status-panel-alerts-badge">
+              <span
+                className="status-panel-alerts-badge"
+                aria-label={`${criticalAlerts} critical alert${criticalAlerts > 1 ? 's' : ''}`}
+                role="status"
+              >
                 {criticalAlerts}
               </span>
             )}
             <button
               className="standard-close-button"
               onClick={onClose}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onClose();
+                }
+              }}
               aria-label="Close status panel"
+              type="button"
             >
               <span className="material-icons">close</span>
             </button>
@@ -118,11 +139,13 @@ const StatusPanel = ({
 
         {/* Main Status Indicator */}
         <div className="status-panel-main">
-          <div 
+          <div
             className="status-panel-health"
             style={{ color: healthInfo.color }}
+            role="status"
+            aria-label={`Convoy health status: ${healthInfo.text}`}
           >
-            <span className="material-icons status-panel-icon">{healthInfo.icon}</span>
+            <span className="material-icons status-panel-icon" aria-hidden="true">{healthInfo.icon}</span>
             <span className="status-panel-text">{healthInfo.text}</span>
           </div>
         </div>

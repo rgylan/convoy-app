@@ -1,4 +1,4 @@
-/* Status Panel - Apple Maps inspired expandable design matching SearchPanel */
+/* Status Panel - Apple Maps Inspired Glassmorphism Design */
 
 .status-panel-backdrop {
   position: fixed;
@@ -6,17 +6,25 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(2px);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 1500;
   opacity: 0;
-  animation: backdropFadeIn 0.3s ease-out forwards;
+  animation: overlayFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   display: none; /* Hidden on desktop, shown on mobile */
 }
 
-@keyframes backdropFadeIn {
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+  }
   to {
     opacity: 1;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
   }
 }
 
@@ -24,53 +32,106 @@
   position: fixed;
   top: 20px;
   left: 88px; /* Position next to sidebar (68px width + 20px gap) */
-  width: 350px;
+  width: 380px;
   max-height: calc(100vh - 40px);
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
-  border-radius: 12px;
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.12),
-    0 2px 8px rgba(0, 0, 0, 0.08);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    0 8px 16px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   z-index: 1600;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  
+
   /* Initial collapsed state */
-  transform: translateX(-20px) scale(0.95);
+  transform: translateX(-30px) scale(0.9);
   opacity: 0;
   pointer-events: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: none;
 }
 
 .status-panel.expanded {
   transform: translateX(0) scale(1);
   opacity: 1;
   pointer-events: all;
+  animation: panelSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes panelSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-30px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* Enhanced Glassmorphism Effect for Status Panel */
+.status-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.status-panel > * {
+  position: relative;
+  z-index: 1;
 }
 
 .status-panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 24px 24px 16px 24px;
+  border-bottom: 1px solid rgba(26, 44, 66, 0.08);
   flex-shrink: 0;
+  animation: headerFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;
+}
+
+@keyframes headerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .status-panel-title {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 16px;
+  gap: 10px;
+  font-size: 18px;
   font-weight: 600;
   color: #1A2C42;
+  letter-spacing: -0.5px;
 }
 
 .status-panel-title .material-icons {
-  font-size: 20px;
+  font-size: 22px;
   color: #1A2C42;
 }
 
@@ -83,12 +144,27 @@
 .status-panel-alerts-badge {
   background: #e74c3c;
   color: white;
-  border-radius: 10px;
-  padding: 2px 8px;
+  border-radius: 12px;
+  padding: 4px 10px;
   font-size: 12px;
-  font-weight: 500;
-  min-width: 20px;
+  font-weight: 600;
+  min-width: 24px;
   text-align: center;
+  box-shadow:
+    0 4px 12px rgba(231, 76, 60, 0.3),
+    0 2px 4px rgba(231, 76, 60, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.status-panel-alerts-badge:hover {
+  transform: scale(1.05);
+  box-shadow:
+    0 6px 16px rgba(231, 76, 60, 0.4),
+    0 3px 6px rgba(231, 76, 60, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 /* Standard Close Button */
@@ -123,65 +199,110 @@
 
 /* Main status indicator */
 .status-panel-main {
-  padding: 16px 20px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(26, 44, 66, 0.08);
   flex-shrink: 0;
+  animation: mainFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both;
+}
+
+@keyframes mainFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .status-panel-health {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .status-panel-icon {
-  font-size: 24px !important;
+  font-size: 26px !important;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.status-panel-health:hover .status-panel-icon {
+  transform: scale(1.1);
 }
 
 .status-panel-text {
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 600;
+  letter-spacing: -0.25px;
 }
 
 /* Metrics grid */
 .status-panel-metrics {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  padding: 16px 20px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  gap: 14px;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(26, 44, 66, 0.08);
+  animation: metricsFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both;
+}
+
+@keyframes metricsFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .status-panel-metric {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 12px;
-  background: rgba(248, 249, 250, 0.8);
+  padding: 16px 12px;
+  background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(10px);
-  border-radius: 10px;
-  min-height: 60px;
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 16px;
+  min-height: 70px;
   justify-content: center;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow:
+    0 4px 12px rgba(26, 44, 66, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .status-panel-metric:hover {
-  background: rgba(248, 249, 250, 0.9);
+  background: rgba(255, 255, 255, 0.8);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow:
+    0 6px 16px rgba(26, 44, 66, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 .status-panel-metric-label {
   font-size: 11px;
-  color: #6c757d;
+  color: #6b7280;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 4px;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
   font-weight: 600;
 }
 
 .status-panel-metric-value {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
   color: #1A2C42;
+  letter-spacing: -0.25px;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.status-panel-metric:hover .status-panel-metric-value {
+  transform: scale(1.05);
 }
 
 /* Metric value colors */
@@ -205,89 +326,226 @@
 .status-panel-destination {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 20px;
-  background: rgba(232, 245, 232, 0.8);
+  gap: 12px;
+  padding: 16px 24px;
+  background: rgba(232, 245, 232, 0.6);
   backdrop-filter: blur(10px);
-  margin: 0 20px 16px;
-  border-radius: 10px;
+  -webkit-backdrop-filter: blur(10px);
+  margin: 0 24px 20px;
+  border-radius: 16px;
+  border: 1px solid rgba(39, 174, 96, 0.2);
+  box-shadow:
+    0 4px 12px rgba(39, 174, 96, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: destinationFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s both;
+}
+
+@keyframes destinationFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.status-panel-destination:hover {
+  background: rgba(232, 245, 232, 0.8);
+  transform: translateY(-1px);
+  box-shadow:
+    0 6px 16px rgba(39, 174, 96, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 .status-panel-destination-icon {
-  font-size: 16px !important;
+  font-size: 18px !important;
   color: #27ae60;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.status-panel-destination:hover .status-panel-destination-icon {
+  transform: scale(1.1);
 }
 
 .status-panel-destination-text {
-  font-size: 14px;
+  font-size: 15px;
   color: #2d5a2d;
   font-weight: 500;
+  letter-spacing: -0.25px;
 }
 
 /* Connection summary */
 .status-panel-summary {
   text-align: center;
-  font-size: 13px;
-  color: #6c757d;
-  padding: 12px 20px 20px;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  font-size: 14px;
+  color: #6b7280;
+  padding: 16px 24px 24px;
+  border-top: 1px solid rgba(26, 44, 66, 0.08);
   font-weight: 500;
+  letter-spacing: -0.25px;
+  animation: summaryFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.5s both;
 }
 
-/* Enhanced animations and transitions */
+@keyframes summaryFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Enhanced Performance and Browser Compatibility */
 .status-panel {
   will-change: transform, opacity;
 }
 
-.status-panel.expanded {
-  animation: statusPanelSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+/* Browser Compatibility Fallbacks */
+@supports not (backdrop-filter: blur(20px)) {
+  .status-panel {
+    background: rgba(255, 255, 255, 0.98);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .status-panel-metric {
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  .status-panel-destination {
+    background: rgba(232, 245, 232, 0.9);
+  }
 }
 
-@keyframes statusPanelSlideIn {
-  from {
-    transform: translateX(-20px) scale(0.95);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0) scale(1);
-    opacity: 1;
+@supports not (-webkit-backdrop-filter: blur(20px)) {
+  .status-panel {
+    background: rgba(255, 255, 255, 0.98);
   }
 }
 
-/* Improved scrolling for status panel content */
+/* Enhanced Glassmorphism for Modern Browsers */
+@supports (backdrop-filter: blur(20px)) {
+  .status-panel {
+    background: rgba(255, 255, 255, 0.92);
+  }
+}
+
+/* Enhanced Scrollbar Styling */
 .status-panel {
   scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  scrollbar-color: rgba(26, 44, 66, 0.2) transparent;
 }
 
 .status-panel::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
 
 .status-panel::-webkit-scrollbar-track {
   background: transparent;
+  border-radius: 3px;
 }
 
 .status-panel::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 2px;
+  background: rgba(26, 44, 66, 0.2);
+  border-radius: 3px;
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .status-panel::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(26, 44, 66, 0.35);
+}
+
+/* Accessibility Enhancements */
+@media (prefers-reduced-motion: reduce) {
+  .status-panel,
+  .status-panel-header,
+  .status-panel-main,
+  .status-panel-metrics,
+  .status-panel-destination,
+  .status-panel-summary,
+  .status-panel-metric,
+  .status-panel-alerts-badge {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .status-panel-metric:hover,
+  .status-panel-destination:hover {
+    transform: none;
+  }
+
+  .status-panel-health:hover .status-panel-icon,
+  .status-panel-metric:hover .status-panel-metric-value,
+  .status-panel-destination:hover .status-panel-destination-icon {
+    transform: none;
+  }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .status-panel {
+    background: rgba(255, 255, 255, 0.98);
+    border: 2px solid #1A2C42;
+  }
+
+  .status-panel-metric {
+    border: 2px solid #1A2C42;
+  }
+
+  .status-panel-destination {
+    border: 2px solid #27ae60;
+  }
 }
 
 /* Responsive Design */
 
-/* Tablet */
-@media (max-width: 1024px) {
+/* Tablet (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
   .status-panel {
     left: 76px; /* Adjust for smaller sidebar */
-    width: 320px;
+    width: 360px;
+    border-radius: 18px;
+  }
+
+  .status-panel-header {
+    padding: 20px 20px 14px 20px;
+  }
+
+  .status-panel-title {
+    font-size: 17px;
+  }
+
+  .status-panel-main {
+    padding: 18px 20px;
+  }
+
+  .status-panel-metrics {
+    padding: 18px 20px;
+    gap: 12px;
+  }
+
+  .status-panel-metric {
+    padding: 14px 10px;
+    min-height: 65px;
+    border-radius: 14px;
+  }
+
+  .status-panel-destination {
+    margin: 0 20px 18px;
+    padding: 14px 20px;
+    border-radius: 14px;
+  }
+
+  .status-panel-summary {
+    padding: 14px 20px 20px;
   }
 }
 
-/* Mobile devices */
+/* Mobile Devices (≤768px) */
 @media (max-width: 768px) {
   .status-panel-backdrop {
     display: block;
@@ -299,17 +557,18 @@
     left: 0;
     right: 0;
     width: 100%;
-    max-height: 70vh;
-    border-radius: 16px 16px 0 0;
-    
+    max-height: 75vh;
+    border-radius: 20px 20px 0 0;
+
     /* Mobile slide-up animation */
     transform: translateY(100%);
     opacity: 1;
+    animation: none;
   }
 
   .status-panel.expanded {
     transform: translateY(0);
-    animation: panelSlideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation: panelSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
 
   @keyframes panelSlideUp {
@@ -322,7 +581,52 @@
   }
 
   .status-panel-header {
-    padding: 20px 20px 16px;
+    padding: 24px 20px 18px;
+  }
+
+  .status-panel-title {
+    font-size: 19px;
+  }
+
+  .status-panel-main {
+    padding: 18px 20px;
+  }
+
+  .status-panel-metrics {
+    padding: 18px 20px;
+    gap: 12px;
+  }
+
+  .status-panel-metric {
+    min-height: 60px;
+    padding: 14px 12px;
+    border-radius: 14px;
+  }
+
+  .status-panel-metric-value {
+    font-size: 20px;
+  }
+
+  .status-panel-destination {
+    margin: 0 20px 16px;
+    padding: 14px 20px;
+    border-radius: 14px;
+  }
+
+  .status-panel-summary {
+    padding: 14px 20px 20px;
+    font-size: 15px;
+  }
+}
+
+/* Small Mobile Devices (≤480px) */
+@media (max-width: 480px) {
+  .status-panel {
+    max-height: 80vh;
+  }
+
+  .status-panel-header {
+    padding: 20px 16px 16px;
   }
 
   .status-panel-title {
@@ -330,64 +634,39 @@
   }
 
   .status-panel-main {
-    padding: 16px 20px;
+    padding: 16px 16px;
   }
 
   .status-panel-metrics {
-    padding: 16px 20px;
+    padding: 16px 16px;
     gap: 10px;
   }
 
   .status-panel-metric {
     min-height: 55px;
-    padding: 10px;
-  }
-
-  .status-panel-destination {
-    margin: 0 20px 12px;
-    padding: 10px 16px;
-  }
-
-  .status-panel-summary {
-    padding: 10px 20px 16px;
-  }
-}
-
-/* Small mobile devices */
-@media (max-width: 480px) {
-  .status-panel {
-    max-height: 75vh;
-  }
-
-  .status-panel-header {
-    padding: 16px 16px 12px;
-  }
-
-  .status-panel-main {
-    padding: 12px 16px;
-  }
-
-  .status-panel-metrics {
-    padding: 12px 16px;
-    gap: 8px;
-  }
-
-  .status-panel-metric {
-    min-height: 50px;
-    padding: 8px;
+    padding: 12px 10px;
+    border-radius: 12px;
   }
 
   .status-panel-metric-value {
-    font-size: 18px;
+    font-size: 19px;
   }
 
   .status-panel-destination {
-    margin: 0 16px 10px;
-    padding: 8px 12px;
+    margin: 0 16px 14px;
+    padding: 12px 16px;
+    border-radius: 12px;
   }
 
   .status-panel-summary {
-    padding: 8px 16px 12px;
+    padding: 12px 16px 18px;
+    font-size: 14px;
+  }
+
+  .status-panel-alerts-badge {
+    padding: 3px 8px;
+    min-width: 22px;
+    font-size: 11px;
   }
 }
 
