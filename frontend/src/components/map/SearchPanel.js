@@ -139,7 +139,7 @@ const SearchPanel = ({ isExpanded, onClose, onDestinationSelect }) => {
             <span>Search Destination</span>
           </div>
           <button
-            className="search-panel-close"
+            className="standard-close-button"
             onClick={onClose}
             aria-label="Close search panel"
           >

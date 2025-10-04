@@ -96,7 +96,7 @@ const ShareConvoy = ({ convoyId, onClose }) => {
         <div className="share-modal-header">
           <h2 id="share-modal-title">Share Convoy</h2>
           <button
-            className="share-modal-close"
+            className="standard-close-button"
             onClick={onClose}
             aria-label="Close share modal"
           >

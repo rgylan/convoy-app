@@ -69,7 +69,8 @@
   letter-spacing: -0.5px;
 }
 
-.share-modal-close {
+/* Standard Close Button */
+.standard-close-button {
   background: rgba(26, 44, 66, 0.1);
   border: none;
   border-radius: 50%;
@@ -80,16 +81,22 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
 }
 
-.share-modal-close:hover {
+.standard-close-button:hover {
   background: rgba(26, 44, 66, 0.15);
   transform: scale(1.05);
 }
 
-.share-modal-close .material-icons {
+.standard-close-button .material-icons {
   font-size: 18px;
   color: #1A2C42;
+}
+
+.standard-close-button:focus {
+  outline: 2px solid #1A2C42;
+  outline-offset: 2px;
 }
 
 /* Modal Description */
@@ -322,6 +329,16 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  /* Mobile close button */
+  .standard-close-button {
+    width: 44px;
+    height: 44px;
+  }
+
+  .standard-close-button .material-icons {
+    font-size: 20px;
+  }
+
   .share-modal-content {
     width: 95%;
     max-width: none;
@@ -413,8 +430,7 @@
 /* Focus styles for accessibility */
 .copy-button:focus,
 .done-button:focus,
-.native-share-button:focus,
-.share-modal-close:focus {
+.native-share-button:focus {
   outline: 2px solid #1A2C42;
   outline-offset: 2px;
 }

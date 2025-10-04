@@ -150,11 +150,11 @@ const AlertPanel = ({
         {/* Floating close button in top-right corner */}
         {currentAlert.dismissible !== false && (
           <button
-            className="alert-close alert-close--floating"
+            className="standard-close-button alert-close--floating"
             onClick={() => handleDismiss(currentAlert.id)}
             aria-label="Dismiss alert"
           >
-            ×
+            <span className="material-icons">close</span>
           </button>
         )}
 

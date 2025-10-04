@@ -106,8 +106,8 @@ const StatusPanel = ({
                 {criticalAlerts}
               </span>
             )}
-            <button 
-              className="status-panel-close" 
+            <button
+              className="standard-close-button"
               onClick={onClose}
               aria-label="Close status panel"
             >

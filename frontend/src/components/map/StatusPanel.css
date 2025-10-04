@@ -91,25 +91,34 @@
   text-align: center;
 }
 
-.status-panel-close {
-  background: none;
+/* Standard Close Button */
+.standard-close-button {
+  background: rgba(26, 44, 66, 0.1);
   border: none;
-  cursor: pointer;
-  padding: 6px;
-  border-radius: 6px;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s ease;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
 }
 
-.status-panel-close:hover {
-  background: rgba(0, 0, 0, 0.05);
+.standard-close-button:hover {
+  background: rgba(26, 44, 66, 0.15);
+  transform: scale(1.05);
 }
 
-.status-panel-close .material-icons {
+.standard-close-button .material-icons {
   font-size: 18px;
-  color: #6c757d;
+  color: #1A2C42;
+}
+
+.standard-close-button:focus {
+  outline: 2px solid #1A2C42;
+  outline-offset: 2px;
 }
 
 /* Main status indicator */
@@ -398,12 +407,36 @@
     color: white;
   }
   
-  .status-panel-close:hover {
-    background: rgba(255, 255, 255, 0.1);
+  /* Mobile close button */
+  .standard-close-button {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.08);
   }
-  
-  .status-panel-close .material-icons {
-    color: #a0aec0;
+
+  .standard-close-button:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .standard-close-button .material-icons {
+    font-size: 18px;
+    color: white;
+  }
+
+  .standard-close-button:focus {
+    outline: 2px solid white;
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 480px) {
+    .standard-close-button {
+      width: 36px;
+      height: 36px;
+    }
+
+    .standard-close-button .material-icons {
+      font-size: 17px;
+    }
   }
   
   .status-panel-main {

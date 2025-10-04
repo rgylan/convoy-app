@@ -19,6 +19,49 @@
   width: 90%;
   max-width: 400px;
   text-align: center;
+  position: relative;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  flex: 1;
+}
+
+/* Standard Close Button */
+.standard-close-button {
+  background: rgba(26, 44, 66, 0.1);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+}
+
+.standard-close-button:hover {
+  background: rgba(26, 44, 66, 0.15);
+  transform: scale(1.05);
+}
+
+.standard-close-button .material-icons {
+  font-size: 18px;
+  color: #1A2C42;
+}
+
+.standard-close-button:focus {
+  outline: 2px solid #1A2C42;
+  outline-offset: 2px;
 }
 
 .modal-icon {
@@ -39,51 +82,62 @@
 
 .modal-actions {
   display: flex;
-  gap: 12px;
+  justify-content: center;
   margin-top: 24px;
 }
 
-.btn-secondary {
-  flex: 1;
-  padding: 12px 24px;
-  border: 1px solid #d1d5db;
-  background: white;
-  border-radius: 8px;
-  font-weight: 500;
-}
-
 .btn-danger {
-  flex: 1;
-  padding: 12px 24px;
+  padding: 12px 32px;
   background: #dc2626;
   color: white;
   border: none;
   border-radius: 8px;
   font-weight: 500;
+  min-width: 140px;
+  transition: all 0.2s ease;
+}
+
+.btn-danger:hover {
+  background: #b91c1c;
+  transform: translateY(-1px);
+}
+
+.btn-danger:focus {
+  outline: 2px solid #dc2626;
+  outline-offset: 2px;
 }
 
 /* Mobile optimizations */
 @media (max-width: 768px) {
-  .modal-content {
-    margin: 16px;
-    padding: 24px;
-    max-width: none;
-  }
-  
   .modal-actions {
-    flex-direction: column;
+    margin-top: 20px;
   }
   
-  .btn-secondary,
   .btn-danger {
+    width: 100%;
     min-height: 48px; /* Touch target */
     font-size: 16px; /* Prevent zoom on iOS */
+    padding: 14px 24px;
   }
 }
 
 /* Tablet */
 @media (min-width: 769px) and (max-width: 1024px) {
-  .modal-content {
-    max-width: 450px;
+  .btn-danger {
+    min-width: 160px;
+    padding: 14px 36px;
+    min-height: 44px; /* Touch-friendly */
+  }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+  .btn-danger {
+    min-width: 140px;
+    padding: 12px 32px;
+  }
+  
+  .btn-danger:hover {
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
   }
 }
