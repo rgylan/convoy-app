@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import MapComponent from '../components/map/MapComponent';
 import ShareConvoy from '../components/convoy/ShareConvoy';
+import LeaveConvoyModal from '../components/convoy/LeaveConvoyModal';
 import AlertPanel from '../components/alerts/AlertPanel';
 
 import MemberStatusPanel from '../components/convoy/MemberStatusPanel';
@@ -264,54 +265,36 @@ const ConvoyMap = () => {
     // Keep for backward compatibility but functionality moved to sidebar
   }, []);
 
-  const handleLeaveConvoy = async () => {
-    if (window.confirm('Are you sure you want to leave this convoy?')) {
-      try {
-        // Enhanced session debugging
-        const memberId = sessionStorage.getItem('memberId');
-        console.log('DEBUG: Session state check:', {
-          memberId,
-          sessionStorageKeys: Object.keys(sessionStorage),
-          finalConvoyData: finalConvoyData?.members?.map(m => ({ id: m.id, name: m.name }))
-        });
-        
-        if (!memberId) {
-          // Attempt recovery by checking if user is the only member or has a predictable ID
-          const members = finalConvoyData?.members || [];
-          console.log('DEBUG: Attempting member ID recovery from convoy data:', members);
-          
-          if (members.length === 1) {
-            // If only one member, assume it's the current user
-            const recoveredId = members[0].id.toString();
-            console.log('DEBUG: Recovered member ID from single member:', recoveredId);
-            sessionStorage.setItem('memberId', recoveredId);
-            
-            // Proceed with the recovered ID
-            await performLeaveConvoy(recoveredId);
-            return;
-          }
-          
-          throw new Error('Could not determine your member ID. Session may have been corrupted.');
-        }
+  const [showLeaveModal, setShowLeaveModal] = useState({
+    show: false,
+    memberCount: 0,
+    isLeader: false,
+    convoyHealth: ''
+  });
 
-        await performLeaveConvoy(memberId);
-        
-      } catch (error) {
-        console.error('Error leaving convoy:', error);
-        console.error('DEBUG: Full error context:', {
-          error: error.message,
-          stack: error.stack,
-          convoyId,
-          sessionStorage: Object.keys(sessionStorage),
-          finalConvoyData: finalConvoyData
-        });
-        alert(`Failed to leave convoy: ${error.message}`);
-      }
-    }
+  const handleLeaveConvoy = async () => {
+    const memberCount = finalConvoyData?.members?.length || 0;
+    // Find the current member to determine if they are the leader
+    const currentMember = finalConvoyData?.members?.find(m => m.id.toString() === memberId);
+    const isLeader = currentMember?.name === 'You';
+
+    setShowLeaveModal({
+      show: true,
+      memberCount,
+      isLeader,
+      convoyHealth: getConvoyHealthStatus()
+    });
   };
 
   // Extracted leave convoy logic for reuse
-  const performLeaveConvoy = async (memberId) => {
+  const performLeaveConvoy = async () => {
+    // Validate memberId before proceeding
+    if (!memberId) {
+      console.error('ERROR: No memberId found in session storage');
+      alert('Error: Unable to leave convoy. Member ID not found.');
+      return;
+    }
+
     // Stop location tracking before leaving
     if (isTracking) {
       stopTracking();
@@ -404,6 +387,16 @@ const ConvoyMap = () => {
       
       {showShareModal && (
         <ShareConvoy convoyId={convoyId} onClose={() => setShowShareModal(false)} />
+      )}
+
+      {showLeaveModal.show && (
+        <LeaveConvoyModal
+          memberCount={showLeaveModal.memberCount}
+          isLeader={showLeaveModal.isLeader}
+          convoyHealth={showLeaveModal.convoyHealth}
+          onConfirm={performLeaveConvoy}
+          onCancel={() => setShowLeaveModal({ show: false })}
+        />
       )}
     </div>
   );
