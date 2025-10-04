@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import './Home.css';
 import convoyService from '../services/convoyService';
 import { mobileLog } from '../utils/vconsole';
 import { API_ENDPOINTS } from '../config/api';
@@ -168,16 +169,45 @@ const Home = () => {
   return (
     <div className="home-screen">
       <header className="home-header">
-        <img src="/convoy_logo.png" alt="Convoy App Logo" className="home-logo" />
+        <img
+          src="/convoy_logo.png"
+          alt="Convoy App Logo"
+          className="home-logo"
+          loading="eager"
+        />
         <h1>Convoy Tracker</h1>
       </header>
-      <main className="home-main-content">
-        <p className="slogan">Create a new convoy and invite your friends to share your journey in real-time.</p>
-        <button className="start-convoy-button" onClick={handleStartConvoy}>
+      <main className="home-main-content" role="main">
+        <p className="slogan">
+          Create a new convoy and invite your friends to share your journey in real-time.
+        </p>
+        <button
+          className="start-convoy-button"
+          onClick={handleStartConvoy}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleStartConvoy();
+            }
+          }}
+          aria-label="Start a new convoy and begin location sharing"
+          type="button"
+        >
           Start New Convoy
         </button>
       </main>
-      <ToastContainer />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 };

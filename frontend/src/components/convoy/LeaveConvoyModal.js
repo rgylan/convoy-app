@@ -30,13 +30,18 @@ const LeaveConvoyModal = ({ memberCount, isLeader, convoyHealth, onConfirm, onCa
         <p id="leave-modal-description">
           You'll stop sharing your location and won't receive convoy updates.
         </p>
-        {/* Add keyboard handler */}
         <div className="modal-actions">
           <button
             className="btn-danger"
             onClick={onConfirm}
-            autoFocus // Move focus to the primary action
+            autoFocus
             aria-label="Confirm leaving convoy"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onConfirm();
+              }
+            }}
           >
             Leave Convoy
           </button>

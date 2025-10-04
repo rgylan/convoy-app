@@ -1,0 +1,389 @@
+/* Home Screen - Apple Maps Inspired Glassmorphism Design */
+
+/* Main Container */
+.home-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, rgba(26, 44, 66, 0.08) 0%, rgba(26, 44, 66, 0.04) 100%);
+  backdrop-filter: blur(10px);
+  color: #1A2C42;
+  font-family: 'Poppins', 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+  padding: 20px;
+  animation: pageLoad 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes pageLoad {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header Section */
+.home-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 48px;
+  position: relative;
+  animation: headerSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both;
+}
+
+@keyframes headerSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.home-logo {
+  width: 150px;
+  height: 150px;
+  margin-bottom: 24px;
+  border-radius: 25%;
+  box-shadow: 
+    0 20px 40px rgba(26, 44, 66, 0.15),
+    0 8px 16px rgba(26, 44, 66, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  filter: brightness(1.1);
+  backdrop-filter: blur(4px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.home-logo:hover {
+  transform: scale(1.05);
+  box-shadow: 
+    0 24px 48px rgba(26, 44, 66, 0.2),
+    0 12px 20px rgba(26, 44, 66, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.home-header h1 {
+  font-size: 3.5rem;
+  font-weight: 600;
+  color: #1A2C42;
+  margin: 0;
+  letter-spacing: -0.5px;
+  text-align: center;
+  line-height: 1.1;
+}
+
+/* Main Content Card */
+.home-main-content {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 48px 60px;
+  border-radius: 20px;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    0 8px 16px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  text-align: center;
+  max-width: 600px;
+  width: 90%;
+  position: relative;
+  animation: contentSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s both;
+}
+
+@keyframes contentSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Slogan Text */
+.slogan {
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: #6b7280;
+  margin-bottom: 32px;
+  line-height: 1.6;
+  letter-spacing: -0.25px;
+}
+
+/* Start Convoy Button */
+.start-convoy-button {
+  background: #1A2C42;
+  color: white;
+  border: none;
+  border-radius: 16px;
+  padding: 16px 40px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.25px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 8px 20px rgba(26, 44, 66, 0.25),
+    0 4px 8px rgba(26, 44, 66, 0.15);
+  min-width: 200px;
+  position: relative;
+  overflow: hidden;
+}
+
+.start-convoy-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.start-convoy-button:hover {
+  background: rgba(26, 44, 66, 0.9);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 12px 28px rgba(26, 44, 66, 0.35),
+    0 6px 12px rgba(26, 44, 66, 0.25);
+}
+
+.start-convoy-button:hover::before {
+  left: 100%;
+}
+
+.start-convoy-button:active {
+  transform: translateY(-1px) scale(1.01);
+  box-shadow: 
+    0 8px 20px rgba(26, 44, 66, 0.25),
+    0 4px 8px rgba(26, 44, 66, 0.15);
+}
+
+.start-convoy-button:focus {
+  outline: 2px solid #1A2C42;
+  outline-offset: 2px;
+}
+
+/* Tablet Design (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .home-header h1 {
+    font-size: 3rem;
+  }
+
+  .home-main-content {
+    padding: 40px 48px;
+    max-width: 550px;
+  }
+
+  .slogan {
+    font-size: 1.125rem;
+  }
+
+  .start-convoy-button {
+    padding: 15px 36px;
+    font-size: 1.125rem;
+    min-width: 180px;
+  }
+}
+
+/* Mobile Landscape and Small Tablets (≤768px) */
+@media (max-width: 768px) {
+  .home-screen {
+    padding: 20px;
+    justify-content: flex-start;
+    padding-top: 40px;
+  }
+
+  .home-header {
+    margin-bottom: 32px;
+  }
+
+  .home-logo {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 20px;
+  }
+
+  .home-header h1 {
+    font-size: 2.5rem;
+    line-height: 1.2;
+  }
+
+  .home-main-content {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(16px);
+    padding: 32px 32px;
+    border-radius: 16px;
+    width: 95%;
+    max-width: 500px;
+  }
+
+  .slogan {
+    font-size: 1.125rem;
+    line-height: 1.5;
+    margin-bottom: 28px;
+  }
+
+  .start-convoy-button {
+    padding: 14px 32px;
+    font-size: 1.125rem;
+    min-width: 160px;
+  }
+}
+
+/* Mobile Portrait (≤480px) */
+@media (max-width: 480px) {
+  .home-screen {
+    padding: 16px;
+    padding-top: 32px;
+  }
+
+  .home-header {
+    margin-bottom: 28px;
+  }
+
+  .home-logo {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 16px;
+  }
+
+  .home-header h1 {
+    font-size: 2rem;
+    line-height: 1.1;
+  }
+
+  .home-main-content {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    padding: 28px 24px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: none;
+  }
+
+  .slogan {
+    font-size: 1rem;
+    line-height: 1.4;
+    margin-bottom: 24px;
+  }
+
+  .start-convoy-button {
+    padding: 16px 24px;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 280px;
+    min-height: 48px; /* Touch target */
+  }
+}
+
+/* Extra Small Mobile (≤360px) */
+@media (max-width: 360px) {
+  .home-screen {
+    padding: 12px;
+    padding-top: 24px;
+  }
+
+  .home-header {
+    margin-bottom: 24px;
+  }
+
+  .home-logo {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 12px;
+  }
+
+  .home-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .home-main-content {
+    padding: 24px 20px;
+  }
+
+  .slogan {
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+  }
+
+  .start-convoy-button {
+    padding: 14px 20px;
+    font-size: 0.95rem;
+  }
+}
+
+/* Accessibility Enhancements */
+@media (prefers-reduced-motion: reduce) {
+  .home-screen,
+  .home-header,
+  .home-main-content,
+  .home-logo,
+  .start-convoy-button {
+    animation: none;
+    transition: none;
+  }
+
+  .start-convoy-button:hover {
+    transform: none;
+  }
+
+  .home-logo:hover {
+    transform: none;
+  }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .home-main-content {
+    background: rgba(255, 255, 255, 0.98);
+    border: 2px solid #1A2C42;
+  }
+
+  .start-convoy-button {
+    border: 2px solid #1A2C42;
+  }
+
+  .slogan {
+    color: #1A2C42;
+  }
+}
+
+/* Dark Mode Support (if needed in future) */
+@media (prefers-color-scheme: dark) {
+  .home-screen {
+    background: linear-gradient(135deg, rgba(26, 44, 66, 0.15) 0%, rgba(26, 44, 66, 0.08) 100%);
+  }
+
+  .home-main-content {
+    background: rgba(26, 44, 66, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+
+  .home-header h1 {
+    color: white;
+  }
+
+  .slogan {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .start-convoy-button {
+    background: rgba(255, 255, 255, 0.9);
+    color: #1A2C42;
+  }
+
+  .start-convoy-button:hover {
+    background: white;
+  }
+}
