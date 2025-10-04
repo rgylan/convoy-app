@@ -100,10 +100,23 @@ const SearchPanel = ({ isExpanded, onClose, onDestinationSelect }) => {
     if (e.key === 'Escape') {
       onClose();
     }
-    // Handle Enter key on search results navigation
+    // Enhanced keyboard navigation for search results
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
       e.preventDefault();
-      // Could implement keyboard navigation for results here
+      // Focus management for result items
+      const resultItems = document.querySelectorAll('.search-result-item');
+      if (resultItems.length > 0) {
+        const currentFocus = document.activeElement;
+        const currentIndex = Array.from(resultItems).indexOf(currentFocus);
+
+        if (e.key === 'ArrowDown') {
+          const nextIndex = currentIndex < resultItems.length - 1 ? currentIndex + 1 : 0;
+          resultItems[nextIndex].focus();
+        } else if (e.key === 'ArrowUp') {
+          const prevIndex = currentIndex > 0 ? currentIndex - 1 : resultItems.length - 1;
+          resultItems[prevIndex].focus();
+        }
+      }
     }
   };
 
@@ -148,7 +161,6 @@ const SearchPanel = ({ isExpanded, onClose, onDestinationSelect }) => {
         </div>
         
         <div className="search-input-container">
-          <span className="material-icons search-icon">search</span>
           <input
             ref={inputRef}
             type="text"
@@ -157,21 +169,39 @@ const SearchPanel = ({ isExpanded, onClose, onDestinationSelect }) => {
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             className="search-input"
+            aria-label="Search for destination"
+            aria-describedby="search-hint"
+            autoComplete="off"
+            spellCheck="false"
           />
+          <span className="material-icons search-icon">search</span>
           {searchQuery && (
-            <button className="clear-search-button" onClick={handleClearSearch}>
+            <button
+              className="clear-search-button"
+              onClick={handleClearSearch}
+              aria-label="Clear search"
+              type="button"
+            >
               <span className="material-icons">clear</span>
             </button>
           )}
           {isLoading && (
-            <div className="loading-spinner">
+            <div
+              className="loading-spinner"
+              aria-label="Searching for locations"
+              role="status"
+            >
               <span className="material-icons">refresh</span>
             </div>
           )}
         </div>
 
         {error && (
-          <div className="search-error">
+          <div
+            className="search-error"
+            role="alert"
+            aria-live="polite"
+          >
             <span className="material-icons">error</span>
             {error}
           </div>
@@ -183,11 +213,20 @@ const SearchPanel = ({ isExpanded, onClose, onDestinationSelect }) => {
               <div className="results-header">
                 <span>Search Results</span>
               </div>
-              {searchResults.map((result) => (
+              {searchResults.map((result, index) => (
                 <div
                   key={result.id}
                   className="search-result-item"
                   onClick={() => handleResultClick(result)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleResultClick(result);
+                    }
+                  }}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`Select destination: ${result.name}`}
                 >
                   <span className="material-icons result-icon">place</span>
                   <div className="result-content">
@@ -202,14 +241,23 @@ const SearchPanel = ({ isExpanded, onClose, onDestinationSelect }) => {
           )}
           
           {searchQuery.length >= 3 && searchResults.length === 0 && !isLoading && !error && (
-            <div className="no-results">
+            <div
+              className="no-results"
+              role="status"
+              aria-live="polite"
+            >
               <span className="material-icons">search_off</span>
               No locations found for "{searchQuery}"
             </div>
           )}
 
           {searchQuery.length < 3 && searchQuery.length > 0 && (
-            <div className="search-hint">
+            <div
+              className="search-hint"
+              id="search-hint"
+              role="status"
+              aria-live="polite"
+            >
               <span className="material-icons">info</span>
               Type at least 3 characters to search
             </div>
