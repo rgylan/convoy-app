@@ -1,106 +1,425 @@
-/* ShareConvoy Modal Styles */
-.modal-overlay {
+/* Share Convoy Modal - Apple Maps Inspired Design */
+.share-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1100; /* Highest z-index */
+  z-index: 1600; /* Above panels but below alerts */
+  animation: overlayFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.modal-content {
-  background: white;
-  padding: 30px;
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+.share-modal-content {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    0 8px 16px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
   width: 90%;
-  max-width: 450px;
-  text-align: center;
-  animation: fadeIn 0.3s ease-out;
+  max-width: 420px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@keyframes fadeIn {
+@keyframes overlayFadeIn {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    backdrop-filter: blur(0px);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    backdrop-filter: blur(8px);
   }
 }
 
-.modal-content h2 {
-  margin-top: 0;
-  font-size: 24px;
-  color: #333;
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
-.modal-content p {
-  color: #666;
-  margin-bottom: 25px;
+/* Modal Header */
+.share-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 24px 0 24px;
+  margin-bottom: 8px;
 }
 
-.share-info {
+.share-modal-header h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: #1A2C42;
+  letter-spacing: -0.5px;
+}
+
+.share-modal-close {
+  background: rgba(26, 44, 66, 0.1);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.share-modal-close:hover {
+  background: rgba(26, 44, 66, 0.15);
+  transform: scale(1.05);
+}
+
+.share-modal-close .material-icons {
+  font-size: 18px;
+  color: #1A2C42;
+}
+
+/* Modal Description */
+.share-modal-content > p {
+  color: rgba(26, 44, 66, 0.7);
+  margin: 0 24px 24px 24px;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+/* Share Content */
+.share-content {
+  padding: 0 24px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 25px;
-  margin-bottom: 30px;
+  gap: 24px;
+}
+
+/* QR Code Section */
+.qr-code-section {
+  display: flex;
+  justify-content: center;
 }
 
 .qr-code-container {
-  padding: 15px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(26, 44, 66, 0.1);
+  border-radius: 16px;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
-.link-container {
+/* Link Section */
+.link-section {
   display: flex;
-  width: 100%;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.link-container input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px 0 0 8px;
+.link-label {
   font-size: 14px;
-  background-color: #f9f9f9;
-  color: #333;
+  font-weight: 500;
+  color: #1A2C42;
+  margin-bottom: 4px;
 }
 
-.copy-button {
-  padding: 0 20px;
-  border: 1px solid #FE6B8B;
-  background-color: #FE6B8B;
-  color: white;
-  border-radius: 0 8px 8px 0;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.2s;
+.link-input-container {
+  display: flex;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(26, 44, 66, 0.15);
 }
 
-.copy-button:hover {
-  background-color: #ff8e53;
-}
-
-.close-button {
-  padding: 12px 25px;
+.share-link-input {
+  flex: 1;
+  padding: 14px 16px;
   border: none;
-  background-color: #6c757d;
+  background: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  color: #1A2C42;
+  font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif;
+  outline: none;
+  cursor: text;
+}
+
+.share-link-input:focus {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+/* Copy Button */
+.copy-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 20px;
+  border: none;
+  background: #1A2C42;
   color: white;
-  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 100px;
+  justify-content: center;
+}
+
+.copy-button:hover:not(:disabled) {
+  background: #2A3C52;
+  transform: translateY(-1px);
+}
+
+.copy-button:active {
+  transform: translateY(0);
+}
+
+.copy-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Copy Button States */
+.copy-button.success {
+  background: #28a745;
+}
+
+.copy-button.success:hover {
+  background: #218838;
+}
+
+.copy-button.error {
+  background: #dc3545;
+}
+
+.copy-button.error:hover {
+  background: #c82333;
+}
+
+.copy-icon {
+  font-size: 18px;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.copy-button.success .copy-icon {
+  transform: scale(1.1);
+}
+
+/* Copy Feedback */
+.copy-feedback {
+  min-height: 24px;
+  margin-top: 8px;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.copy-feedback.success,
+.copy-feedback.error {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.feedback-success,
+.feedback-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.feedback-success {
+  color: #28a745;
+}
+
+.feedback-error {
+  color: #dc3545;
+}
+
+.feedback-success .material-icons,
+.feedback-error .material-icons {
+  font-size: 16px;
+}
+
+/* Native Share Button (Mobile) */
+.native-share-section {
+  display: flex;
+  justify-content: center;
+  padding-top: 8px;
+  border-top: 1px solid rgba(26, 44, 66, 0.1);
+}
+
+.native-share-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: 1px solid rgba(26, 44, 66, 0.2);
+  background: rgba(26, 44, 66, 0.05);
+  color: #1A2C42;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.native-share-button:hover {
+  background: rgba(26, 44, 66, 0.1);
+  border-color: rgba(26, 44, 66, 0.3);
+  transform: translateY(-1px);
+}
+
+.native-share-button .material-icons {
+  font-size: 18px;
+}
+
+/* Modal Actions */
+.share-modal-actions {
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid rgba(26, 44, 66, 0.1);
+  margin-top: 24px;
+}
+
+.done-button {
+  padding: 12px 32px;
+  border: none;
+  background: rgba(26, 44, 66, 0.1);
+  color: #1A2C42;
+  border-radius: 12px;
   cursor: pointer;
   font-size: 16px;
-  transition: background-color 0.2s;
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 120px;
 }
 
-.close-button:hover {
-  background-color: #5a6268;
+.done-button:hover {
+  background: rgba(26, 44, 66, 0.15);
+  transform: translateY(-1px);
+}
+
+.done-button:active {
+  transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .share-modal-content {
+    width: 95%;
+    max-width: none;
+    margin: 20px;
+    border-radius: 16px;
+  }
+
+  .share-modal-header {
+    padding: 20px 20px 0 20px;
+  }
+
+  .share-modal-header h2 {
+    font-size: 20px;
+  }
+
+  .share-content {
+    padding: 0 20px;
+    gap: 20px;
+  }
+
+  .qr-code-container {
+    padding: 12px;
+  }
+
+  .link-input-container {
+    border-radius: 10px;
+  }
+
+  .share-link-input {
+    padding: 16px 14px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .copy-button {
+    padding: 16px 18px;
+    min-width: 90px;
+  }
+
+  .copy-button .copy-text {
+    display: none; /* Show only icon on mobile */
+  }
+
+  .share-modal-actions {
+    padding: 20px;
+  }
+
+  .done-button {
+    padding: 14px 28px;
+    font-size: 16px;
+    min-height: 44px; /* Touch target size */
+  }
+}
+
+@media (max-width: 480px) {
+  .share-modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .share-modal-content {
+    width: 100%;
+    margin: 0;
+    border-radius: 20px 20px 0 0;
+    max-height: 85vh;
+    animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .share-content {
+    gap: 16px;
+  }
+
+  .qr-code-container canvas {
+    width: 140px !important;
+    height: 140px !important;
+  }
+}
+
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Focus styles for accessibility */
+.copy-button:focus,
+.done-button:focus,
+.native-share-button:focus,
+.share-modal-close:focus {
+  outline: 2px solid #1A2C42;
+  outline-offset: 2px;
+}
+
+.share-link-input:focus {
+  outline: 2px solid #1A2C42;
+  outline-offset: -2px;
 }
