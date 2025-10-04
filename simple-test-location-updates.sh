@@ -144,8 +144,9 @@ setup_convoy() {
     local start_lat=$(echo "$start_coords" | cut -d',' -f1)
     local start_lng=$(echo "$start_coords" | cut -d',' -f2)
     
-    # Get end coordinates (SM MOA)
-    local end_coords="${WAYPOINTS[-1]}"
+    # Get end coordinates (SM MOA) - compatible with bash 3.2+
+    local last_index=$((${#WAYPOINTS[@]} - 1))
+    local end_coords="${WAYPOINTS[$last_index]}"
     local end_lat=$(echo "$end_coords" | cut -d',' -f1)
     local end_lng=$(echo "$end_coords" | cut -d',' -f2)
     
@@ -554,7 +555,9 @@ main() {
     echo -e "${GREEN}🚗 Convoy Location Update Test${NC}"
     echo -e "${BLUE}==================================================${NC}"
     echo -e "${CYAN}Start:${NC} ${WAYPOINTS[0]} ${YELLOW}(Quezon City)${NC}"
-    echo -e "${CYAN}End:${NC} ${WAYPOINTS[-1]} ${YELLOW}(SM Mall of Asia)${NC}"
+    # Get last waypoint index for bash 3.2+ compatibility
+    local last_waypoint_index=$((${#WAYPOINTS[@]} - 1))
+    echo -e "${CYAN}End:${NC} ${WAYPOINTS[$last_waypoint_index]} ${YELLOW}(SM Mall of Asia)${NC}"
     echo -e "${CYAN}Waypoints:${NC} ${GREEN}${#WAYPOINTS[@]}${NC}"
     echo -e "${CYAN}Delay:${NC} ${GREEN}${DELAY_SECONDS}s${NC} between updates"
     echo -e "${BLUE}==================================================${NC}"

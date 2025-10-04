@@ -3,7 +3,7 @@ import { QRCodeCanvas } from 'qrcode.react';
 import './ShareConvoy.css';
 
 const ShareConvoy = ({ convoyId, onClose }) => {
-  const joinUrl = `http://localhost:3000/join/${convoyId}`;
+  const joinUrl = `${window.location.origin}/join/${convoyId}`;
   const [copyStatus, setCopyStatus] = useState('idle'); // 'idle', 'copying', 'success', 'error'
   const [showNativeShare, setShowNativeShare] = useState(false);
   const copyButtonRef = useRef(null);
