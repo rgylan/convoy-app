@@ -7,7 +7,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
+  padding: 20px;
   background:
     linear-gradient(135deg, rgba(26, 44, 66, 0.12) 0%, rgba(26, 44, 66, 0.06) 50%, rgba(26, 44, 66, 0.08) 100%),
     radial-gradient(circle at 30% 20%, rgba(26, 44, 66, 0.1) 0%, transparent 50%),
@@ -394,7 +394,9 @@
 /* Mobile Landscape and Tablets (≤768px) */
 @media (max-width: 768px) {
   .join-convoy-screen {
-    padding: 32px 16px;
+    padding: 20px;
+    justify-content: flex-start;
+    padding-top: 40px;
   }
 
   .join-convoy-header {
