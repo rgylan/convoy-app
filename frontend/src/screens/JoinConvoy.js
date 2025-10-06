@@ -2,18 +2,29 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { showErrorToast, showSuccessToast } from '../utils/errorHandler';
 import { API_ENDPOINTS } from '../config/api';
+import './JoinConvoy.css';
 
 const JoinConvoy = () => {
   const { convoyId } = useParams();
   const navigate = useNavigate();
   const [name, setName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleJoin = async (e) => {
     e.preventDefault();
-    if (!name.trim()) {
-      alert('Please enter your name.');
+
+    const trimmedName = name.trim();
+    if (!trimmedName) {
+      showErrorToast('Please enter your name.');
       return;
     }
+
+    if (trimmedName.length > 50) {
+      showErrorToast('Name must be 50 characters or less.');
+      return;
+    }
+
+    setIsLoading(true);
 
     try {
       // Log API configuration for debugging
@@ -29,7 +40,7 @@ const JoinConvoy = () => {
       const longitude = 121.0244;
 
       const newMember = {
-        name: name,
+        name: trimmedName,
         location: { lat: latitude, lng: longitude },
       };
 
@@ -55,8 +66,9 @@ const JoinConvoy = () => {
       sessionStorage.setItem('memberId', member.id);
 
       // Log member joining convoy
-      console.log(`MEMBER_JOINED: ${name} joined convoy ${convoyId} with member ID ${member.id} at ${new Date().toISOString()}`);
+      console.log(`MEMBER_JOINED: ${trimmedName} joined convoy ${convoyId} with member ID ${member.id} at ${new Date().toISOString()}`);
 
+      showSuccessToast(`Welcome to the convoy, ${trimmedName}!`);
       navigate(`/convoy/${convoyId}`);
     } catch (error) {
       console.error('📱 [MOBILE ERROR] Error joining convoy:', error);
@@ -74,29 +86,78 @@ const JoinConvoy = () => {
 
       console.error('📱 [MOBILE ERROR] Detailed error info:', errorDetails);
       showErrorToast(`Failed to join convoy: ${error.message}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
+    <div className="join-convoy-screen">
+      {/* Header Section */}
+      <header className="join-convoy-header">
+        <img
+          src="/convoy_logo.png"
+          alt="Convoy Tracker Logo"
+          className="join-convoy-logo"
+          loading="eager"
+        />
         <h1>Join Convoy</h1>
       </header>
-      <main className="join-main">
-        <form onSubmit={handleJoin} className="join-form">
+
+      {/* Main Content Card */}
+      <main className="join-convoy-main-content">
+        {/* Invitation Message */}
+        <div className="join-convoy-invitation">
           <h2>You've been invited to a convoy!</h2>
-          <p>Enter your name to join.</p>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Your Name"
-            required
-          />
-          <button type="submit">Join Convoy</button>
+        </div>
+
+        {/* Join Form */}
+        <form onSubmit={handleJoin} style={{ width: '100%' }}>
+          {/* Name Input Section */}
+          <div className="join-convoy-input-section">
+            <label
+              htmlFor="member-name-input"
+              className="join-convoy-input-label"
+            >
+              Your Name
+            </label>
+            <input
+              id="member-name-input"
+              type="text"
+              className="join-convoy-input"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Enter your name"
+              maxLength={50}
+              required
+              disabled={isLoading}
+              aria-describedby="name-hint"
+            />
+            <span id="name-hint" className="join-convoy-input-hint">
+              This name will be visible to other convoy members
+            </span>
+          </div>
+
+          {/* Join Button */}
+          <button
+            type="submit"
+            className="join-convoy-button"
+            disabled={isLoading || !name.trim()}
+            aria-busy={isLoading}
+            aria-label={isLoading ? 'Joining convoy...' : 'Join convoy'}
+          >
+            <span className="button-text">
+              {isLoading ? 'Joining...' : 'Join Convoy'}
+            </span>
+            {isLoading && (
+              <div className="button-loading-spinner" role="status" aria-label="Loading">
+                <span className="material-icons">refresh</span>
+                <span className="sr-only">Joining convoy...</span>
+              </div>
+            )}
+          </button>
         </form>
       </main>
-    
     </div>
   );
 };
