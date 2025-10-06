@@ -231,6 +231,7 @@ const Home = () => {
             aria-describedby="name-hint"
             maxLength={50}
             disabled={isLoading}
+            autoFocus
           />
           <div id="name-hint" className="name-hint">
             This name will be visible to other convoy members

@@ -132,6 +132,7 @@ const JoinConvoy = () => {
               required
               disabled={isLoading}
               aria-describedby="name-hint"
+              autoFocus
             />
             <span id="name-hint" className="join-convoy-input-hint">
               This name will be visible to other convoy members

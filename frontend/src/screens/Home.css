@@ -224,6 +224,11 @@
   background: rgba(255, 255, 255, 0.98);
 }
 
+.leader-name-input:focus-visible {
+  outline: 2px solid #1A2C42;
+  outline-offset: 2px;
+}
+
 .leader-name-input:hover {
   border-color: rgba(26, 44, 66, 0.3);
   box-shadow:
@@ -320,6 +325,11 @@
 }
 
 .start-convoy-button:focus {
+  outline: 2px solid #1A2C42;
+  outline-offset: 2px;
+}
+
+.start-convoy-button:focus-visible {
   outline: 2px solid #1A2C42;
   outline-offset: 2px;
 }
