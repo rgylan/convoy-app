@@ -53,13 +53,13 @@ func isAllowedOrigin(origin string) bool {
 		return true
 	}
 
-	// Allow Caddy HTTPS proxy (192.168.1.14:443)
-	if origin == "https://192.168.1.14" || origin == "https://192.168.1.14:443" {
+	// Allow Caddy HTTPS proxy (192.168.1.18:443)
+	if origin == "https://192.168.1.18" || origin == "https://192.168.1.18:443" {
 		return true
 	}
 
 	// Allow local network IPs on port 3000 (for mobile testing)
-	// This matches patterns like http://192.168.1.14:3000, http://10.0.0.5:3000, etc.
+	// This matches patterns like http://192.168.1.18:3000, http://10.0.0.5:3000, etc.
 	if len(origin) > 7 && origin[:7] == "http://" {
 		// Extract the part after "http://"
 		hostPort := origin[7:]

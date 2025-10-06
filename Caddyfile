@@ -1,6 +1,6 @@
-192.168.1.14:443 {
+192.168.1.18:443 {
 	# mkcert certificates for local HTTPS development
-	tls C:\Users\rgyla\AppData\Local\mkcert\192.168.1.14.pem C:\Users\rgyla\AppData\Local\mkcert\192.168.1.14-key.pem
+	tls C:\Users\rgyla\AppData\Local\mkcert\192.168.1.18.pem C:\Users\rgyla\AppData\Local\mkcert\192.168.1.18-key.pem
 
 	# Optional: Enable logging for debugging
 	# log {

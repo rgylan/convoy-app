@@ -162,27 +162,4 @@
   }
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .location-status-button {
-    background: #333;
-    border-color: rgba(255, 255, 255, 0.2);
-  }
-  
-  .location-status-button:hover {
-    background: #444;
-    border-color: rgba(255, 255, 255, 0.3);
-  }
-  
-  .location-icon {
-    color: #fff;
-  }
-  
-  .location-status-indicator {
-    border-color: #333;
-  }
-  
-  .location-update-badge {
-    border-color: #333;
-  }
-}
+/* Dark mode support removed - Ensuring consistent white/light glassmorphism design across all browsers and operating systems */

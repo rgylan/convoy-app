@@ -82,22 +82,7 @@
   }
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .leaflet-control-zoom {
-    background: rgba(26, 44, 66, 0.95);
-  }
-  
-  .leaflet-control-zoom a {
-    background: rgba(26, 44, 66, 0.95);
-    color: white;
-  }
-  
-  .leaflet-control-zoom a:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-  }
-}
+/* Dark mode support removed - Ensuring consistent white/light glassmorphism design across all browsers and operating systems */
 
 /* Ensure zoom controls don't conflict with other elements */
 .leaflet-control-zoom {

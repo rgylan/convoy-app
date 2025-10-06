@@ -24,8 +24,8 @@ var upgrader = websocket.Upgrader{
 			return true
 		}
 
-		// Allow Caddy HTTPS proxy (192.168.1.14:443)
-		if origin == "https://192.168.1.14" || origin == "https://192.168.1.14:443" {
+		// Allow Caddy HTTPS proxy (192.168.1.18:443)
+		if origin == "https://192.168.1.18" || origin == "https://192.168.1.18:443" {
 			return true
 		}
 

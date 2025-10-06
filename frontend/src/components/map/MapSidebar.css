@@ -285,31 +285,4 @@
 
 
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .sidebar-content {
-    background: rgba(26, 44, 66, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  .sidebar-button {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-  }
-  
-  .sidebar-button:hover {
-    background: rgba(255, 255, 255, 0.2);
-  }
-  
-  .button-icon {
-    color: white;
-  }
-  
-  .sidebar-toggle {
-    background: rgba(26, 44, 66, 0.95);
-  }
-  
-  .sidebar-toggle .material-icons {
-    color: white;
-  }
-}
+/* Dark mode support removed - Ensuring consistent white/light glassmorphism design across all browsers and operating systems */

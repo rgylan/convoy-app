@@ -94,7 +94,10 @@ const ShareConvoy = ({ convoyId, onClose }) => {
     >
       <div className="share-modal-content" ref={modalRef}>
         <div className="share-modal-header">
-          <h2 id="share-modal-title">Share Convoy</h2>
+          <h2 id="share-modal-title" className="share-modal-title">
+            <span className="material-icons">share</span>
+            <span>Share Convoy</span>
+          </h2>
           <button
             className="standard-close-button"
             onClick={onClose}
@@ -184,7 +187,7 @@ const ShareConvoy = ({ convoyId, onClose }) => {
                 aria-label="Share convoy using device share menu"
               >
                 <span className="material-icons">share</span>
-                <span>Share</span>
+                <span>Share Convoy</span>
               </button>
             </div>
           )}

@@ -56,19 +56,11 @@
   transform: translateX(0) scale(1);
   opacity: 1;
   pointer-events: all;
-  animation: panelSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  /* Removed animation to prevent double animation on iOS mobile Chrome */
+  /* The transition property on .search-panel handles the smooth animation */
 }
 
-@keyframes panelSlideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-30px) scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-  }
-}
+/* Removed panelSlideIn keyframes - no longer needed as we use CSS transitions */
 
 .search-panel-header {
   display: flex;
@@ -473,17 +465,11 @@
 
   .search-panel.expanded {
     transform: translateY(0);
-    animation: panelSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    /* Removed animation to prevent double animation on iOS mobile Chrome */
+    /* The transition property on .search-panel handles the smooth animation */
   }
 
-  @keyframes panelSlideUp {
-    from {
-      transform: translateY(100%);
-    }
-    to {
-      transform: translateY(0);
-    }
-  }
+  /* Removed panelSlideUp keyframes - no longer needed as we use CSS transitions */
 
   .search-panel-header {
     padding: 24px 20px 18px;
@@ -674,134 +660,8 @@
   background: rgba(26, 44, 66, 0.35);
 }
 
-/* Dark Mode Support (Future Enhancement) */
-@media (prefers-color-scheme: dark) {
-  .search-panel {
-    background: rgba(26, 44, 66, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow:
-      0 20px 40px rgba(0, 0, 0, 0.3),
-      0 8px 16px rgba(0, 0, 0, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  }
-
-  .search-panel-header {
-    border-bottom-color: rgba(255, 255, 255, 0.1);
-  }
-
-  .search-panel-title,
-  .search-panel-title .material-icons {
-    color: white;
-  }
-
-  .standard-close-button {
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  .standard-close-button:hover {
-    background: rgba(255, 255, 255, 0.15);
-  }
-
-  .standard-close-button .material-icons {
-    color: white;
-  }
-
-  .search-input-container {
-    border-bottom-color: rgba(255, 255, 255, 0.1);
-  }
-
-  .search-input {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    color: white;
-    box-shadow:
-      0 4px 12px rgba(0, 0, 0, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  }
-
-  .search-input:focus {
-    border-color: rgba(255, 255, 255, 0.4);
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow:
-      0 0 0 3px rgba(255, 255, 255, 0.1),
-      0 6px 16px rgba(0, 0, 0, 0.25),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  }
-
-  .search-input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
-  }
-
-  .search-icon {
-    color: rgba(255, 255, 255, 0.7);
-  }
-
-  .search-input:focus + .search-icon {
-    color: white;
-  }
-
-  .clear-search-button {
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  .clear-search-button:hover {
-    background: rgba(255, 255, 255, 0.15);
-  }
-
-  .clear-search-button .material-icons {
-    color: white;
-  }
-
-  .loading-spinner {
-    color: white;
-  }
-
-  .search-result-item {
-    background: rgba(255, 255, 255, 0.05);
-    border-bottom-color: rgba(255, 255, 255, 0.1);
-  }
-
-  .search-result-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  .result-icon {
-    color: white;
-  }
-
-  .result-name {
-    color: white;
-  }
-
-  .result-coords,
-  .results-header {
-    color: rgba(255, 255, 255, 0.7);
-  }
-
-  .no-results,
-  .search-hint {
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.7);
-  }
-
-  .no-results .material-icons,
-  .search-hint .material-icons {
-    color: white;
-  }
-
-  .search-error {
-    background: rgba(239, 68, 68, 0.15);
-    color: #fca5a5;
-  }
-
-  .search-results::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-  }
-
-  .search-results::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
-  }
-}
+/* Dark Mode Support Removed - Ensuring consistent white/light glassmorphism design across all browsers and operating systems */
+/* This prevents the dark blue theme from appearing on Windows 11 Chrome while maintaining the intended Apple Maps-inspired design */
 
 /* Mobile Close Button Enhancement */
 @media (max-width: 480px) {

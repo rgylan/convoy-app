@@ -7,7 +7,7 @@ This guide explains how to use Caddy with mkcert for local HTTPS development, pr
 ### **Advantages**
 - ✅ **Local certificates**: No external dependencies
 - ✅ **Fast performance**: No internet round-trip
-- ✅ **Stable URLs**: Always `https://192.168.1.14`
+- ✅ **Stable URLs**: Always `https://192.168.1.18`
 - ✅ **HTTPS geolocation**: Works on all mobile browsers
 - ✅ **Production-like**: Matches production environment
 - ✅ **Cross-device**: Desktop and mobile compatibility
@@ -16,7 +16,7 @@ This guide explains how to use Caddy with mkcert for local HTTPS development, pr
 
 ### **Architecture**
 ```
-Mobile Browser → https://192.168.1.14 → Caddy Proxy → Local Services
+Mobile Browser → https://192.168.1.18 → Caddy Proxy → Local Services
                                       ├─ /api/* → Backend (localhost:8080)
                                       ├─ /ws/*  → WebSocket (localhost:8080)
                                       └─ /*     → Frontend (localhost:3000)
@@ -24,9 +24,9 @@ Mobile Browser → https://192.168.1.14 → Caddy Proxy → Local Services
 
 ### **Your Caddyfile Configuration**
 ```caddy
-192.168.1.14:443 {
+192.168.1.18:443 {
     # mkcert certificates
-    tls C:\Users\rgyla\AppData\Local\mkcert\192.168.1.14.pem C:\Users\rgyla\AppData\Local\mkcert\192.168.1.14-key.pem
+    tls C:\Users\rgyla\AppData\Local\mkcert\192.168.1.18.pem C:\Users\rgyla\AppData\Local\mkcert\192.168.1.18-key.pem
     
     # API traffic → Go backend
     handle_path /api* {
@@ -62,8 +62,8 @@ caddy run
 ```
 
 ### **Step 2: Access via HTTPS**
-- **Desktop**: `https://192.168.1.14`
-- **Mobile**: `https://192.168.1.14`
+- **Desktop**: `https://192.168.1.18`
+- **Mobile**: `https://192.168.1.18`
 - **Certificate**: Automatically trusted (mkcert)
 
 ### **Step 3: Test Functionality**
@@ -77,10 +77,10 @@ caddy run
 ### **API Configuration (VConsole)**
 ```javascript
 🌐 API Configuration: {
-  hostname: "192.168.1.14",
+  hostname: "192.168.1.18",
   protocol: "https:",
-  apiBaseUrl: "https://192.168.1.14",        // ← Caddy proxy
-  wsBaseUrl: "wss://192.168.1.14",           // ← Caddy proxy
+  apiBaseUrl: "https://192.168.1.18",        // ← Caddy proxy
+  wsBaseUrl: "wss://192.168.1.18",           // ← Caddy proxy
   isCaddyProxy: true,                        // ← Detected
   detectedSetup: "caddy-proxy"               // ← Setup type
 }
@@ -88,7 +88,7 @@ caddy run
 
 ### **Backend Logs**
 ```
-CORS: Allowed origin https://192.168.1.14 for POST /api/convoys
+CORS: Allowed origin https://192.168.1.18 for POST /api/convoys
 SUCCESS: Convoy created with ID abc123...
 WebSocket connection established for convoy abc123
 ```
@@ -109,7 +109,7 @@ INFO: Proxying /ws/convoys/abc123 to 127.0.0.1:8080
 mkcert -install
 
 # Regenerate certificates
-mkcert 192.168.1.14
+mkcert 192.168.1.18
 ```
 
 ### **Issue: Caddy won't start**
@@ -128,7 +128,7 @@ net stop http
 **Solution**:
 1. Verify backend is running on localhost:8080
 2. Check backend logs for CORS messages
-3. Ensure `https://192.168.1.14` is in CORS allowlist
+3. Ensure `https://192.168.1.18` is in CORS allowlist
 
 ### **Issue: WebSocket connection fails**
 **Cause**: WebSocket proxy configuration
@@ -142,7 +142,7 @@ net stop http
 ### **Setup**
 1. **Connect mobile to same WiFi**: Ensure same network as development machine
 2. **Open browser**: Chrome, Safari, Firefox
-3. **Navigate to**: `https://192.168.1.14`
+3. **Navigate to**: `https://192.168.1.18`
 4. **Accept certificate**: If prompted (should be automatic with mkcert)
 
 ### **Expected Results**
@@ -170,8 +170,8 @@ caddy run             # Proxy
 # 2. Develop normally
 # - Edit code in your IDE
 # - Hot reload works through proxy
-# - Test on desktop: https://192.168.1.14
-# - Test on mobile: https://192.168.1.14
+# - Test on desktop: https://192.168.1.18
+# - Test on mobile: https://192.168.1.18
 
 # 3. Debug with VConsole
 # - Mobile debugging available
@@ -183,10 +183,10 @@ caddy run             # Proxy
 ```bash
 # HTTP-only (simple, no geolocation)
 http://localhost:3000
-http://192.168.1.14:3000
+http://192.168.1.18:3000
 
 # Caddy HTTPS (recommended)
-https://192.168.1.14
+https://192.168.1.18
 
 # ngrok (external sharing)
 https://your-domain.ngrok-free.dev
@@ -201,7 +201,7 @@ https://your-domain.ngrok-free.dev
 - ✅ **Fast iteration**: No external dependencies
 
 ### **Cross-Device Development**
-- ✅ **Team sharing**: Share `https://192.168.1.14` with team
+- ✅ **Team sharing**: Share `https://192.168.1.18` with team
 - ✅ **Multiple devices**: Test on phones, tablets, laptops
 - ✅ **Network independence**: Works on any local network
 - ✅ **Offline capable**: No internet required
@@ -215,9 +215,9 @@ https://your-domain.ngrok-free.dev
 ## 📋 **Quick Reference**
 
 ### **URLs**
-- **Frontend**: `https://192.168.1.14` (Caddy → localhost:3000)
-- **API**: `https://192.168.1.14/api/*` (Caddy → localhost:8080)
-- **WebSocket**: `wss://192.168.1.14/ws/*` (Caddy → localhost:8080)
+- **Frontend**: `https://192.168.1.18` (Caddy → localhost:3000)
+- **API**: `https://192.168.1.18/api/*` (Caddy → localhost:8080)
+- **WebSocket**: `wss://192.168.1.18/ws/*` (Caddy → localhost:8080)
 
 ### **Commands**
 ```bash
@@ -236,7 +236,7 @@ tail -f caddy.log
 
 ### **Files**
 - **Caddyfile**: Proxy configuration
-- **mkcert certs**: `C:\Users\rgyla\AppData\Local\mkcert\192.168.1.14.*`
+- **mkcert certs**: `C:\Users\rgyla\AppData\Local\mkcert\192.168.1.18.*`
 - **Caddy logs**: `C:\Users\rgyla\VSCodeProjects\convoy-app\caddy.log`
 
 This setup provides the perfect balance of simplicity, security, and functionality for your Convoy App development!

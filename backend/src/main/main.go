@@ -49,7 +49,7 @@ func isAllowedOrigin(origin string) bool {
 	}
 
 	// Allow local network IPs on port 3000 (for mobile testing)
-	// This matches patterns like http://192.168.1.14:3000, http://10.0.0.5:3000, etc.
+	// This matches patterns like http://192.168.1.18:3000, http://10.0.0.5:3000, etc.
 	if len(origin) > 7 && origin[:7] == "http://" {
 		// Extract the part after "http://"
 		hostPort := origin[7:]
