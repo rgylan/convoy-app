@@ -276,7 +276,9 @@ const ConvoyMap = () => {
     const memberCount = finalConvoyData?.members?.length || 0;
     // Find the current member to determine if they are the leader
     const currentMember = finalConvoyData?.members?.find(m => m.id.toString() === memberId);
-    const isLeader = currentMember?.name === 'You';
+    // Leader is determined by being the first member (convoy creator)
+    const isLeader = finalConvoyData?.members?.length > 0 &&
+                     finalConvoyData.members[0]?.id.toString() === memberId;
 
     setShowLeaveModal({
       show: true,
@@ -303,7 +305,9 @@ const ConvoyMap = () => {
 
     // Determine if this is the leader or a regular member
     const currentMember = finalConvoyData?.members?.find(m => m.id.toString() === memberId);
-    const isLeader = currentMember?.name === 'You'; // Leaders are named 'You' in this app
+    // Leader is determined by being the first member (convoy creator)
+    const isLeader = finalConvoyData?.members?.length > 0 &&
+                     finalConvoyData.members[0]?.id.toString() === memberId;
 
     console.log('DEBUG: Performing leave convoy:', {
       memberId,

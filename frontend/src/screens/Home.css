@@ -124,6 +124,9 @@
   position: relative;
   animation: contentSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s both;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* Enhanced Glassmorphism Effect for Main Content */
@@ -171,6 +174,92 @@
   letter-spacing: -0.25px;
 }
 
+/* Leader Name Input Section */
+.leader-name-section {
+  margin-bottom: 32px;
+  text-align: left;
+  width: 100%;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.leader-name-label {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1A2C42;
+  margin-bottom: 8px;
+  letter-spacing: -0.25px;
+}
+
+.leader-name-input {
+  width: 100%;
+  padding: 16px 20px;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #1A2C42;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(26, 44, 66, 0.2);
+  border-radius: 12px;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  min-height: 48px; /* Touch target for mobile */
+  box-sizing: border-box;
+}
+
+.leader-name-input:focus {
+  border-color: #1A2C42;
+  box-shadow:
+    0 0 0 3px rgba(26, 44, 66, 0.1),
+    0 4px 12px rgba(0, 0, 0, 0.12),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.98);
+}
+
+.leader-name-input:hover {
+  border-color: rgba(26, 44, 66, 0.3);
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.1),
+    0 2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.leader-name-input:disabled {
+  background: rgba(255, 255, 255, 0.7);
+  color: rgba(26, 44, 66, 0.6);
+  cursor: not-allowed;
+  border-color: rgba(26, 44, 66, 0.15);
+}
+
+.leader-name-input:disabled:hover {
+  border-color: rgba(26, 44, 66, 0.15);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.leader-name-input::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+.name-hint {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 6px;
+  line-height: 1.4;
+  font-weight: 400;
+}
+
 /* Start Convoy Button - Enhanced Glassmorphism */
 .start-convoy-button {
   background: #1A2C42;
@@ -193,6 +282,11 @@
   overflow: hidden;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  align-self: center; /* Center the button within the flex container */
 }
 
 .start-convoy-button::before {
@@ -228,6 +322,52 @@
 .start-convoy-button:focus {
   outline: 2px solid #1A2C42;
   outline-offset: 2px;
+}
+
+.start-convoy-button:disabled {
+  background: rgba(26, 44, 66, 0.5);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow:
+    0 4px 12px rgba(26, 44, 66, 0.15),
+    0 2px 4px rgba(26, 44, 66, 0.1);
+}
+
+.start-convoy-button:disabled:hover {
+  background: rgba(26, 44, 66, 0.5);
+  transform: none;
+  box-shadow:
+    0 4px 12px rgba(26, 44, 66, 0.15),
+    0 2px 4px rgba(26, 44, 66, 0.1);
+}
+
+/* Button Loading Spinner */
+.button-loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.button-loading-spinner .material-icons {
+  font-size: 18px;
+  color: white;
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.button-text {
+  display: flex;
+  align-items: center;
 }
 
 /* Tablet Design (769px - 1024px) */
@@ -296,10 +436,32 @@
     margin-bottom: 28px;
   }
 
+  .leader-name-section {
+    margin-bottom: 28px;
+  }
+
+  .leader-name-label {
+    font-size: 0.95rem;
+  }
+
+  .leader-name-input {
+    padding: 14px 18px;
+    font-size: 1rem;
+    min-height: 46px;
+  }
+
+  .name-hint {
+    font-size: 0.8rem;
+  }
+
   .start-convoy-button {
     padding: 14px 32px;
     font-size: 1.125rem;
     min-width: 160px;
+  }
+
+  .button-loading-spinner .material-icons {
+    font-size: 16px;
   }
 }
 
@@ -346,12 +508,38 @@
     margin-bottom: 24px;
   }
 
+  .leader-name-section {
+    margin-bottom: 24px;
+  }
+
+  .leader-name-label {
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+  }
+
+  .leader-name-input {
+    padding: 16px 18px;
+    font-size: 1rem;
+    min-height: 48px; /* Touch target */
+    border-radius: 10px;
+  }
+
+  .name-hint {
+    font-size: 0.8rem;
+    margin-top: 4px;
+  }
+
   .start-convoy-button {
     padding: 16px 24px;
     font-size: 1rem;
     width: 100%;
     max-width: 280px;
     min-height: 48px; /* Touch target */
+    align-self: center; /* Maintain centering on mobile */
+  }
+
+  .button-loading-spinner .material-icons {
+    font-size: 16px;
   }
 }
 
@@ -385,6 +573,24 @@
     margin-bottom: 20px;
   }
 
+  .leader-name-section {
+    margin-bottom: 20px;
+  }
+
+  .leader-name-label {
+    font-size: 0.85rem;
+  }
+
+  .leader-name-input {
+    padding: 14px 16px;
+    font-size: 0.95rem;
+    min-height: 46px;
+  }
+
+  .name-hint {
+    font-size: 0.75rem;
+  }
+
   .start-convoy-button {
     padding: 14px 20px;
     font-size: 0.95rem;
@@ -398,6 +604,11 @@
     border: 2px solid rgba(255, 255, 255, 0.3);
   }
 
+  .leader-name-input {
+    background: rgba(255, 255, 255, 0.98);
+    border: 2px solid rgba(26, 44, 66, 0.2);
+  }
+
   .home-screen {
     background:
       linear-gradient(135deg, rgba(26, 44, 66, 0.15) 0%, rgba(26, 44, 66, 0.08) 50%, rgba(26, 44, 66, 0.12) 100%);
@@ -408,12 +619,20 @@
   .home-main-content {
     background: rgba(255, 255, 255, 0.98);
   }
+
+  .leader-name-input {
+    background: rgba(255, 255, 255, 0.98);
+  }
 }
 
 /* Enhanced Glassmorphism for Modern Browsers */
 @supports (backdrop-filter: blur(20px)) {
   .home-main-content {
     background: rgba(255, 255, 255, 0.92);
+  }
+
+  .leader-name-input {
+    background: rgba(255, 255, 255, 0.95);
   }
 
   .home-screen {
@@ -430,9 +649,11 @@
   .home-header,
   .home-main-content,
   .home-logo,
-  .start-convoy-button {
-    animation: none;
-    transition: none;
+  .start-convoy-button,
+  .leader-name-input,
+  .button-loading-spinner .material-icons {
+    animation: none !important;
+    transition: none !important;
   }
 
   .start-convoy-button:hover {
@@ -449,6 +670,15 @@
   .home-main-content {
     background: rgba(255, 255, 255, 0.98);
     border: 2px solid #1A2C42;
+  }
+
+  .leader-name-input {
+    background: rgba(255, 255, 255, 0.98);
+    border: 2px solid #1A2C42;
+  }
+
+  .leader-name-label {
+    color: #1A2C42;
   }
 
   .start-convoy-button {

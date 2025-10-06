@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,9 +10,38 @@ import geolocationDebugger from '../utils/geolocationDebugger';
 
 const Home = () => {
   const navigate = useNavigate();
+  const [leaderName, setLeaderName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
+
+  const handleNameChange = (e) => {
+    const value = e.target.value;
+    // Limit to 50 characters to match backend validation
+    if (value.length <= 50) {
+      setLeaderName(value);
+      setHasUserInteracted(true);
+    }
+  };
+
+  const handleNameFocus = () => {
+    // Auto-clear default "You" text on first focus if user hasn't interacted yet
+    if (!hasUserInteracted && leaderName === '') {
+      // Field is already empty, just mark as interacted
+      setHasUserInteracted(true);
+    }
+  };
 
   const handleStartConvoy = async () => {
-    mobileLog.interaction('start-convoy-button', 'click', { timestamp: new Date().toISOString() });
+    // Validate name input - use "You" as fallback if empty
+    const trimmedName = leaderName.trim() || 'You';
+
+    // Set loading state
+    setIsLoading(true);
+
+    mobileLog.interaction('start-convoy-button', 'click', {
+      timestamp: new Date().toISOString(),
+      leaderName: trimmedName
+    });
 
     try {
       mobileLog.info('Starting convoy creation process...');
@@ -54,7 +83,7 @@ const Home = () => {
             });
 
             const leader = {
-              name: 'You',
+              name: trimmedName,
               location: { lat: latitude, lng: longitude },
             };
 
@@ -81,6 +110,7 @@ const Home = () => {
 
             // Navigate to the convoy map after successfully adding leader
             mobileLog.info(`Navigating to convoy map: /convoy/${convoyId}`);
+            setIsLoading(false);
             navigate(`/convoy/${convoyId}`);
           },
           (error) => {
@@ -126,6 +156,7 @@ const Home = () => {
 
             // Even if location fails, navigate to convoy, but leader won't be on map initially
             mobileLog.warn('Navigating to convoy without leader location');
+            setIsLoading(false);
             navigate(`/convoy/${convoyId}`);
           },
           geoOptions // Pass the geolocation options
@@ -135,6 +166,7 @@ const Home = () => {
         alert('Geolocation is not supported by your browser. Cannot add leader with location.');
         // Navigate to convoy, but leader won't be on map initially
         mobileLog.warn('Navigating to convoy without geolocation support');
+        setIsLoading(false);
         navigate(`/convoy/${convoyId}`);
       }
     } catch (error) {
@@ -145,6 +177,7 @@ const Home = () => {
         timestamp: new Date().toISOString()
       });
       showErrorToast(`Failed to start convoy: ${error.message}`);
+      setIsLoading(false);
     }
   };
 
@@ -181,6 +214,29 @@ const Home = () => {
         <p className="slogan">
           Create a new convoy and invite your friends to share your journey in real-time.
         </p>
+
+        <div className="leader-name-section">
+          <label htmlFor="leader-name-input" className="leader-name-label">
+            Your Name
+          </label>
+          <input
+            id="leader-name-input"
+            type="text"
+            value={leaderName}
+            onChange={handleNameChange}
+            onFocus={handleNameFocus}
+            placeholder="Enter your name (defaults to 'You')"
+            className="leader-name-input"
+            aria-label="Enter your name for the convoy"
+            aria-describedby="name-hint"
+            maxLength={50}
+            disabled={isLoading}
+          />
+          <div id="name-hint" className="name-hint">
+            This name will be visible to other convoy members
+          </div>
+        </div>
+
         <button
           className="start-convoy-button"
           onClick={handleStartConvoy}
@@ -191,9 +247,20 @@ const Home = () => {
             }
           }}
           aria-label="Start a new convoy and begin location sharing"
+          aria-busy={isLoading}
           type="button"
+          disabled={isLoading}
         >
-          Start New Convoy
+          <span className="button-text">Start New Convoy</span>
+          {isLoading && (
+            <div
+              className="button-loading-spinner"
+              aria-label="Creating convoy"
+              role="status"
+            >
+              <span className="material-icons">refresh</span>
+            </div>
+          )}
         </button>
       </main>
       <ToastContainer

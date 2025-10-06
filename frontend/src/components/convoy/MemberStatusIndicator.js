@@ -58,10 +58,6 @@ const MemberStatusIndicator = ({
 
   // Visual-only tooltip variant (for permanent status display)
   if (variant === 'visual-only-tooltip') {
-    // Determine if this is the leader (current user) - for display name only
-    const isLeader = member.name === 'You';
-    const displayName = isLeader ? 'You' : member.name;
-
     return (
       <div
         className={`member-status-visual-tooltip ${className}`}
@@ -69,7 +65,7 @@ const MemberStatusIndicator = ({
         data-status={member.status}
       >
         <span className="member-visual-status-icon">{statusInfo.icon}</span>
-        <span className="member-visual-name">{displayName}</span>
+        <span className="member-visual-name">{member.name}</span>
       </div>
     );
   }
