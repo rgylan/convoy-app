@@ -1,0 +1,68 @@
+# Caddyfile for ngrok tunneling
+# This configuration serves both frontend and backend through a single port (8000)
+# for ngrok to tunnel to the internet
+
+:8000 {
+	# Enable logging for debugging
+	log {
+		#output file {env.USERPROFILE}\VSCodeProjects\convoy-app\caddy-ngrok.log
+		output file C:\sandbox\services\VSCodeProjects\convoy-app\caddy-ngrok.log
+		level INFO
+		format console
+	}
+
+	# Proxy API requests to Go backend
+	handle /api* {
+		reverse_proxy localhost:8080 {
+			# Preserve original headers for ngrok
+			header_up Host {host}
+			header_up X-Real-IP {remote_host}
+			header_up X-Forwarded-For {remote_host}
+
+			# Critical: Set X-Forwarded-Proto to https for ngrok
+			# ngrok sends HTTPS requests, but Caddy receives HTTP on port 8000
+			header_up X-Forwarded-Proto https
+		}
+	}
+
+	# Proxy WebSocket connections to Go backend
+	handle /ws* {
+		reverse_proxy localhost:8080 {
+			# Preserve original headers for ngrok
+			header_up Host {host}
+			header_up X-Real-IP {remote_host}
+			header_up X-Forwarded-For {remote_host}
+
+			# Critical: Set X-Forwarded-Proto to https for ngrok
+			# ngrok sends HTTPS requests, but Caddy receives HTTP on port 8000
+			header_up X-Forwarded-Proto https
+
+			# WebSocket upgrade headers - pass through from client
+			header_up Connection {http.request.header.Connection}
+			header_up Upgrade {http.request.header.Upgrade}
+			header_up Sec-WebSocket-Key {http.request.header.Sec-WebSocket-Key}
+			header_up Sec-WebSocket-Version {http.request.header.Sec-WebSocket-Version}
+			header_up Sec-WebSocket-Extensions {http.request.header.Sec-WebSocket-Extensions}
+			header_up Sec-WebSocket-Protocol {http.request.header.Sec-WebSocket-Protocol}
+		}
+	}
+
+	# Serve production build of React app
+	# This serves the static files from frontend/build directory
+	handle {
+		#root * {env.USERPROFILE}\VSCodeProjects\convoy-app\frontend\build
+		root * C:\sandbox\services\VSCodeProjects\convoy-app\frontend\build
+		try_files {path} /index.html
+		file_server
+		
+		# Enable compression for better performance
+		encode gzip zstd
+		
+		# Cache static assets
+		@static {
+			path *.js *.css *.png *.jpg *.jpeg *.gif *.ico *.svg *.woff *.woff2
+		}
+		header @static Cache-Control "public, max-age=31536000, immutable"
+	}
+}
+
