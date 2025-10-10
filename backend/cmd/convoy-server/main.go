@@ -58,6 +58,53 @@ func isAllowedOrigin(origin string) bool {
 		return true
 	}
 
+	// Allow ngrok domains (for internet access)
+	// Check for ngrok-free.app, ngrok-free.dev, ngrok.app, or ngrok.io domains
+	if len(origin) > 8 && origin[:8] == "https://" {
+		hostname := origin[8:]
+		// Remove port if present
+		if colonIdx := len(hostname) - 1; colonIdx > 0 {
+			for i := len(hostname) - 1; i >= 0; i-- {
+				if hostname[i] == ':' {
+					hostname = hostname[:i]
+					break
+				}
+				if hostname[i] == '/' {
+					break
+				}
+			}
+		}
+
+		// Allow *.ngrok-free.dev (current free tier domain) - 15 characters
+		if len(hostname) > 15 && hostname[len(hostname)-15:] == ".ngrok-free.dev" {
+			log.Printf("CORS: Allowing ngrok free domain (.ngrok-free.dev): %s", origin)
+			return true
+		}
+		// Allow *.ngrok-free.app (older free tier domain) - 15 characters
+		if len(hostname) > 15 && hostname[len(hostname)-15:] == ".ngrok-free.app" {
+			log.Printf("CORS: Allowing ngrok free domain (.ngrok-free.app): %s", origin)
+			return true
+		}
+		// Allow *.ngrok.app (paid tier domain) - 10 characters
+		if len(hostname) > 10 && hostname[len(hostname)-10:] == ".ngrok.app" {
+			log.Printf("CORS: Allowing ngrok paid domain (.ngrok.app): %s", origin)
+			return true
+		}
+		// Allow *.ngrok.io (legacy domain) - 9 characters
+		if len(hostname) > 9 && hostname[len(hostname)-9:] == ".ngrok.io" {
+			log.Printf("CORS: Allowing ngrok legacy domain (.ngrok.io): %s", origin)
+			return true
+		}
+	}
+
+	// Allow custom origin from environment variable (for production or custom setups)
+	if customOrigin := os.Getenv("ALLOWED_ORIGIN"); customOrigin != "" {
+		if origin == customOrigin {
+			log.Printf("CORS: Allowing custom origin from env: %s", origin)
+			return true
+		}
+	}
+
 	// Allow local network IPs on port 3000 (for mobile testing)
 	// This matches patterns like http://192.168.1.18:3000, http://10.0.0.5:3000, etc.
 	if len(origin) > 7 && origin[:7] == "http://" {

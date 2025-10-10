@@ -17,14 +17,17 @@ const getApiBaseUrl = () => {
     return 'http://localhost:8080';
   }
 
-  // If we're accessing via Caddy proxy (HTTPS on IP), use same origin for API
-  // Caddy will proxy /api/* requests to the backend
-  if (protocol === 'https:' && hostname.match(/^\d+\.\d+\.\d+\.\d+$/)) {
-    console.log('🔧 [CADDY] Detected Caddy HTTPS proxy setup');
+  // If we're accessing via HTTPS (Caddy proxy, ngrok, or production), use same origin
+  // This covers:
+  // - Caddy HTTPS proxy (https://192.168.1.18)
+  // - ngrok tunnels (https://xyz.ngrok-free.app or https://xyz.ngrok.app)
+  // - Production domains (https://convoy.com.ph)
+  if (protocol === 'https:') {
+    console.log('🔧 [HTTPS] Detected HTTPS setup - using same origin for API');
     return `${protocol}//${hostname}`;
   }
 
-  // If we're on an IP address (mobile testing), use the same IP for API
+  // If we're on an IP address (mobile testing without HTTPS), use the same IP for API
   return `http://${hostname}:8080`;
 };
 
@@ -43,14 +46,17 @@ const getWsBaseUrl = () => {
     return 'ws://localhost:8080';
   }
 
-  // If we're accessing via Caddy proxy (HTTPS on IP), use WSS with same origin
-  // Caddy will proxy /ws/* requests to the backend
-  if (protocol === 'https:' && hostname.match(/^\d+\.\d+\.\d+\.\d+$/)) {
-    console.log('🔧 [CADDY] Detected Caddy HTTPS proxy setup for WebSocket');
+  // If we're accessing via HTTPS (Caddy proxy, ngrok, or production), use WSS with same origin
+  // This covers:
+  // - Caddy HTTPS proxy (https://192.168.1.18)
+  // - ngrok tunnels (https://xyz.ngrok-free.app or https://xyz.ngrok.app)
+  // - Production domains (https://convoy.com.ph)
+  if (protocol === 'https:') {
+    console.log('🔧 [HTTPS] Detected HTTPS setup - using WSS for WebSocket');
     return `wss://${hostname}`;
   }
 
-  // If we're on an IP address (mobile testing), use the same IP for WebSocket
+  // If we're on an IP address (mobile testing without HTTPS), use the same IP for WebSocket
   return `ws://${hostname}:8080`;
 };
 
@@ -64,9 +70,17 @@ console.log('🌐 API Configuration:', {
   apiBaseUrl: API_BASE_URL,
   wsBaseUrl: WS_BASE_URL,
   detectedSetup: (() => {
-    if (window.location.hostname === 'localhost') return 'localhost-dev';
-    if (window.location.protocol === 'https:' && window.location.hostname.match(/^\d+\.\d+\.\d+\.\d+$/)) return 'caddy-proxy';
-    return 'ip-direct';
+    const hostname = window.location.hostname;
+    const protocol = window.location.protocol;
+
+    if (hostname === 'localhost' || hostname === '127.0.0.1') return 'localhost-dev';
+    if (protocol === 'https:') {
+      // Detect specific HTTPS setups
+      if (hostname.match(/^\d+\.\d+\.\d+\.\d+$/)) return 'caddy-local-https';
+      if (hostname.includes('ngrok')) return 'ngrok-tunnel';
+      return 'https-proxy';
+    }
+    return 'http-direct';
   })()
 });
 
