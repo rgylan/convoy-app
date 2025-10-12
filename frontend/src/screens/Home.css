@@ -8,11 +8,11 @@
   justify-content: center;
   min-height: 100vh;
   background:
-    linear-gradient(135deg, rgba(26, 44, 66, 0.12) 0%, rgba(26, 44, 66, 0.06) 50%, rgba(26, 44, 66, 0.08) 100%),
-    radial-gradient(circle at 30% 20%, rgba(26, 44, 66, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 70% 80%, rgba(26, 44, 66, 0.08) 0%, transparent 50%);
+    linear-gradient(135deg, rgba(46, 134, 222, 0.12) 0%, rgba(46, 134, 222, 0.06) 50%, rgba(46, 134, 222, 0.08) 100%),
+    radial-gradient(circle at 30% 20%, rgba(46, 134, 222, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 70% 80%, rgba(46, 134, 222, 0.08) 0%, transparent 50%);
   backdrop-filter: blur(12px);
-  color: #1A2C42;
+  color: #2E86DE;
   font-family: 'Poppins', 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
   padding: 20px;
   animation: pageLoad 0.6s cubic-bezier(0.4, 0, 0.2, 1);
@@ -78,9 +78,9 @@
   height: 150px;
   margin-bottom: 24px;
   border-radius: 25%;
-  box-shadow: 
-    0 20px 40px rgba(26, 44, 66, 0.15),
-    0 8px 16px rgba(26, 44, 66, 0.1),
+  box-shadow:
+    0 20px 40px rgba(46, 134, 222, 0.15),
+    0 8px 16px rgba(46, 134, 222, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
   filter: brightness(1.1);
   backdrop-filter: blur(4px);
@@ -89,16 +89,16 @@
 
 .home-logo:hover {
   transform: scale(1.05);
-  box-shadow: 
-    0 24px 48px rgba(26, 44, 66, 0.2),
-    0 12px 20px rgba(26, 44, 66, 0.15),
+  box-shadow:
+    0 24px 48px rgba(46, 134, 222, 0.2),
+    0 12px 20px rgba(46, 134, 222, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 .home-header h1 {
   font-size: 3.5rem;
   font-weight: 600;
-  color: #1A2C42;
+  color: #2E86DE;
   margin: 0;
   letter-spacing: -0.5px;
   text-align: center;
@@ -188,7 +188,7 @@
   display: block;
   font-size: 1rem;
   font-weight: 600;
-  color: #1A2C42;
+  color: #2E86DE;
   margin-bottom: 8px;
   letter-spacing: -0.25px;
 }
@@ -198,11 +198,11 @@
   padding: 16px 20px;
   font-size: 1rem;
   font-weight: 400;
-  color: #1A2C42;
+  color: #2E86DE;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(26, 44, 66, 0.2);
+  border: 1px solid rgba(46, 134, 222, 0.2);
   border-radius: 12px;
   box-shadow:
     0 4px 12px rgba(0, 0, 0, 0.08),
@@ -215,9 +215,9 @@
 }
 
 .leader-name-input:focus {
-  border-color: #1A2C42;
+  border-color: #54A0FF;
   box-shadow:
-    0 0 0 3px rgba(26, 44, 66, 0.1),
+    0 0 0 3px rgba(84, 160, 255, 0.1),
     0 4px 12px rgba(0, 0, 0, 0.12),
     0 2px 4px rgba(0, 0, 0, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
@@ -225,12 +225,12 @@
 }
 
 .leader-name-input:focus-visible {
-  outline: 2px solid #1A2C42;
+  outline: 2px solid #54A0FF;
   outline-offset: 2px;
 }
 
 .leader-name-input:hover {
-  border-color: rgba(26, 44, 66, 0.3);
+  border-color: rgba(46, 134, 222, 0.3);
   box-shadow:
     0 6px 16px rgba(0, 0, 0, 0.1),
     0 2px 4px rgba(0, 0, 0, 0.06),
@@ -239,13 +239,13 @@
 
 .leader-name-input:disabled {
   background: rgba(255, 255, 255, 0.7);
-  color: rgba(26, 44, 66, 0.6);
+  color: rgba(46, 134, 222, 0.6);
   cursor: not-allowed;
-  border-color: rgba(26, 44, 66, 0.15);
+  border-color: rgba(46, 134, 222, 0.15);
 }
 
 .leader-name-input:disabled:hover {
-  border-color: rgba(26, 44, 66, 0.15);
+  border-color: rgba(46, 134, 222, 0.15);
   box-shadow:
     0 4px 12px rgba(0, 0, 0, 0.08),
     0 2px 4px rgba(0, 0, 0, 0.04),
@@ -267,7 +267,7 @@
 
 /* Start Convoy Button - Enhanced Glassmorphism */
 .start-convoy-button {
-  background: #1A2C42;
+  background: #2E86DE;
   color: white;
   border: none;
   border-radius: 16px;
@@ -278,8 +278,8 @@
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow:
-    0 8px 20px rgba(26, 44, 66, 0.25),
-    0 4px 8px rgba(26, 44, 66, 0.15),
+    0 8px 20px rgba(46, 134, 222, 0.25),
+    0 4px 8px rgba(46, 134, 222, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.2),
     inset 0 -1px 0 rgba(0, 0, 0, 0.1);
   min-width: 200px;
@@ -306,11 +306,11 @@
 }
 
 .start-convoy-button:hover {
-  background: rgba(26, 44, 66, 0.9);
+  background: rgba(46, 134, 222, 0.9);
   transform: translateY(-2px) scale(1.02);
-  box-shadow: 
-    0 12px 28px rgba(26, 44, 66, 0.35),
-    0 6px 12px rgba(26, 44, 66, 0.25);
+  box-shadow:
+    0 12px 28px rgba(46, 134, 222, 0.35),
+    0 6px 12px rgba(46, 134, 222, 0.25);
 }
 
 .start-convoy-button:hover::before {
@@ -319,36 +319,36 @@
 
 .start-convoy-button:active {
   transform: translateY(-1px) scale(1.01);
-  box-shadow: 
-    0 8px 20px rgba(26, 44, 66, 0.25),
-    0 4px 8px rgba(26, 44, 66, 0.15);
+  box-shadow:
+    0 8px 20px rgba(46, 134, 222, 0.25),
+    0 4px 8px rgba(46, 134, 222, 0.15);
 }
 
 .start-convoy-button:focus {
-  outline: 2px solid #1A2C42;
+  outline: 2px solid #54A0FF;
   outline-offset: 2px;
 }
 
 .start-convoy-button:focus-visible {
-  outline: 2px solid #1A2C42;
+  outline: 2px solid #54A0FF;
   outline-offset: 2px;
 }
 
 .start-convoy-button:disabled {
-  background: rgba(26, 44, 66, 0.5);
+  background: rgba(46, 134, 222, 0.5);
   cursor: not-allowed;
   transform: none;
   box-shadow:
-    0 4px 12px rgba(26, 44, 66, 0.15),
-    0 2px 4px rgba(26, 44, 66, 0.1);
+    0 4px 12px rgba(46, 134, 222, 0.15),
+    0 2px 4px rgba(46, 134, 222, 0.1);
 }
 
 .start-convoy-button:disabled:hover {
-  background: rgba(26, 44, 66, 0.5);
+  background: rgba(46, 134, 222, 0.5);
   transform: none;
   box-shadow:
-    0 4px 12px rgba(26, 44, 66, 0.15),
-    0 2px 4px rgba(26, 44, 66, 0.1);
+    0 4px 12px rgba(46, 134, 222, 0.15),
+    0 2px 4px rgba(46, 134, 222, 0.1);
 }
 
 /* Button Loading Spinner */
@@ -616,12 +616,12 @@
 
   .leader-name-input {
     background: rgba(255, 255, 255, 0.98);
-    border: 2px solid rgba(26, 44, 66, 0.2);
+    border: 2px solid rgba(46, 134, 222, 0.2);
   }
 
   .home-screen {
     background:
-      linear-gradient(135deg, rgba(26, 44, 66, 0.15) 0%, rgba(26, 44, 66, 0.08) 50%, rgba(26, 44, 66, 0.12) 100%);
+      linear-gradient(135deg, rgba(46, 134, 222, 0.15) 0%, rgba(46, 134, 222, 0.08) 50%, rgba(46, 134, 222, 0.12) 100%);
   }
 }
 
@@ -647,9 +647,9 @@
 
   .home-screen {
     background:
-      linear-gradient(135deg, rgba(26, 44, 66, 0.12) 0%, rgba(26, 44, 66, 0.06) 50%, rgba(26, 44, 66, 0.08) 100%),
-      radial-gradient(circle at 30% 20%, rgba(26, 44, 66, 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 70% 80%, rgba(26, 44, 66, 0.08) 0%, transparent 50%);
+      linear-gradient(135deg, rgba(46, 134, 222, 0.12) 0%, rgba(46, 134, 222, 0.06) 50%, rgba(46, 134, 222, 0.08) 100%),
+      radial-gradient(circle at 30% 20%, rgba(46, 134, 222, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 70% 80%, rgba(46, 134, 222, 0.08) 0%, transparent 50%);
   }
 }
 
@@ -679,24 +679,24 @@
 @media (prefers-contrast: high) {
   .home-main-content {
     background: rgba(255, 255, 255, 0.98);
-    border: 2px solid #1A2C42;
+    border: 2px solid #2E86DE;
   }
 
   .leader-name-input {
     background: rgba(255, 255, 255, 0.98);
-    border: 2px solid #1A2C42;
+    border: 2px solid #2E86DE;
   }
 
   .leader-name-label {
-    color: #1A2C42;
+    color: #2E86DE;
   }
 
   .start-convoy-button {
-    border: 2px solid #1A2C42;
+    border: 2px solid #2E86DE;
   }
 
   .slogan {
-    color: #1A2C42;
+    color: #2E86DE;
   }
 }
 

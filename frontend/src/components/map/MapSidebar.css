@@ -52,8 +52,8 @@
 }
 
 .sidebar-button.active {
-  background: #1A2C42;
-  box-shadow: 0 2px 8px rgba(26, 44, 66, 0.3);
+  background: #2E86DE;
+  box-shadow: 0 2px 8px rgba(46, 134, 222, 0.3);
 }
 
 .sidebar-button.active .button-icon {
@@ -71,7 +71,7 @@
 
 .button-icon {
   font-size: 20px !important;
-  color: #1A2C42; /* Convoy App primary color */
+  color: #2E86DE; /* Convoy App primary color */
   transition: color 0.2s ease;
 }
 
@@ -154,7 +154,7 @@
 
 .sidebar-toggle .material-icons {
   font-size: 20px !important;
-  color: #1A2C42;
+  color: #2E86DE;
 }
 
 .sidebar-toggle:hover {

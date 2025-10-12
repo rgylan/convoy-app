@@ -65,7 +65,7 @@
   margin: 0;
   font-size: 22px;
   font-weight: 600;
-  color: #1A2C42;
+  color: #2E86DE;
   letter-spacing: -0.5px;
 }
 
@@ -77,12 +77,12 @@
 
 .share-modal-title .material-icons {
   font-size: 22px;
-  color: #1A2C42;
+  color: #2E86DE;
 }
 
 /* Standard Close Button */
 .standard-close-button {
-  background: rgba(26, 44, 66, 0.1);
+  background: rgba(46, 134, 222, 0.1);
   border: none;
   border-radius: 50%;
   width: 32px;
@@ -96,23 +96,23 @@
 }
 
 .standard-close-button:hover {
-  background: rgba(26, 44, 66, 0.15);
+  background: rgba(46, 134, 222, 0.15);
   transform: scale(1.05);
 }
 
 .standard-close-button .material-icons {
   font-size: 18px;
-  color: #1A2C42;
+  color: #2E86DE;
 }
 
 .standard-close-button:focus {
-  outline: 2px solid #1A2C42;
+  outline: 2px solid #54A0FF;
   outline-offset: 2px;
 }
 
 /* Modal Description */
 .share-modal-content > p {
-  color: rgba(26, 44, 66, 0.7);
+  color: rgba(46, 134, 222, 0.7);
   margin: 0 24px 24px 24px;
   font-size: 15px;
   line-height: 1.5;
@@ -136,7 +136,7 @@
 .qr-code-container {
   padding: 16px;
   background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(26, 44, 66, 0.1);
+  border: 1px solid rgba(46, 134, 222, 0.1);
   border-radius: 16px;
   box-shadow:
     0 4px 12px rgba(0, 0, 0, 0.08),
@@ -153,7 +153,7 @@
 .link-label {
   font-size: 14px;
   font-weight: 600;
-  color: #1A2C42;
+  color: #2E86DE;
   margin-bottom: 6px;
   text-align: center;
 }
@@ -163,7 +163,7 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(26, 44, 66, 0.15);
+  border: 1px solid rgba(46, 134, 222, 0.15);
 }
 
 .share-link-input {
@@ -172,7 +172,7 @@
   border: none;
   background: rgba(255, 255, 255, 0.8);
   font-size: 14px;
-  color: #1A2C42;
+  color: #2E86DE;
   font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif;
   outline: none;
   cursor: text;
@@ -189,7 +189,7 @@
   gap: 8px;
   padding: 14px 20px;
   border: none;
-  background: #1A2C42;
+  background: #2E86DE;
   color: white;
   cursor: pointer;
   font-size: 14px;
@@ -282,7 +282,7 @@
   display: flex;
   justify-content: center;
   padding-top: 12px;
-  border-top: 1px solid rgba(26, 44, 66, 0.1);
+  border-top: 1px solid rgba(46, 134, 222, 0.1);
 }
 
 .native-share-button {
@@ -290,8 +290,8 @@
   align-items: center;
   gap: 10px;
   padding: 14px 28px;
-  border: 1px solid #1A2C42;
-  background: #1A2C42;
+  border: 1px solid #2E86DE;
+  background: #2E86DE;
   color: white;
   border-radius: 12px;
   cursor: pointer;
@@ -300,14 +300,14 @@
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   min-width: 140px;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(26, 44, 66, 0.2);
+  box-shadow: 0 2px 8px rgba(46, 134, 222, 0.2);
 }
 
 .native-share-button:hover {
   background: #2A3C52;
   border-color: #2A3C52;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(26, 44, 66, 0.3);
+  box-shadow: 0 4px 12px rgba(46, 134, 222, 0.3);
 }
 
 .native-share-button .material-icons {
@@ -319,15 +319,15 @@
   padding: 24px;
   display: flex;
   justify-content: center;
-  border-top: 1px solid rgba(26, 44, 66, 0.1);
+  border-top: 1px solid rgba(46, 134, 222, 0.1);
   margin-top: 24px;
 }
 
 .done-button {
   padding: 12px 32px;
   border: none;
-  background: rgba(26, 44, 66, 0.1);
-  color: #1A2C42;
+  background: rgba(46, 134, 222, 0.1);
+  color: #2E86DE;
   border-radius: 12px;
   cursor: pointer;
   font-size: 16px;
@@ -337,7 +337,7 @@
 }
 
 .done-button:hover {
-  background: rgba(26, 44, 66, 0.15);
+  background: rgba(46, 134, 222, 0.15);
   transform: translateY(-1px);
 }
 
@@ -501,11 +501,11 @@
 .copy-button:focus,
 .done-button:focus,
 .native-share-button:focus {
-  outline: 2px solid #1A2C42;
+  outline: 2px solid #54A0FF;
   outline-offset: 2px;
 }
 
 .share-link-input:focus {
-  outline: 2px solid #1A2C42;
+  outline: 2px solid #54A0FF;
   outline-offset: -2px;
 }

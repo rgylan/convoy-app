@@ -94,7 +94,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 24px 24px 16px 24px;
-  border-bottom: 1px solid rgba(26, 44, 66, 0.08);
+  border-bottom: 1px solid rgba(46, 134, 222, 0.08);
   flex-shrink: 0;
   animation: headerFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;
 }
@@ -116,13 +116,13 @@
   gap: 10px;
   font-size: 18px;
   font-weight: 600;
-  color: #1A2C42;
+  color: #2E86DE;
   letter-spacing: -0.5px;
 }
 
 .status-panel-title .material-icons {
   font-size: 22px;
-  color: #1A2C42;
+  color: #2E86DE;
 }
 
 .status-panel-header-actions {
@@ -159,7 +159,7 @@
 
 /* Standard Close Button */
 .standard-close-button {
-  background: rgba(26, 44, 66, 0.1);
+  background: rgba(46, 134, 222, 0.1);
   border: none;
   border-radius: 50%;
   width: 32px;
@@ -173,24 +173,24 @@
 }
 
 .standard-close-button:hover {
-  background: rgba(26, 44, 66, 0.15);
+  background: rgba(46, 134, 222, 0.15);
   transform: scale(1.05);
 }
 
 .standard-close-button .material-icons {
   font-size: 18px;
-  color: #1A2C42;
+  color: #2E86DE;
 }
 
 .standard-close-button:focus {
-  outline: 2px solid #1A2C42;
+  outline: 2px solid #54A0FF;
   outline-offset: 2px;
 }
 
 /* Main status indicator */
 .status-panel-main {
   padding: 20px 24px;
-  border-bottom: 1px solid rgba(26, 44, 66, 0.08);
+  border-bottom: 1px solid rgba(46, 134, 222, 0.08);
   flex-shrink: 0;
   animation: mainFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both;
 }
@@ -233,7 +233,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 14px;
   padding: 20px 24px;
-  border-bottom: 1px solid rgba(26, 44, 66, 0.08);
+  border-bottom: 1px solid rgba(46, 134, 222, 0.08);
   animation: metricsFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both;
 }
 
@@ -262,7 +262,7 @@
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow:
-    0 4px 12px rgba(26, 44, 66, 0.08),
+    0 4px 12px rgba(46, 134, 222, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
@@ -270,7 +270,7 @@
   background: rgba(255, 255, 255, 0.8);
   transform: translateY(-2px) scale(1.02);
   box-shadow:
-    0 6px 16px rgba(26, 44, 66, 0.12),
+    0 6px 16px rgba(46, 134, 222, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
@@ -286,7 +286,7 @@
 .status-panel-metric-value {
   font-size: 22px;
   font-weight: 700;
-  color: #1A2C42;
+  color: #2E86DE;
   letter-spacing: -0.25px;
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -373,7 +373,7 @@
   font-size: 14px;
   color: #6b7280;
   padding: 16px 24px 24px;
-  border-top: 1px solid rgba(26, 44, 66, 0.08);
+  border-top: 1px solid rgba(46, 134, 222, 0.08);
   font-weight: 500;
   letter-spacing: -0.25px;
   animation: summaryFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.5s both;
@@ -427,7 +427,7 @@
 /* Enhanced Scrollbar Styling */
 .status-panel {
   scrollbar-width: thin;
-  scrollbar-color: rgba(26, 44, 66, 0.2) transparent;
+  scrollbar-color: rgba(46, 134, 222, 0.2) transparent;
 }
 
 .status-panel::-webkit-scrollbar {
@@ -440,13 +440,13 @@
 }
 
 .status-panel::-webkit-scrollbar-thumb {
-  background: rgba(26, 44, 66, 0.2);
+  background: rgba(46, 134, 222, 0.2);
   border-radius: 3px;
   transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .status-panel::-webkit-scrollbar-thumb:hover {
-  background: rgba(26, 44, 66, 0.35);
+  background: rgba(46, 134, 222, 0.35);
 }
 
 /* Accessibility Enhancements */
@@ -479,11 +479,11 @@
 @media (prefers-contrast: high) {
   .status-panel {
     background: rgba(255, 255, 255, 0.98);
-    border: 2px solid #1A2C42;
+    border: 2px solid #2E86DE;
   }
 
   .status-panel-metric {
-    border: 2px solid #1A2C42;
+    border: 2px solid #2E86DE;
   }
 
   .status-panel-destination {

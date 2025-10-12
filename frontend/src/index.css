@@ -36,7 +36,7 @@ html, body {
 
 /* Improve focus states for accessibility */
 button:focus, input:focus, select:focus, textarea:focus {
-  outline: 2px solid #63A4FF;
+  outline: 2px solid #54A0FF;
   outline-offset: 2px;
 }
 
@@ -57,6 +57,6 @@ html {
 
 /* Improve tap highlighting on mobile */
 button, .clickable {
-  -webkit-tap-highlight-color: rgba(99, 164, 255, 0.3);
-  tap-highlight-color: rgba(99, 164, 255, 0.3);
+  -webkit-tap-highlight-color: rgba(84, 160, 255, 0.3);
+  tap-highlight-color: rgba(84, 160, 255, 0.3);
 }

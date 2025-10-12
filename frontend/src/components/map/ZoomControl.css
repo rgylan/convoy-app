@@ -22,7 +22,7 @@
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(10px);
   border: none;
-  color: #1A2C42;
+  color: #2E86DE;
   font-size: 18px;
   font-weight: 600;
   width: 44px;
@@ -38,8 +38,8 @@
 }
 
 .leaflet-control-zoom a:hover {
-  background: rgba(26, 44, 66, 0.1);
-  color: #1A2C42;
+  background: rgba(46, 134, 222, 0.1);
+  color: #2E86DE;
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
