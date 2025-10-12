@@ -1,8 +1,9 @@
 import React from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Tooltip } from 'react-leaflet';
+import { MapContainer, Marker, Popup, Tooltip } from 'react-leaflet';
 import { Icon } from 'leaflet';
 import MapSidebar from './MapSidebar';
 import ZoomControl from './ZoomControl';
+import OpenFreeMapLayer from './OpenFreeMapLayer';
 
 import LocationStatusControl from './LocationStatusControl';
 import MemberStatusIndicator from '../convoy/MemberStatusIndicator';
@@ -129,9 +130,10 @@ const MapComponent = ({
         className="map-container"
         zoomControl={false} // Disable default zoom control
       >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        {/* OpenFreeMap vector tiles using MapLibre GL */}
+        <OpenFreeMapLayer
+          mapStyle="liberty"
+          attribution='OpenFreeMap © OpenMapTiles Data from OpenStreetMap'
         />
 
         {/* Custom zoom control positioned at bottom-left */}
