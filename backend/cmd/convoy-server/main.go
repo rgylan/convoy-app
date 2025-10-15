@@ -49,7 +49,9 @@ func isAllowedOrigin(origin string) bool {
 
 	// Allow localhost development (both HTTP and HTTPS)
 	if origin == "http://localhost:3000" || origin == "http://127.0.0.1:3000" ||
-		origin == "https://localhost:3000" || origin == "https://127.0.0.1:3000" {
+		origin == "https://localhost:3000" || origin == "https://127.0.0.1:3000" ||
+		origin == "http://localhost:8000" || origin == "http://127.0.0.1:8000" ||
+		origin == "https://localhost:8000" || origin == "https://127.0.0.1:8000" {
 		return true
 	}
 
