@@ -217,50 +217,60 @@
   top: 8px;
   right: 8px;
   z-index: 10;
-  background: rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(46, 134, 222, 0.1);
+  border: none;
+  border-radius: 50%;
   backdrop-filter: blur(4px);
-  width: 28px;
-  height: 28px;
-  opacity: 0.75;
-  transition: all 0.2s ease;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
 }
 
 .alert-close--floating:hover {
-  opacity: 1;
-  background: rgba(0, 0, 0, 0.12);
+  background: rgba(46, 134, 222, 0.15);
   transform: scale(1.05);
 }
 
+.alert-close--floating:focus {
+  outline: 2px solid #54A0FF;
+  outline-offset: 2px;
+}
+
 .alert-close--floating .material-icons {
-  font-size: 16px;
+  font-size: 18px;
+  color: #2E86DE;
 }
 
 /* Mobile: Scale up for touch targets */
 @media (max-width: 768px) {
   .alert-close--floating {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     top: 6px;
     right: 6px;
   }
 
   .alert-close--floating .material-icons {
-    font-size: 18px;
+    font-size: 20px;
   }
 }
 
-/* Very small mobile: Minimum viable size */
+/* Very small mobile: Maintain minimum touch target */
 @media (max-width: 480px) {
   .alert-close--floating {
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
     top: 5px;
     right: 5px;
   }
 
   .alert-close--floating .material-icons {
-    font-size: 17px;
+    font-size: 20px;
   }
 }
 

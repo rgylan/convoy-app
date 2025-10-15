@@ -134,20 +134,7 @@ main {
   background-color: #ff8e53;
 }
 
-.close-button {
-  padding: 12px 25px;
-  border: none;
-  background-color: #6c757d;
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.2s;
-}
 
-.close-button:hover {
-  background-color: #5a6268;
-}
 
 /* Modal responsive design */
 @media (max-width: 768px) {
