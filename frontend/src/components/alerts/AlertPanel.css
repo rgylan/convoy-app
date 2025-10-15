@@ -246,31 +246,31 @@
   color: #2E86DE;
 }
 
-/* Mobile: Scale up for touch targets */
+/* Mobile: Reduced size for less visual prominence */
 @media (max-width: 768px) {
   .alert-close--floating {
-    width: 44px;
-    height: 44px;
+    width: 36px;
+    height: 36px;
     top: 6px;
     right: 6px;
   }
 
   .alert-close--floating .material-icons {
-    font-size: 20px;
+    font-size: 16px;
   }
 }
 
-/* Very small mobile: Maintain minimum touch target */
+/* Very small mobile: Reduced size for less visual prominence */
 @media (max-width: 480px) {
   .alert-close--floating {
-    width: 44px;
-    height: 44px;
+    width: 36px;
+    height: 36px;
     top: 5px;
     right: 5px;
   }
 
   .alert-close--floating .material-icons {
-    font-size: 20px;
+    font-size: 16px;
   }
 }
 
