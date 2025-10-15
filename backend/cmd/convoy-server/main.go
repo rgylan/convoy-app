@@ -12,6 +12,8 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/joho/godotenv"
 )
 
 // corsMiddleware adds CORS headers to the response with dynamic origin detection.
@@ -161,6 +163,14 @@ func isPrivateIP(ip string) bool {
 }
 
 func main() {
+	// 0. Load environment variables from .env file
+	if err := godotenv.Load(); err != nil {
+		log.Printf("Warning: Could not load .env file: %v", err)
+		log.Println("Continuing with system environment variables...")
+	} else {
+		log.Println("Environment variables loaded from .env file")
+	}
+
 	// 1. Initialize the storage layer.
 	memStorage := storage.NewMemoryStorage()
 	log.Println("In-memory storage initialized.")
@@ -181,6 +191,20 @@ func main() {
 	apiServer.StartMonitoring()
 	log.Println("Convoy monitoring service started.")
 
+	// 5.1. Start cleanup routine for expired verifications
+	go func() {
+		ticker := time.NewTicker(10 * time.Minute) // Cleanup every 10 minutes
+		defer ticker.Stop()
+		for range ticker.C {
+			if err := memStorage.CleanupExpiredVerifications(context.Background()); err != nil {
+				log.Printf("ERROR: Failed to cleanup expired verifications: %v", err)
+			} else {
+				log.Println("Expired verifications cleaned up successfully")
+			}
+		}
+	}()
+	log.Println("Verification cleanup service started.")
+
 	// 6. Set up the HTTP router and register our handlers.
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
@@ -192,6 +216,9 @@ func main() {
 
 	// Convoy endpoints
 	mux.HandleFunc("POST /api/convoys", apiServer.HandleCreateConvoy)
+	mux.HandleFunc("POST /api/convoys/create-with-verification", apiServer.HandleCreateConvoyWithVerification)
+	mux.HandleFunc("GET /api/convoys/verify/{token}", apiServer.HandleVerifyConvoy)
+	mux.HandleFunc("POST /api/convoys/{convoyId}/resend-verification", apiServer.HandleResendVerification)
 	mux.HandleFunc("GET /api/convoys/{convoyId}", apiServer.HandleGetConvoy)
 	mux.HandleFunc("POST /api/convoys/{convoyId}/members", apiServer.HandleAddMember)
 	mux.HandleFunc("POST /api/convoys/{convoyId}/destination", apiServer.HandleSetConvoyDestination)

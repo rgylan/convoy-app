@@ -176,7 +176,7 @@
 
 /* Leader Name Input Section */
 .leader-name-section {
-  margin-bottom: 32px;
+  margin-bottom: 24px;
   text-align: left;
   width: 100%;
   max-width: 400px;
@@ -263,6 +263,181 @@
   margin-top: 6px;
   line-height: 1.4;
   font-weight: 400;
+}
+
+/* Email Input Section */
+.email-section {
+  margin-bottom: 24px;
+  text-align: left;
+  width: 100%;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.email-label {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2E86DE;
+  margin-bottom: 8px;
+  letter-spacing: -0.25px;
+}
+
+.email-input {
+  width: 100%;
+  padding: 16px 20px;
+  border: 2px solid rgba(46, 134, 222, 0.2);
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #2E86DE;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  letter-spacing: -0.25px;
+  box-sizing: border-box;
+}
+
+.email-input:focus {
+  outline: none;
+  border-color: #2E86DE;
+  box-shadow:
+    0 0 0 3px rgba(46, 134, 222, 0.1),
+    0 6px 16px rgba(0, 0, 0, 0.12),
+    0 3px 6px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.email-input:hover:not(:disabled) {
+  border-color: rgba(46, 134, 222, 0.4);
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.1),
+    0 3px 6px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.email-input:disabled {
+  background: rgba(255, 255, 255, 0.7);
+  color: rgba(46, 134, 222, 0.6);
+  cursor: not-allowed;
+  border-color: rgba(46, 134, 222, 0.15);
+}
+
+.email-input:disabled:hover {
+  border-color: rgba(46, 134, 222, 0.15);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.email-input::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+.email-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 6px;
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+.email-hint .material-icons {
+  font-size: 16px;
+  color: #2E86DE;
+}
+
+/* Verification Toggle */
+.verification-toggle {
+  margin-bottom: 32px;
+  text-align: left;
+  width: 100%;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  gap: 12px;
+}
+
+.toggle-checkbox {
+  display: none;
+}
+
+.toggle-slider {
+  position: relative;
+  width: 52px;
+  height: 28px;
+  background: rgba(108, 117, 125, 0.3);
+  border-radius: 14px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(108, 117, 125, 0.2);
+  flex-shrink: 0;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 22px;
+  height: 22px;
+  background: white;
+  border-radius: 50%;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-checkbox:checked + .toggle-slider {
+  background: linear-gradient(135deg, #2E86DE 0%, #54A0FF 100%);
+  border-color: #2E86DE;
+}
+
+.toggle-checkbox:checked + .toggle-slider::before {
+  transform: translateX(24px);
+  box-shadow: 0 2px 8px rgba(46, 134, 222, 0.3);
+}
+
+.toggle-text {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2E86DE;
+  letter-spacing: -0.25px;
+}
+
+.toggle-hint {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 6px;
+  line-height: 1.4;
+  font-weight: 400;
+  margin-left: 64px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toggle-icon {
+  font-size: 16px !important;
+  color: #2E86DE;
+  opacity: 0.8;
 }
 
 /* Start Convoy Button - Enhanced Glassmorphism */
@@ -464,6 +639,41 @@
     font-size: 0.8rem;
   }
 
+  .email-section {
+    margin-bottom: 28px;
+  }
+
+  .email-label {
+    font-size: 0.95rem;
+  }
+
+  .email-input {
+    padding: 14px 18px;
+    font-size: 1rem;
+    min-height: 46px;
+  }
+
+  .email-hint {
+    font-size: 0.8rem;
+  }
+
+  .verification-toggle {
+    margin-bottom: 28px;
+  }
+
+  .toggle-text {
+    font-size: 0.95rem;
+  }
+
+  .toggle-hint {
+    font-size: 0.8rem;
+    margin-left: 64px;
+  }
+
+  .toggle-icon {
+    font-size: 14px !important;
+  }
+
   .start-convoy-button {
     padding: 14px 32px;
     font-size: 1.125rem;
@@ -539,6 +749,45 @@
     margin-top: 4px;
   }
 
+  .email-section {
+    margin-bottom: 24px;
+  }
+
+  .email-label {
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+  }
+
+  .email-input {
+    padding: 16px 18px;
+    font-size: 1rem;
+    min-height: 48px; /* Touch target */
+    border-radius: 10px;
+  }
+
+  .email-hint {
+    font-size: 0.8rem;
+    margin-top: 4px;
+  }
+
+  .verification-toggle {
+    margin-bottom: 28px;
+  }
+
+  .toggle-text {
+    font-size: 0.9rem;
+  }
+
+  .toggle-hint {
+    font-size: 0.8rem;
+    margin-left: 64px;
+    margin-top: 4px;
+  }
+
+  .toggle-icon {
+    font-size: 14px !important;
+  }
+
   .start-convoy-button {
     padding: 16px 24px;
     font-size: 1rem;
@@ -601,6 +850,41 @@
     font-size: 0.75rem;
   }
 
+  .email-section {
+    margin-bottom: 20px;
+  }
+
+  .email-label {
+    font-size: 0.85rem;
+  }
+
+  .email-input {
+    padding: 14px 16px;
+    font-size: 0.95rem;
+    min-height: 46px;
+  }
+
+  .email-hint {
+    font-size: 0.75rem;
+  }
+
+  .verification-toggle {
+    margin-bottom: 24px;
+  }
+
+  .toggle-text {
+    font-size: 0.85rem;
+  }
+
+  .toggle-hint {
+    font-size: 0.75rem;
+    margin-left: 64px;
+  }
+
+  .toggle-icon {
+    font-size: 12px !important;
+  }
+
   .start-convoy-button {
     padding: 14px 20px;
     font-size: 0.95rem;
@@ -614,7 +898,8 @@
     border: 2px solid rgba(255, 255, 255, 0.3);
   }
 
-  .leader-name-input {
+  .leader-name-input,
+  .email-input {
     background: rgba(255, 255, 255, 0.98);
     border: 2px solid rgba(46, 134, 222, 0.2);
   }
@@ -630,7 +915,8 @@
     background: rgba(255, 255, 255, 0.98);
   }
 
-  .leader-name-input {
+  .leader-name-input,
+  .email-input {
     background: rgba(255, 255, 255, 0.98);
   }
 }

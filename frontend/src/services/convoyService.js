@@ -48,6 +48,63 @@ class ConvoyService {
     }
     return response.json();
   }
+
+  async createConvoyWithVerification(leaderName, email) {
+    const response = await fetch(API_ENDPOINTS.CONVOYS_WITH_VERIFICATION, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        leaderName: leaderName.trim(),
+        email: email.trim(),
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      const message = errorData.message || 'Failed to create convoy with verification';
+      const error = new Error(message);
+      error.code = errorData.code;
+      error.status = response.status;
+      throw error;
+    }
+
+    return response.json();
+  }
+
+  async verifyConvoy(token) {
+    const response = await fetch(API_ENDPOINTS.CONVOY_VERIFY(token), {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      const message = errorData.message || 'Failed to verify convoy';
+      const error = new Error(message);
+      error.code = errorData.code;
+      error.status = response.status;
+      throw error;
+    }
+
+    return response.json();
+  }
+
+  async resendVerification(convoyId) {
+    const response = await fetch(API_ENDPOINTS.CONVOY_RESEND_VERIFICATION(convoyId), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      const message = errorData.message || 'Failed to resend verification';
+      const error = new Error(message);
+      error.code = errorData.code;
+      error.status = response.status;
+      throw error;
+    }
+
+    return response.json();
+  }
 }
 
 export default new ConvoyService();

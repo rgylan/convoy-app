@@ -7,6 +7,8 @@ import 'leaflet/dist/leaflet.css';
 import Home from './screens/Home';
 import JoinConvoy from './screens/JoinConvoy';
 import ConvoyMap from './screens/ConvoyMap';
+import VerificationPending from './screens/VerificationPending';
+import VerificationSuccess from './screens/VerificationSuccess';
 import DebugPanel from './components/DebugPanel';
 
 function App() {
@@ -16,6 +18,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/join/:convoyId" element={<JoinConvoy />} />
         <Route path="/convoy/:convoyId" element={<ConvoyMap />} />
+        <Route path="/verification-pending/:convoyId" element={<VerificationPending />} />
+        <Route path="/verify/:token" element={<VerificationSuccess />} />
       </Routes>
       <ToastContainer />
       <DebugPanel />

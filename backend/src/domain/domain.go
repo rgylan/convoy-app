@@ -6,9 +6,16 @@ import (
 
 // Convoy represents a group of members traveling together.
 type Convoy struct {
-	ID          string       `json:"id"`
-	Members     []*Member    `json:"members"`
-	Destination *Destination `json:"destination,omitempty"`
+	ID                string       `json:"id"`
+	Members           []*Member    `json:"members"`
+	Destination       *Destination `json:"destination,omitempty"`
+	IsVerified        bool         `json:"isVerified"`
+	CreatedByEmail    string       `json:"createdByEmail"`
+	LeaderName        string       `json:"leaderName,omitempty"`
+	VerificationToken string       `json:"verificationToken,omitempty"`
+	VerificationExpiresAt *time.Time `json:"verificationExpiresAt,omitempty"`
+	VerifiedAt        *time.Time   `json:"verifiedAt,omitempty"`
+	CreatedAt         time.Time    `json:"createdAt"`
 }
 
 // Member represents a user in a convoy.
@@ -88,4 +95,27 @@ type ConvoyAlert struct {
 	LastSeen       time.Time `json:"lastSeen,omitempty"`
 	ScatteredCount int       `json:"scatteredCount,omitempty"`
 	Timestamp      time.Time `json:"timestamp"`
+}
+
+// ConvoyVerification represents an email verification record
+type ConvoyVerification struct {
+	ID          string     `json:"id"`
+	ConvoyID    string     `json:"convoyId"`
+	Email       string     `json:"email"`
+	Token       string     `json:"token"`
+	ExpiresAt   time.Time  `json:"expiresAt"`
+	VerifiedAt  *time.Time `json:"verifiedAt,omitempty"`
+	CreatedAt   time.Time  `json:"createdAt"`
+	IPAddress   string     `json:"ipAddress,omitempty"`
+	UserAgent   string     `json:"userAgent,omitempty"`
+}
+
+// IsExpired returns true if the verification token has expired
+func (cv *ConvoyVerification) IsExpired() bool {
+	return time.Now().After(cv.ExpiresAt)
+}
+
+// IsVerified returns true if the verification has been completed
+func (cv *ConvoyVerification) IsVerified() bool {
+	return cv.VerifiedAt != nil
 }

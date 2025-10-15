@@ -13,15 +13,17 @@ import (
 
 // MemoryStorage is an in-memory implementation of the Storage interface.
 type MemoryStorage struct {
-	mu      sync.RWMutex
-	convoys map[string]*domain.Convoy
-	wsHub   WebSocketHub // WebSocket hub for checking connection status
+	mu            sync.RWMutex
+	convoys       map[string]*domain.Convoy
+	verifications map[string]*domain.ConvoyVerification // token -> verification
+	wsHub         WebSocketHub                          // WebSocket hub for checking connection status
 }
 
 // NewMemoryStorage creates and returns a new MemoryStorage instance.
 func NewMemoryStorage() *MemoryStorage {
 	return &MemoryStorage{
-		convoys: make(map[string]*domain.Convoy),
+		convoys:       make(map[string]*domain.Convoy),
+		verifications: make(map[string]*domain.ConvoyVerification),
 	}
 }
 
@@ -39,6 +41,11 @@ func generateID() (string, error) {
 	return hex.EncodeToString(bytes), nil
 }
 
+// generateVerificationID creates a verification ID
+func generateVerificationID() string {
+	return fmt.Sprintf("ver_%d", time.Now().UnixNano())
+}
+
 func (s *MemoryStorage) CreateConvoy(ctx context.Context) (*domain.Convoy, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -49,11 +56,49 @@ func (s *MemoryStorage) CreateConvoy(ctx context.Context) (*domain.Convoy, error
 	}
 
 	convoy := &domain.Convoy{
-		ID:      id,
-		Members: []*domain.Member{},
+		ID:         id,
+		Members:    []*domain.Member{},
+		IsVerified: true, // Legacy convoys are automatically verified
+		CreatedAt:  time.Now(),
 	}
 
 	s.convoys[id] = convoy
+	return convoy, nil
+}
+
+func (s *MemoryStorage) CreateConvoyWithVerification(ctx context.Context, email, leaderName, token string, expiresAt time.Time) (*domain.Convoy, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	id, err := generateID()
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate convoy id: %w", err)
+	}
+
+	now := time.Now()
+	convoy := &domain.Convoy{
+		ID:                    id,
+		Members:               []*domain.Member{},
+		IsVerified:            false,
+		CreatedByEmail:        email,
+		LeaderName:            leaderName,
+		VerificationToken:     token,
+		VerificationExpiresAt: &expiresAt,
+		CreatedAt:             now,
+	}
+
+	verification := &domain.ConvoyVerification{
+		ID:        generateVerificationID(),
+		ConvoyID:  id,
+		Email:     email,
+		Token:     token,
+		ExpiresAt: expiresAt,
+		CreatedAt: now,
+	}
+
+	s.convoys[id] = convoy
+	s.verifications[token] = verification
+
 	return convoy, nil
 }
 
@@ -196,4 +241,124 @@ func (s *MemoryStorage) GetAllActiveConvoys(ctx context.Context) ([]*domain.Conv
 	}
 
 	return activeConvoys, nil
+}
+
+// VerifyConvoy verifies a convoy using the verification token
+func (s *MemoryStorage) VerifyConvoy(ctx context.Context, token string) (*domain.Convoy, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	verification, ok := s.verifications[token]
+	if !ok {
+		return nil, fmt.Errorf("verification token not found")
+	}
+
+	if verification.IsExpired() {
+		return nil, fmt.Errorf("verification token has expired")
+	}
+
+	if verification.IsVerified() {
+		return nil, fmt.Errorf("verification token has already been used")
+	}
+
+	convoy, ok := s.convoys[verification.ConvoyID]
+	if !ok {
+		return nil, fmt.Errorf("convoy not found")
+	}
+
+	// Mark verification as completed
+	now := time.Now()
+	verification.VerifiedAt = &now
+
+	// Mark convoy as verified
+	convoy.IsVerified = true
+	convoy.VerifiedAt = &now
+
+	return convoy, nil
+}
+
+// GetVerification retrieves verification information for a convoy
+func (s *MemoryStorage) GetVerification(ctx context.Context, convoyID string) (*domain.ConvoyVerification, error) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	for _, verification := range s.verifications {
+		if verification.ConvoyID == convoyID {
+			return verification, nil
+		}
+	}
+
+	return nil, fmt.Errorf("verification not found for convoy %s", convoyID)
+}
+
+// UpdateVerificationToken updates the verification token for a convoy (for resend functionality)
+func (s *MemoryStorage) UpdateVerificationToken(ctx context.Context, convoyID, token string, expiresAt time.Time) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	convoy, ok := s.convoys[convoyID]
+	if !ok {
+		return fmt.Errorf("convoy not found")
+	}
+
+	// Find existing verification
+	var existingVerification *domain.ConvoyVerification
+	for _, verification := range s.verifications {
+		if verification.ConvoyID == convoyID {
+			existingVerification = verification
+			break
+		}
+	}
+
+	if existingVerification == nil {
+		return fmt.Errorf("verification not found for convoy")
+	}
+
+	// Remove old token
+	delete(s.verifications, existingVerification.Token)
+
+	// Update verification with new token
+	existingVerification.Token = token
+	existingVerification.ExpiresAt = expiresAt
+	existingVerification.VerifiedAt = nil // Reset verification status
+
+	// Update convoy
+	convoy.VerificationToken = token
+	convoy.VerificationExpiresAt = &expiresAt
+
+	// Add with new token
+	s.verifications[token] = existingVerification
+
+	return nil
+}
+
+// CleanupExpiredVerifications removes expired verification records and unverified convoys
+func (s *MemoryStorage) CleanupExpiredVerifications(ctx context.Context) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	var expiredTokens []string
+	var expiredConvoyIDs []string
+
+	// Find expired verifications
+	for token, verification := range s.verifications {
+		if verification.IsExpired() && !verification.IsVerified() {
+			expiredTokens = append(expiredTokens, token)
+			expiredConvoyIDs = append(expiredConvoyIDs, verification.ConvoyID)
+		}
+	}
+
+	// Remove expired verifications
+	for _, token := range expiredTokens {
+		delete(s.verifications, token)
+	}
+
+	// Remove expired unverified convoys
+	for _, convoyID := range expiredConvoyIDs {
+		if convoy, exists := s.convoys[convoyID]; exists && !convoy.IsVerified {
+			delete(s.convoys, convoyID)
+		}
+	}
+
+	return nil
 }

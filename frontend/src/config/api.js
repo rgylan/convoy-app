@@ -86,6 +86,9 @@ console.log('🌐 API Configuration:', {
 
 export const API_ENDPOINTS = {
   CONVOYS: `${API_BASE_URL}/api/convoys`,
+  CONVOYS_WITH_VERIFICATION: `${API_BASE_URL}/api/convoys/create-with-verification`,
+  CONVOY_VERIFY: (token) => `${API_BASE_URL}/api/convoys/verify/${token}`,
+  CONVOY_RESEND_VERIFICATION: (id) => `${API_BASE_URL}/api/convoys/${id}/resend-verification`,
   CONVOY_BY_ID: (id) => `${API_BASE_URL}/api/convoys/${id}`,
   CONVOY_MEMBERS: (id) => `${API_BASE_URL}/api/convoys/${id}/members`,
   CONVOY_MEMBER: (convoyId, memberId) => `${API_BASE_URL}/api/convoys/${convoyId}/members/${memberId}`,

@@ -11,8 +11,10 @@ import geolocationDebugger from '../utils/geolocationDebugger';
 const Home = () => {
   const navigate = useNavigate();
   const [leaderName, setLeaderName] = useState('');
+  const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
+  const [useVerification, setUseVerification] = useState(true); // Smart default: verification ON
 
   const handleNameChange = (e) => {
     const value = e.target.value;
@@ -23,6 +25,10 @@ const Home = () => {
     }
   };
 
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+
   const handleNameFocus = () => {
     // Auto-clear default "You" text on first focus if user hasn't interacted yet
     if (!hasUserInteracted && leaderName === '') {
@@ -31,28 +37,73 @@ const Home = () => {
     }
   };
 
+  const isValidEmail = (email) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  };
+
   const handleStartConvoy = async () => {
-    // Validate name input - use "You" as fallback if empty
+    // Validate inputs
     const trimmedName = leaderName.trim() || 'You';
+    const trimmedEmail = email.trim();
+
+    // Validate email if verification is enabled
+    if (useVerification) {
+      if (!trimmedEmail) {
+        showErrorToast('Email address is required for verification');
+        return;
+      }
+      if (!isValidEmail(trimmedEmail)) {
+        showErrorToast('Please enter a valid email address');
+        return;
+      }
+    }
 
     // Set loading state
     setIsLoading(true);
 
     mobileLog.interaction('start-convoy-button', 'click', {
       timestamp: new Date().toISOString(),
-      leaderName: trimmedName
+      leaderName: trimmedName,
+      useVerification
     });
 
     try {
       mobileLog.info('Starting convoy creation process...');
-      const convoy = await convoyService.createConvoy();
-      const convoyId = convoy.id;
 
-      // Log convoy creation
-      console.log(`CONVOY_CREATED: Leader started convoy ${convoyId} at ${new Date().toISOString()}`);
-      mobileLog.info(`Convoy created successfully with ID: ${convoyId}`);
+      if (useVerification) {
+        // Create convoy with email verification
+        const response = await convoyService.createConvoyWithVerification(trimmedName, trimmedEmail);
 
-      // 2. Get leader's geolocation and add to the convoy
+        // Store verification data for the pending screen
+        const verificationData = {
+          convoyId: response.convoyId,
+          expiresAt: response.expiresAt,
+          emailSent: response.emailSent
+        };
+        sessionStorage.setItem('verificationData', JSON.stringify(verificationData));
+
+        // Show success message
+        if (response.emailSent) {
+          showSuccessToast('Verification email sent! Check your inbox.');
+        } else {
+          toast.warning('Email service not configured. Please contact support.');
+        }
+
+        // Navigate to verification pending screen
+        setIsLoading(false);
+        navigate(`/verification-pending/${response.convoyId}`);
+        return;
+      } else {
+        // Legacy convoy creation (no verification)
+        const convoy = await convoyService.createConvoy();
+        const convoyId = convoy.id;
+
+        // Log convoy creation
+        console.log(`CONVOY_CREATED: Leader started convoy ${convoyId} at ${new Date().toISOString()}`);
+        mobileLog.info(`Convoy created successfully with ID: ${convoyId}`);
+
+        // 2. Get leader's geolocation and add to the convoy
       if (navigator.geolocation) {
         mobileLog.info('Geolocation is supported, checking permissions...');
 
@@ -166,8 +217,9 @@ const Home = () => {
         alert('Geolocation is not supported by your browser. Cannot add leader with location.');
         // Navigate to convoy, but leader won't be on map initially
         mobileLog.warn('Navigating to convoy without geolocation support');
-        setIsLoading(false);
-        navigate(`/convoy/${convoyId}`);
+          setIsLoading(false);
+          navigate(`/convoy/${convoyId}`);
+        }
       }
     } catch (error) {
       console.error('Error starting convoy:', error);
@@ -176,7 +228,16 @@ const Home = () => {
         stack: error.stack,
         timestamp: new Date().toISOString()
       });
-      showErrorToast(`Failed to start convoy: ${error.message}`);
+
+      // Handle specific verification errors
+      if (error.code === 'RATE_LIMIT_EMAIL') {
+        showErrorToast('Too many verification emails sent. Please wait before trying again.');
+      } else if (error.code === 'RATE_LIMIT_IP') {
+        showErrorToast('Too many convoy creation attempts. Please wait before trying again.');
+      } else {
+        showErrorToast(`Failed to start convoy: ${error.message}`);
+      }
+
       setIsLoading(false);
     }
   };
@@ -238,6 +299,55 @@ const Home = () => {
           </div>
         </div>
 
+        {useVerification && (
+          <div className="email-section">
+            <label htmlFor="email-input" className="email-label">
+              Email Address
+            </label>
+            <input
+              id="email-input"
+              type="email"
+              value={email}
+              onChange={handleEmailChange}
+              placeholder="Enter your email address"
+              className="email-input"
+              aria-label="Enter your email address for verification"
+              aria-describedby="email-hint"
+              disabled={isLoading}
+              required={useVerification}
+            />
+            <div id="email-hint" className="email-hint">
+              <span className="material-icons">email</span>
+              We'll send a verification link to activate your convoy
+            </div>
+          </div>
+        )}
+
+        <div className="verification-toggle">
+          <label className="toggle-label">
+            <input
+              type="checkbox"
+              checked={useVerification}
+              onChange={(e) => setUseVerification(e.target.checked)}
+              disabled={isLoading}
+              className="toggle-checkbox"
+            />
+            <span className="toggle-slider"></span>
+            <span className="toggle-text">
+              {useVerification ? 'Email verification (recommended)' : 'Skip verification (legacy mode)'}
+            </span>
+          </label>
+          <div className="toggle-hint">
+            <span className="material-icons-round toggle-icon">
+              {useVerification ? 'verified_user' : 'speed'}
+            </span>
+            {useVerification
+              ? 'Prevents bot abuse and ensures convoy security'
+              : 'Creates convoy immediately without email verification'
+            }
+          </div>
+        </div>
+
         <button
           className="start-convoy-button"
           onClick={handleStartConvoy}
@@ -252,7 +362,9 @@ const Home = () => {
           type="button"
           disabled={isLoading}
         >
-          <span className="button-text">Start New Convoy</span>
+          <span className="button-text">
+            {useVerification ? 'Create & Verify Convoy' : 'Start New Convoy'}
+          </span>
           {isLoading && (
             <div
               className="button-loading-spinner"

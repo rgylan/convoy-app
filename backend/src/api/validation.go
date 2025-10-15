@@ -3,6 +3,7 @@ package api
 import (
 	"convoy-app/backend/src/domain"
 	"errors"
+	"regexp"
 	"strings"
 )
 
@@ -25,6 +26,15 @@ type DestinationRequest struct {
 	Description string  `json:"description,omitempty"`
 	Lat         float64 `json:"lat"`
 	Lng         float64 `json:"lng"`
+}
+
+type CreateConvoyWithVerificationRequest struct {
+	LeaderName string `json:"leaderName"`
+	Email      string `json:"email"`
+}
+
+type ResendVerificationRequest struct {
+	ConvoyID string `json:"convoyId"`
 }
 
 func (r *ConvoyRequest) Validate() error {
@@ -91,4 +101,25 @@ func (r *DestinationRequest) ToDomain() *domain.Destination {
 		Lat:         r.Lat,
 		Lng:         r.Lng,
 	}
+}
+
+func (r *CreateConvoyWithVerificationRequest) Validate() error {
+	if strings.TrimSpace(r.LeaderName) == "" {
+		return errors.New("leader name is required")
+	}
+	if len(r.LeaderName) > 50 {
+		return errors.New("leader name too long (max 50 characters)")
+	}
+	if strings.TrimSpace(r.Email) == "" {
+		return errors.New("email is required")
+	}
+	if !isValidEmail(r.Email) {
+		return errors.New("invalid email format")
+	}
+	return nil
+}
+
+func isValidEmail(email string) bool {
+	emailRegex := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
+	return emailRegex.MatchString(email)
 }
