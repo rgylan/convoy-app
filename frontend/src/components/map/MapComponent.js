@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { MapContainer, Marker, Popup, Tooltip, useMap } from 'react-leaflet';
 import { Icon, DivIcon } from 'leaflet';
 import MapSidebar from './MapSidebar';
@@ -7,9 +7,11 @@ import OpenFreeMapLayer from './OpenFreeMapLayer';
 
 import LocationStatusControl from './LocationStatusControl';
 import MemberStatusIndicator from '../convoy/MemberStatusIndicator';
+import reverseGeocodingService from '../../services/reverseGeocodingService';
 import './LocationStatusControl.css';
 import './ZoomControl.css';
 import './CustomMarkers.css';
+import './MemberTooltip.css';
 
 
 
@@ -148,6 +150,103 @@ const MapComponent = ({
   locationTracking = null, // Optional location tracking props
   currentUserId = null // Current user ID for auto-focus functionality
 }) => {
+  // State for storing reverse geocoded location names
+  const [locationNames, setLocationNames] = useState(new Map());
+  const [loadingLocations, setLoadingLocations] = useState(new Set());
+
+  // Debounce timer for geocoding requests
+  const geocodingTimeoutRef = useRef(null);
+
+  /**
+   * Lazy load location name for a member when tooltip is about to be shown
+   */
+  const loadLocationName = useCallback(async (member) => {
+    const [lat, lng] = member.location;
+    const locationKey = `${lat.toFixed(4)},${lng.toFixed(4)}`;
+
+    // Skip if already loaded or loading
+    if (locationNames.has(locationKey) || loadingLocations.has(locationKey)) {
+      return;
+    }
+
+    // Mark as loading
+    setLoadingLocations(prev => new Set(prev).add(locationKey));
+
+    try {
+      console.log(`🔍 Loading location name for ${member.name} at ${locationKey}`);
+
+      // Get location name from reverse geocoding service
+      const locationName = await reverseGeocodingService.getLocationName(lat, lng);
+
+      // Update location names state
+      setLocationNames(prev => new Map(prev).set(locationKey, locationName));
+
+      console.log(`📍 Location loaded for ${member.name}: ${locationName}`);
+
+    } catch (error) {
+      console.warn(`⚠️ Failed to load location for ${member.name}:`, error);
+
+      // Set coordinate fallback on error
+      const fallback = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
+      setLocationNames(prev => new Map(prev).set(locationKey, fallback));
+
+    } finally {
+      // Remove from loading set
+      setLoadingLocations(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(locationKey);
+        return newSet;
+      });
+    }
+  }, [locationNames, loadingLocations]);
+
+  /**
+   * Handle tooltip show event with debounced geocoding
+   */
+  const handleTooltipShow = useCallback((member) => {
+    // Clear any existing timeout
+    if (geocodingTimeoutRef.current) {
+      clearTimeout(geocodingTimeoutRef.current);
+    }
+
+    // Debounce geocoding requests to avoid excessive API calls
+    geocodingTimeoutRef.current = setTimeout(() => {
+      loadLocationName(member);
+    }, 100); // 100ms debounce
+  }, [loadLocationName]);
+
+  /**
+   * Get display text for member location (location name or coordinates)
+   */
+  const getLocationDisplayText = useCallback((member) => {
+    const [lat, lng] = member.location;
+    const locationKey = `${lat.toFixed(4)},${lng.toFixed(4)}`;
+
+    // Check if we have a cached location name
+    if (locationNames.has(locationKey)) {
+      return locationNames.get(locationKey);
+    }
+
+    // Check if currently loading
+    if (loadingLocations.has(locationKey)) {
+      return `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`; // Show coordinates while loading
+    }
+
+    // Default to coordinates
+    return `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
+  }, [locationNames, loadingLocations]);
+
+  // Cleanup effect for component unmounting
+  useEffect(() => {
+    return () => {
+      // Clear any pending geocoding timeouts
+      if (geocodingTimeoutRef.current) {
+        clearTimeout(geocodingTimeoutRef.current);
+      }
+      console.log('🧹 MapComponent unmounted, cleared geocoding timeouts');
+    };
+  }, []);
+
   // Set an initial center
   const initialCenter = [14.5995, 120.9842]; // Manila
 
@@ -237,6 +336,11 @@ const MapComponent = ({
             position={adjustedPosition}
             icon={memberIcon}
             opacity={memberOpacity}
+            eventHandlers={{
+              // Trigger geocoding when marker is hovered (desktop) or touched (mobile)
+              mouseover: () => handleTooltipShow(member),
+              click: () => handleTooltipShow(member), // For mobile touch interaction
+            }}
           >
             <Popup>
               <MemberStatusIndicator
@@ -246,6 +350,30 @@ const MapComponent = ({
                 showDetails={true}
               />
             </Popup>
+            {/* Enhanced member tooltip with reverse geocoding and Apple Maps-inspired design */}
+            {/* Phase 2: Implemented reverse geocoding with human-readable location names */}
+            <Tooltip
+              direction="top"
+              offset={[0, -55]}
+              permanent={false}
+              className="convoy-member-tooltip"
+              interactive={false}
+              opacity={1}
+            >
+              <div
+                className="member-tooltip-content"
+                data-status={member.status} // Enable status-specific styling
+                role="tooltip"
+                aria-label={`${member.name} location information`}
+              >
+                <div className="member-tooltip-name">
+                  {member.name}
+                </div>
+                <div className="member-tooltip-location">
+                  {getLocationDisplayText(member)}
+                </div>
+              </div>
+            </Tooltip>
           </Marker>
         );
       })}

@@ -1,0 +1,404 @@
+/* Member Tooltip Styles - Apple Maps-inspired glassmorphism design */
+/* Following AlertPanel font styling and convoy app design system */
+/*
+ * Phase 1 Implementation: Basic tooltips with coordinates
+ * - Apple Maps-inspired glassmorphism design with backdrop-filter
+ * - AlertPanel-consistent font styling and color scheme
+ * - Responsive design across desktop, tablet, and mobile breakpoints
+ * - Browser compatibility with @supports fallbacks
+ * - Accessibility features with ARIA labels and focus states
+ *
+ * Phase 2 Enhancement (Future): Add reverse geocoding
+ * - Replace coordinates with human-readable location names
+ * - Implement caching and error handling for geocoding API
+ * - Add status-specific styling enhancements
+ */
+
+/* Override default Leaflet tooltip styling */
+.convoy-member-tooltip.leaflet-tooltip {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.convoy-member-tooltip.leaflet-tooltip::before {
+  display: none !important;
+}
+
+/* Main tooltip container with Apple Maps glassmorphism */
+.member-tooltip-content {
+  /* Apple Maps-inspired glassmorphism background */
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  
+  /* Border and shape */
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  
+  /* Layered shadows with inset highlights */
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    0 2px 8px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  
+  /* Layout and spacing */
+  padding: 12px 16px;
+  min-width: 160px;
+  max-width: 280px;
+  text-align: center;
+  
+  /* Smooth transitions */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Performance optimization */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Member name styling - matching AlertPanel primary text */
+.member-tooltip-name {
+  /* AlertPanel font specifications */
+  font-family: 'Poppins', 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: #1A2C42; /* Dark Blue brand color */
+  letter-spacing: -0.5px;
+  line-height: 1.5;
+  
+  /* Layout */
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Location text styling - matching AlertPanel secondary text */
+.member-tooltip-location {
+  /* AlertPanel font specifications */
+  font-family: 'Poppins', 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.8);
+  letter-spacing: -0.25px;
+  line-height: 1.4;
+  
+  /* Layout */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Hover effects for enhanced interactivity */
+.member-tooltip-content:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.15),
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* Responsive Design - Desktop (1025px+) */
+@media (min-width: 1025px) {
+  .member-tooltip-content {
+    padding: 12px 16px;
+    min-width: 160px;
+    max-width: 280px;
+  }
+  
+  .member-tooltip-name {
+    font-size: 17px;
+  }
+  
+  .member-tooltip-location {
+    font-size: 15px;
+  }
+}
+
+/* Responsive Design - Tablet (769px-1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .member-tooltip-content {
+    padding: 11px 15px;
+    min-width: 150px;
+    max-width: 260px;
+  }
+  
+  .member-tooltip-name {
+    font-size: 16px;
+  }
+  
+  .member-tooltip-location {
+    font-size: 14px;
+  }
+}
+
+/* Responsive Design - Mobile (≤768px) */
+@media (max-width: 768px) {
+  .member-tooltip-content {
+    /* Larger touch-friendly sizing */
+    padding: 14px 18px;
+    min-width: 180px;
+    max-width: 300px;
+    
+    /* Enhanced glassmorphism for mobile */
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    
+    /* Larger border radius for mobile */
+    border-radius: 20px;
+    
+    /* Enhanced shadows for better visibility */
+    box-shadow: 
+      0 10px 40px rgba(0, 0, 0, 0.15),
+      0 4px 12px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+  
+  .member-tooltip-name {
+    font-size: 18px;
+    margin-bottom: 6px;
+  }
+  
+  .member-tooltip-location {
+    font-size: 16px;
+  }
+  
+  /* Ensure minimum touch target size (44px) */
+  .convoy-member-tooltip {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Very Small Mobile (≤480px) */
+@media (max-width: 480px) {
+  .member-tooltip-content {
+    padding: 16px 20px;
+    min-width: 200px;
+    max-width: 320px;
+    border-radius: 22px;
+  }
+  
+  .member-tooltip-name {
+    font-size: 19px;
+    margin-bottom: 8px;
+  }
+  
+  .member-tooltip-location {
+    font-size: 17px;
+  }
+}
+
+/* Browser Compatibility Fallbacks */
+@supports not (backdrop-filter: blur(20px)) {
+  .member-tooltip-content {
+    background: rgba(255, 255, 255, 0.98) !important;
+    box-shadow: 
+      0 12px 40px rgba(0, 0, 0, 0.15),
+      0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Safari-specific webkit fallbacks */
+@supports not (-webkit-backdrop-filter: blur(20px)) {
+  .member-tooltip-content {
+    background: rgba(255, 255, 255, 0.98) !important;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .member-tooltip-content {
+    transition: none;
+    animation: none;
+  }
+  
+  .member-tooltip-content:hover {
+    transform: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .member-tooltip-content {
+    background: rgba(255, 255, 255, 1) !important;
+    border: 2px solid #000;
+  }
+  
+  .member-tooltip-name {
+    color: #000 !important;
+  }
+  
+  .member-tooltip-location {
+    color: #333 !important;
+  }
+}
+
+/* Dark mode support (future-proofing) */
+@media (prefers-color-scheme: dark) {
+  .member-tooltip-content {
+    background: rgba(30, 30, 30, 0.95);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .member-tooltip-name {
+    color: #ffffff;
+  }
+  
+  .member-tooltip-location {
+    color: rgba(255, 255, 255, 0.8);
+  }
+}
+
+/* Focus states for accessibility */
+.convoy-member-tooltip:focus-within .member-tooltip-content {
+  outline: 2px solid #1A2C42;
+  outline-offset: 2px;
+}
+
+/* Ensure proper z-index layering */
+.convoy-member-tooltip {
+  z-index: 1000;
+}
+
+/* Performance optimization for animations */
+.member-tooltip-content {
+  will-change: transform;
+}
+
+/* Landscape mobile optimization */
+@media (max-height: 500px) and (orientation: landscape) {
+  .member-tooltip-content {
+    padding: 10px 14px;
+    min-width: 140px;
+  }
+
+  .member-tooltip-name {
+    font-size: 16px;
+    margin-bottom: 3px;
+  }
+
+  .member-tooltip-location {
+    font-size: 14px;
+  }
+}
+
+/* Auto-positioning to prevent tooltip overflow */
+.convoy-member-tooltip.leaflet-tooltip-top {
+  margin-top: -10px;
+}
+
+.convoy-member-tooltip.leaflet-tooltip-bottom {
+  margin-top: 10px;
+}
+
+.convoy-member-tooltip.leaflet-tooltip-left {
+  margin-left: -10px;
+}
+
+.convoy-member-tooltip.leaflet-tooltip-right {
+  margin-left: 10px;
+}
+
+/* Ensure tooltips don't interfere with map controls */
+.convoy-member-tooltip {
+  pointer-events: none;
+}
+
+.member-tooltip-content {
+  pointer-events: auto;
+}
+
+/* Animation for tooltip appearance */
+@keyframes tooltipFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.convoy-member-tooltip.leaflet-tooltip {
+  animation: tooltipFadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* High DPI displays optimization */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .member-tooltip-content {
+    border-width: 0.5px;
+  }
+
+  .member-tooltip-name,
+  .member-tooltip-location {
+    text-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Status-specific tooltip enhancements (future enhancement placeholder) */
+/* These classes can be added dynamically based on member status in Phase 2 */
+.member-tooltip-content[data-status="connected"] {
+  /* Connected members could have a subtle green accent */
+  border-left: 3px solid #27ae60;
+}
+
+.member-tooltip-content[data-status="lagging"] {
+  /* Lagging members could have a subtle orange accent */
+  border-left: 3px solid #f39c12;
+}
+
+.member-tooltip-content[data-status="disconnected"] {
+  /* Disconnected members could have a subtle red accent */
+  border-left: 3px solid #e74c3c;
+}
+
+.member-tooltip-content[data-status="inactive"] {
+  /* Inactive members could have a subtle purple accent */
+  border-left: 3px solid #9b59b6;
+}
+
+/* Tooltip positioning improvements for edge cases */
+@media (max-width: 768px) {
+  /* Ensure tooltips stay within viewport on mobile */
+  .convoy-member-tooltip.leaflet-tooltip {
+    max-width: calc(100vw - 40px);
+  }
+
+  .member-tooltip-content {
+    max-width: calc(100vw - 60px);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+}
+
+/* Very small screens - ensure readability */
+@media (max-width: 320px) {
+  .member-tooltip-content {
+    min-width: 160px;
+    max-width: calc(100vw - 20px);
+  }
+
+  .member-tooltip-name {
+    font-size: 16px;
+  }
+
+  .member-tooltip-location {
+    font-size: 14px;
+  }
+}
+
+/* Ensure tooltips work well with map zoom levels */
+.leaflet-zoom-animated .convoy-member-tooltip {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Print styles (hide tooltips in print) */
+@media print {
+  .convoy-member-tooltip {
+    display: none !important;
+  }
+}
