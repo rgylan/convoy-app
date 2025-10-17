@@ -1,6 +1,6 @@
 import React from 'react';
 import { MapContainer, Marker, Popup, Tooltip } from 'react-leaflet';
-import { Icon } from 'leaflet';
+import { Icon, DivIcon } from 'leaflet';
 import MapSidebar from './MapSidebar';
 import ZoomControl from './ZoomControl';
 import OpenFreeMapLayer from './OpenFreeMapLayer';
@@ -9,46 +9,72 @@ import LocationStatusControl from './LocationStatusControl';
 import MemberStatusIndicator from '../convoy/MemberStatusIndicator';
 import './LocationStatusControl.css';
 import './ZoomControl.css';
+import './CustomMarkers.css';
 
 
 
 
 
-// Custom icons for better visualization with status indicators
-const carIcon = new Icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-});
+// Helper function to extract member initials
+const getInitials = (name) => {
+  if (!name || typeof name !== 'string') return '??';
 
-const carIconDisconnected = new Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
-
-const carIconLagging = new Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
-
-const getMarkerIcon = (memberStatus) => {
-  switch (memberStatus) {
-    case 'disconnected':
-      return carIconDisconnected;
-    case 'lagging':
-      return carIconLagging;
-    case 'connected':
-    default:
-      return carIcon;
+  const words = name.trim().split(/\s+/);
+  if (words.length === 1) {
+    // Single name: use first two characters
+    return words[0].substring(0, 2).toUpperCase();
+  } else {
+    // Multiple names: use first letter of first and last name
+    const firstInitial = words[0].charAt(0).toUpperCase();
+    const lastInitial = words[words.length - 1].charAt(0).toUpperCase();
+    return firstInitial + lastInitial;
   }
+};
+
+// Helper function to get status-based colors (enhanced with purple status)
+const getStatusColor = (status) => {
+  switch (status) {
+    case 'connected':
+      return '#27ae60'; // Green - actively sending location
+    case 'lagging':
+      return '#f39c12'; // Orange - location updates delayed
+    case 'disconnected':
+      return '#e74c3c'; // Red - no connection
+    case 'inactive':
+    case 'not_sending_location':
+      return '#9b59b6'; // Purple - connected but not sending location
+    default:
+      return '#2E86DE'; // App's brand color as fallback
+  }
+};
+
+// Create custom Apple Maps-style teardrop DivIcon marker with member initials
+const createMemberMarker = (member) => {
+  const initials = getInitials(member.name);
+  const status = member.status || '';
+
+  return new DivIcon({
+    className: 'custom-member-marker apple-maps-marker',
+    html: `
+      <div class="member-marker-container" data-status="${status}">
+        <div class="member-marker-circle">
+          <span class="member-initials">${initials}</span>
+        </div>
+        <div class="member-marker-tail">
+          <div class="marker-tail-body"></div>
+          <div class="marker-position-dot"></div>
+        </div>
+      </div>
+    `,
+    iconSize: [44, 52], // Reduced height for shorter teardrop tail
+    iconAnchor: [22, 50], // Anchor point at the tip of the teardrop (red dot)
+    popupAnchor: [0, -50] // Popup appears above the marker
+  });
+};
+
+// Legacy function maintained for compatibility (now uses createMemberMarker)
+const getMarkerIcon = (memberStatus, member) => {
+  return createMemberMarker(member || { status: memberStatus, name: 'Unknown' });
 };
 
 const getMarkerOpacity = (memberStatus) => {
@@ -163,13 +189,13 @@ const MapComponent = ({
       {/* Markers for each convoy member with status indicators */}
       {members.map(member => {
         const adjustedPosition = applyMarkerOffset(member.location, destination);
-        const memberIcon = getMarkerIcon(member.status);
+        const memberIcon = createMemberMarker(member);
         const memberOpacity = getMarkerOpacity(member.status);
-        
+
         return (
-          <Marker 
-            key={member.id} 
-            position={adjustedPosition} 
+          <Marker
+            key={member.id}
+            position={adjustedPosition}
             icon={memberIcon}
             opacity={memberOpacity}
           >
@@ -181,18 +207,6 @@ const MapComponent = ({
                 showDetails={true}
               />
             </Popup>
-            <Tooltip
-              direction="top"
-              offset={[0, -45]}
-              permanent={true}
-              className="convoy-member-tooltip"
-            >
-              <MemberStatusIndicator
-                member={member}
-                destination={destination}
-                variant="visual-only-tooltip"
-              />
-            </Tooltip>
           </Marker>
         );
       })}

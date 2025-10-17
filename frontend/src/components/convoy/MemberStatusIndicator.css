@@ -372,7 +372,6 @@
 }
 
 /* Enhanced tooltip integration with Leaflet */
-.convoy-member-tooltip.leaflet-tooltip,
 .convoy-destination-tooltip.leaflet-tooltip {
   background: transparent !important;
   border: none !important;
@@ -381,7 +380,6 @@
   margin: 0 !important;
 }
 
-.convoy-member-tooltip.leaflet-tooltip::before,
 .convoy-destination-tooltip.leaflet-tooltip::before {
   display: none !important;
 }

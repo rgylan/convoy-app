@@ -1,0 +1,533 @@
+/* Apple Maps-Style Teardrop Markers with Member Initials */
+/* Comprehensive glassmorphism design following Apple Maps standards */
+
+.custom-member-marker {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.apple-maps-marker {
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.15));
+}
+
+.member-marker-container {
+  position: relative;
+  width: 44px;
+  height: 52px; /* Reduced from 60px for shorter tail */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.member-marker-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 3;
+
+  /* Clean white background without glassmorphism */
+  background: rgba(255, 255, 255, 0.9);
+  border: 3px solid #ccc; /* Default border, will be overridden by status colors */
+
+  /* Simple shadow for depth */
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.15),
+    0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.member-initials {
+  color: #1A2C42; /* Dark Blue - app's brand color matching AlertPanel */
+  font-family: 'Poppins', 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 600; /* Matching AlertPanel font-weight */
+  font-size: 14px;
+  line-height: 1;
+  letter-spacing: -0.5px; /* Matching AlertPanel letter-spacing */
+  text-shadow: none; /* Clean text without shadow on white background */
+  z-index: 4;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Teardrop tail styling - reduced height */
+.member-marker-tail {
+  position: relative;
+  width: 12px;
+  height: 12px; /* Reduced from 20px to 12px */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+  margin-top: -2px; /* Slight overlap with circle for seamless connection */
+}
+
+.marker-tail-body {
+  width: 12px;
+  height: 8px; /* Reduced from 16px to 8px */
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 0 0 6px 6px;
+  position: relative;
+
+  /* Create teardrop shape using clip-path */
+  clip-path: polygon(20% 0%, 80% 0%, 100% 70%, 50% 100%, 0% 70%);
+
+  /* Subtle shadow for depth */
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 2px 6px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.marker-position-dot {
+  width: 4px;
+  height: 4px;
+  background: #dc3545; /* Red dot for precise positioning */
+  border-radius: 50%;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.8);
+}
+
+/* Status-specific styling - Connected (Green border) */
+.member-marker-container[data-status="connected"] .member-marker-circle {
+  border-color: #27ae60; /* Green border for connected status */
+  box-shadow:
+    0 4px 12px rgba(39, 174, 96, 0.2),
+    0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.member-marker-container[data-status="connected"] .marker-tail-body {
+  background: linear-gradient(180deg, #27ae60, rgba(39, 174, 96, 0.9));
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Lagging status styling - Orange border */
+.member-marker-container[data-status="lagging"] .member-marker-circle {
+  border-color: #f39c12; /* Orange border for lagging status */
+  box-shadow:
+    0 4px 12px rgba(243, 156, 18, 0.2),
+    0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.member-marker-container[data-status="lagging"] .marker-tail-body {
+  background: linear-gradient(180deg, #f39c12, rgba(243, 156, 18, 0.9));
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Disconnected status styling with pulse animation - Red border */
+.member-marker-container[data-status="disconnected"] .member-marker-circle {
+  border-color: #e74c3c; /* Red border for disconnected status */
+  box-shadow:
+    0 4px 12px rgba(231, 76, 60, 0.2),
+    0 2px 6px rgba(0, 0, 0, 0.08);
+  animation: disconnectedPulse 2s ease-in-out infinite;
+}
+
+.member-marker-container[data-status="disconnected"] .marker-tail-body {
+  background: linear-gradient(180deg, #e74c3c, rgba(231, 76, 60, 0.9));
+  border-color: rgba(255, 255, 255, 0.6);
+  animation: disconnectedTailPulse 2s ease-in-out infinite;
+}
+
+/* Purple status for inactive/not sending location - Purple border */
+.member-marker-container[data-status="inactive"] .member-marker-circle,
+.member-marker-container[data-status="not_sending_location"] .member-marker-circle {
+  border-color: #9b59b6; /* Purple border for inactive status */
+  box-shadow:
+    0 4px 12px rgba(155, 89, 182, 0.2),
+    0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.member-marker-container[data-status="inactive"] .marker-tail-body,
+.member-marker-container[data-status="not_sending_location"] .marker-tail-body {
+  background: linear-gradient(180deg, #9b59b6, rgba(155, 89, 182, 0.9));
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Default/fallback styling - Blue border */
+.member-marker-container[data-status=""] .member-marker-circle {
+  border-color: #2E86DE; /* App's brand color for fallback */
+  box-shadow:
+    0 4px 12px rgba(46, 134, 222, 0.2),
+    0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.member-marker-container[data-status=""] .marker-tail-body {
+  background: linear-gradient(180deg, #2E86DE, rgba(46, 134, 222, 0.9));
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Disconnected pulse animations - updated for border-based design */
+@keyframes disconnectedPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    border-color: #e74c3c;
+    box-shadow:
+      0 4px 12px rgba(231, 76, 60, 0.2),
+      0 2px 6px rgba(0, 0, 0, 0.08);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.05);
+    border-color: #c0392b;
+    box-shadow:
+      0 6px 16px rgba(231, 76, 60, 0.3),
+      0 3px 8px rgba(0, 0, 0, 0.12);
+  }
+}
+
+@keyframes disconnectedTailPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Enhanced hover effects for Apple Maps style */
+.member-marker-container:hover {
+  transform: scale(1.05);
+}
+
+.member-marker-container:hover .member-marker-circle {
+  border-width: 3px;
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+}
+
+.member-marker-container:hover .marker-tail-body {
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+}
+
+.member-marker-container:hover .marker-position-dot {
+  transform: translateX(-50%) scale(1.2);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.4),
+    0 0 0 2px rgba(255, 255, 255, 0.9);
+}
+
+/* Status-specific hover enhancements */
+.member-marker-container[data-status="connected"]:hover .member-marker-circle {
+  box-shadow:
+    0 12px 40px rgba(39, 174, 96, 0.3),
+    0 6px 20px rgba(39, 174, 96, 0.2),
+    0 3px 10px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(39, 174, 96, 0.15);
+}
+
+.member-marker-container[data-status="lagging"]:hover .member-marker-circle {
+  box-shadow:
+    0 12px 40px rgba(243, 156, 18, 0.3),
+    0 6px 20px rgba(243, 156, 18, 0.2),
+    0 3px 10px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(243, 156, 18, 0.15);
+}
+
+.member-marker-container[data-status="disconnected"]:hover .member-marker-circle {
+  box-shadow:
+    0 12px 40px rgba(231, 76, 60, 0.3),
+    0 6px 20px rgba(231, 76, 60, 0.2),
+    0 3px 10px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(231, 76, 60, 0.15);
+}
+
+.member-marker-container[data-status="inactive"]:hover .member-marker-circle,
+.member-marker-container[data-status="not_sending_location"]:hover .member-marker-circle {
+  box-shadow:
+    0 12px 40px rgba(155, 89, 182, 0.3),
+    0 6px 20px rgba(155, 89, 182, 0.2),
+    0 3px 10px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(155, 89, 182, 0.15);
+}
+
+/* Active/pressed state */
+.member-marker-container:active {
+  transform: scale(0.95);
+  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.member-marker-container:active .member-marker-circle {
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    0 2px 8px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive design for mobile devices */
+@media (max-width: 768px) {
+  .member-marker-container {
+    width: 48px;
+    height: 56px; /* Reduced from 66px for shorter tail */
+  }
+
+  .member-marker-circle {
+    width: 44px;  /* Minimum touch target size */
+    height: 44px;
+    border-width: 2px;
+  }
+
+  .member-initials {
+    font-size: 15px;
+  }
+
+  .member-marker-tail {
+    width: 14px;
+    height: 12px; /* Reduced from 22px to match desktop */
+  }
+
+  .marker-tail-body {
+    width: 14px;
+    height: 8px; /* Reduced from 18px to match desktop */
+  }
+
+  .marker-position-dot {
+    width: 5px;
+    height: 5px;
+  }
+}
+
+/* Tablet responsive design */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .member-marker-container {
+    width: 46px;
+    height: 54px; /* Reduced from 63px for shorter tail */
+  }
+
+  .member-marker-circle {
+    width: 42px;
+    height: 42px;
+  }
+
+  .member-initials {
+    font-size: 14.5px;
+  }
+
+  .member-marker-tail {
+    width: 13px;
+    height: 12px; /* Reduced from 21px to match desktop */
+  }
+
+  .marker-tail-body {
+    width: 13px;
+    height: 8px; /* Reduced from 17px to match desktop */
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .member-marker-circle {
+    border-width: 2.5px;
+  }
+  
+  .member-initials {
+    text-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Browser compatibility fallbacks */
+@supports not (backdrop-filter: blur(20px)) {
+  .member-marker-circle {
+    background: rgba(255, 255, 255, 0.95) !important;
+  }
+
+  .marker-tail-body {
+    background: rgba(255, 255, 255, 0.9) !important;
+  }
+
+  .member-marker-container[data-status="connected"] .member-marker-circle {
+    background: #27ae60 !important;
+  }
+
+  .member-marker-container[data-status="connected"] .marker-tail-body {
+    background: #27ae60 !important;
+  }
+
+  .member-marker-container[data-status="lagging"] .member-marker-circle {
+    background: #f39c12 !important;
+  }
+
+  .member-marker-container[data-status="lagging"] .marker-tail-body {
+    background: #f39c12 !important;
+  }
+
+  .member-marker-container[data-status="disconnected"] .member-marker-circle {
+    background: #e74c3c !important;
+  }
+
+  .member-marker-container[data-status="disconnected"] .marker-tail-body {
+    background: #e74c3c !important;
+  }
+
+  .member-marker-container[data-status="inactive"] .member-marker-circle,
+  .member-marker-container[data-status="not_sending_location"] .member-marker-circle {
+    background: #9b59b6 !important;
+  }
+
+  .member-marker-container[data-status="inactive"] .marker-tail-body,
+  .member-marker-container[data-status="not_sending_location"] .marker-tail-body {
+    background: #9b59b6 !important;
+  }
+}
+
+/* Safari-specific webkit fallbacks */
+@supports not (-webkit-backdrop-filter: blur(20px)) {
+  .member-marker-circle,
+  .marker-tail-body {
+    background: rgba(255, 255, 255, 0.95) !important;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .member-marker-container {
+    transition: none;
+    animation: none;
+  }
+
+  .member-marker-circle {
+    transition: none;
+    animation: none;
+  }
+
+  .marker-tail-body {
+    transition: none;
+    animation: none;
+  }
+
+  .member-marker-container[data-status="disconnected"] .member-marker-circle,
+  .member-marker-container[data-status="disconnected"] .marker-tail-body {
+    animation: none;
+  }
+}
+
+/* Focus states for accessibility */
+.member-marker-container:focus-within .member-marker-circle {
+  outline: 2px solid #1A2C42;
+  outline-offset: 2px;
+}
+
+/* Ensure proper z-index layering */
+.custom-member-marker {
+  z-index: 600;
+}
+
+.apple-maps-marker {
+  z-index: 601;
+}
+
+/* Integration with existing tooltip system */
+.leaflet-marker-icon.custom-member-marker {
+  background: transparent !important;
+  border: none !important;
+  margin-left: -22px !important; /* Updated for new anchor point */
+  margin-top: -50px !important; /* Updated for shorter marker height */
+}
+
+/* Ensure markers work well with existing map controls */
+.leaflet-marker-pane .custom-member-marker {
+  will-change: transform;
+}
+
+/* Performance optimization for animations */
+.member-marker-container {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.member-marker-circle {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.marker-tail-body {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Additional responsive adjustments for very small screens */
+@media (max-width: 480px) {
+  .member-marker-container {
+    width: 50px;
+    height: 58px; /* Reduced from 68px for shorter tail */
+  }
+
+  .member-marker-circle {
+    width: 46px;
+    height: 46px;
+  }
+
+  .member-initials {
+    font-size: 16px;
+  }
+
+  .member-marker-tail {
+    width: 15px;
+    height: 12px; /* Reduced from 23px to match desktop */
+  }
+
+  .marker-tail-body {
+    width: 15px;
+    height: 8px; /* Reduced from 19px to match desktop */
+  }
+
+  .marker-position-dot {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+/* High DPI displays optimization */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .member-marker-circle {
+    border-width: 1.5px;
+  }
+
+  .marker-tail-body {
+    border-width: 0.5px;
+  }
+
+  .member-initials {
+    text-shadow:
+      0 0.5px 1px rgba(0, 0, 0, 0.4),
+      0 0 2px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Dark mode support (future-proofing) */
+@media (prefers-color-scheme: dark) {
+  .member-marker-circle {
+    border-color: rgba(255, 255, 255, 0.9);
+  }
+
+  .marker-tail-body {
+    border-color: rgba(255, 255, 255, 0.7);
+  }
+
+  .marker-position-dot {
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.9);
+  }
+}
