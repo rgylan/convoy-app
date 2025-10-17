@@ -18,6 +18,7 @@ const useLocationTracking = (convoyId, memberId, options = {}) => {
   const [error, setError] = useState(null);
   const [permissionStatus, setPermissionStatus] = useState('unknown');
   const [updateCount, setUpdateCount] = useState(0);
+  const [wakeLockStatus, setWakeLockStatus] = useState('unsupported'); // 'unsupported', 'available', 'active', 'released'
 
   // Refs to prevent stale closures and track state
   const convoyIdRef = useRef(convoyId);
@@ -26,6 +27,11 @@ const useLocationTracking = (convoyId, memberId, options = {}) => {
   const lastSentLocationRef = useRef(null);
   const configuredRef = useRef(false);
   const startTrackingPromiseRef = useRef(null);
+
+  // Background/visibility state management
+  const wasTrackingBeforeBackgroundRef = useRef(false);
+  const wakeLockRef = useRef(null);
+  const visibilityListenerRef = useRef(null);
 
   // Update refs when props change
   useEffect(() => {
@@ -52,6 +58,112 @@ const useLocationTracking = (convoyId, memberId, options = {}) => {
     return { ...defaultConfig, ...options };
   }, [options]);
 
+  // Wake Lock API functions
+  const requestWakeLock = useCallback(async () => {
+    if (!('wakeLock' in navigator)) {
+      setWakeLockStatus('unsupported');
+      console.log('📱 Wake Lock API not supported in this browser');
+      return null;
+    }
+
+    try {
+      const wakeLock = await navigator.wakeLock.request('screen');
+      wakeLockRef.current = wakeLock;
+      setWakeLockStatus('active');
+      console.log('🔒 Screen wake lock acquired - screen will stay awake during convoy tracking');
+
+      // Listen for wake lock release
+      wakeLock.addEventListener('release', () => {
+        console.log('🔓 Screen wake lock released');
+        setWakeLockStatus('released');
+        wakeLockRef.current = null;
+      });
+
+      return wakeLock;
+    } catch (err) {
+      console.warn('⚠️ Failed to acquire wake lock:', err);
+      setWakeLockStatus('available');
+      return null;
+    }
+  }, []);
+
+  const releaseWakeLock = useCallback(() => {
+    if (wakeLockRef.current) {
+      wakeLockRef.current.release();
+      wakeLockRef.current = null;
+      setWakeLockStatus('released');
+      console.log('🔓 Screen wake lock manually released');
+    }
+  }, []);
+
+  // Page Visibility API functions
+  const handleVisibilityChange = useCallback(() => {
+    const isHidden = document.hidden;
+
+    if (isHidden) {
+      // App backgrounded
+      console.log('📱 App backgrounded - preserving tracking state');
+      wasTrackingBeforeBackgroundRef.current = isTrackingRef.current;
+
+      // Release wake lock when backgrounded (browser requirement)
+      if (wakeLockRef.current) {
+        releaseWakeLock();
+      }
+    } else {
+      // App foregrounded
+      console.log('📱 App foregrounded - checking if tracking should resume');
+
+      // Automatically restart tracking if it was active before backgrounding
+      if (wasTrackingBeforeBackgroundRef.current && !isTrackingRef.current) {
+        console.log('🔄 Auto-resuming location tracking after returning to foreground');
+        // Use a timeout to avoid circular dependency issues
+        setTimeout(() => {
+          if (wasTrackingBeforeBackgroundRef.current && !isTrackingRef.current) {
+            // Call startTracking through the ref to avoid dependency issues
+            const startTrackingFn = async () => {
+              try {
+                // Create inline handlers to avoid dependency issues
+                const onLocationUpdate = (position) => {
+                  const location = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                    accuracy: position.coords.accuracy,
+                  };
+                  setLastPosition(location);
+                  setUpdateCount(prev => prev + 1);
+                  setError(null);
+                };
+
+                const onLocationError = (error) => {
+                  console.error('Location tracking error:', error);
+                  setError(error);
+                  if (error.code === 1) {
+                    setPermissionStatus('denied');
+                  }
+                };
+
+                await locationService.startTracking(onLocationUpdate, onLocationError);
+                setIsTracking(true);
+                isTrackingRef.current = true;
+                await requestWakeLock();
+                console.log('🔄 Location tracking auto-resumed successfully');
+              } catch (err) {
+                console.error('❌ Failed to auto-resume location tracking:', err);
+                setError(err);
+              }
+            };
+            startTrackingFn();
+          }
+        }, 100);
+      }
+
+      // Re-acquire wake lock if tracking is active
+      if (isTrackingRef.current) {
+        requestWakeLock();
+      }
+    }
+  }, [releaseWakeLock, requestWakeLock]);
+
   // Configure location service only once or when config changes
   useEffect(() => {
     if (!configuredRef.current) {
@@ -74,6 +186,34 @@ const useLocationTracking = (convoyId, memberId, options = {}) => {
       configuredRef.current = true;
     }
   }, [config]);
+
+  // Set up Page Visibility API listener for background/foreground detection
+  useEffect(() => {
+    // Check if Page Visibility API is supported
+    if (typeof document.hidden !== 'undefined') {
+      setWakeLockStatus('wakeLock' in navigator ? 'available' : 'unsupported');
+
+      // Add visibility change listener
+      visibilityListenerRef.current = handleVisibilityChange;
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+
+      console.log('📱 Page Visibility API listener added for background/foreground detection');
+    } else {
+      console.warn('⚠️ Page Visibility API not supported in this browser');
+    }
+
+    // Cleanup function
+    return () => {
+      if (visibilityListenerRef.current) {
+        document.removeEventListener('visibilitychange', visibilityListenerRef.current);
+        visibilityListenerRef.current = null;
+        console.log('📱 Page Visibility API listener removed');
+      }
+
+      // Release wake lock on cleanup
+      releaseWakeLock();
+    };
+  }, [handleVisibilityChange, releaseWakeLock]);
 
   // Utility function to calculate distance between two coordinates
   const calculateDistance = useCallback((lat1, lng1, lat2, lng2) => {
@@ -264,6 +404,9 @@ const useLocationTracking = (convoyId, memberId, options = {}) => {
         isTrackingRef.current = true;
         setPermissionStatus('granted');
 
+        // Request wake lock to keep screen awake during tracking
+        await requestWakeLock();
+
         console.log(`✅ Location tracking started successfully (interval: ${config.updateIntervalMs}ms)`);
 
       } catch (err) {
@@ -298,6 +441,9 @@ const useLocationTracking = (convoyId, memberId, options = {}) => {
     setIsTracking(false);
     isTrackingRef.current = false;
     setError(null);
+
+    // Release wake lock when stopping tracking
+    releaseWakeLock();
 
     // Clear the start promise ref
     startTrackingPromiseRef.current = null;
@@ -378,16 +524,19 @@ const useLocationTracking = (convoyId, memberId, options = {}) => {
     error,
     permissionStatus,
     updateCount,
-    
+    wakeLockStatus,
+
     // Actions
     startTracking,
     stopTracking,
     getCurrentPosition,
-    
+    requestWakeLock,
+    releaseWakeLock,
+
     // Utilities
     isSupported: locationService.isGeolocationSupported(),
     getLocationServiceStatus,
-    
+
     // Configuration
     config: {
       updateIntervalMs: config.updateIntervalMs,

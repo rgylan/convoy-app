@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import MapComponent from '../components/map/MapComponent';
 import ShareConvoy from '../components/convoy/ShareConvoy';
@@ -13,6 +13,7 @@ import ErrorMessage from '../components/common/ErrorMessage';
 import ConvoyLogger from '../utils/logger';
 import { getLocationConfig } from '../config/locationConfig';
 import { API_ENDPOINTS } from '../config/api';
+import '../styles/BackgroundWarning.css';
 
 // Import test utilities in development mode
 if (process.env.NODE_ENV === 'development') {
@@ -33,6 +34,11 @@ const ConvoyMap = () => {
   const [showStatusBar, setShowStatusBar] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showBackgroundWarning, setShowBackgroundWarning] = useState(false);
+
+  // Track if background warning has been dismissed for this tracking session
+  const backgroundWarningDismissedRef = useRef(false);
+  const currentTrackingSessionRef = useRef(null);
 
   // Get member ID from session storage
   const memberId = sessionStorage.getItem('memberId');
@@ -47,9 +53,12 @@ const ConvoyMap = () => {
     error: locationError,
     permissionStatus,
     updateCount,
+    wakeLockStatus,
     startTracking,
     stopTracking,
     getCurrentPosition,
+    requestWakeLock,
+    releaseWakeLock,
     isSupported: isLocationSupported
   } = useLocationTracking(convoyId, memberId, {
     ...locationConfig,
@@ -76,8 +85,48 @@ const ConvoyMap = () => {
     }
   }, [wsAlerts]);
 
+  // Show background tracking warning when tracking starts (once per session)
+  useEffect(() => {
+    if (isTracking) {
+      // Create a unique session ID when tracking starts
+      if (!currentTrackingSessionRef.current) {
+        currentTrackingSessionRef.current = Date.now();
+        backgroundWarningDismissedRef.current = false;
+        console.log('📱 New tracking session started:', currentTrackingSessionRef.current);
+      }
+
+      // Only show warning if not already dismissed for this session
+      if (!backgroundWarningDismissedRef.current && !showBackgroundWarning) {
+        // Show warning after a brief delay to let tracking start
+        const timer = setTimeout(() => {
+          if (!backgroundWarningDismissedRef.current) {
+            setShowBackgroundWarning(true);
+            console.log('📱 Background warning shown for session:', currentTrackingSessionRef.current);
+          }
+        }, 2000);
+
+        return () => clearTimeout(timer);
+      }
+    } else {
+      // Reset session when tracking stops
+      if (currentTrackingSessionRef.current) {
+        console.log('📱 Tracking session ended:', currentTrackingSessionRef.current);
+        currentTrackingSessionRef.current = null;
+        backgroundWarningDismissedRef.current = false;
+        setShowBackgroundWarning(false);
+      }
+    }
+  }, [isTracking, showBackgroundWarning]);
+
   const handleDismissAlert = useCallback((alertId) => {
     setAlerts(prev => prev.filter(alert => alert.id !== alertId));
+  }, []);
+
+  // Handle background warning dismissal
+  const handleDismissBackgroundWarning = useCallback(() => {
+    console.log('📱 Background warning dismissed for session:', currentTrackingSessionRef.current);
+    backgroundWarningDismissedRef.current = true;
+    setShowBackgroundWarning(false);
   }, []);
 
   // Generate alerts for convoy status events
@@ -377,6 +426,53 @@ const ConvoyMap = () => {
           position="bottom-right"
           autoCloseDelay={5000}
         />
+
+        {/* Background Tracking Warning */}
+        {showBackgroundWarning && (
+          <div className="background-warning-overlay">
+            <div className="background-warning-panel">
+              <div className="background-warning-header">
+                <h3>📱 Keep App Active for Best Tracking</h3>
+                <button
+                  className="background-warning-close"
+                  onClick={handleDismissBackgroundWarning}
+                  aria-label="Dismiss background tracking warning"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="background-warning-content">
+                <p>For continuous convoy tracking:</p>
+                <ul>
+                  <li>✅ Keep this app in the foreground</li>
+                  <li>✅ Avoid switching to other apps</li>
+                  <li>✅ Keep your screen unlocked</li>
+                  {wakeLockStatus === 'active' && (
+                    <li>🔒 Screen wake lock is active - screen will stay awake</li>
+                  )}
+                  {wakeLockStatus === 'unsupported' && (
+                    <li>⚠️ Wake lock not supported - manually keep screen awake</li>
+                  )}
+                  {wakeLockStatus === 'available' && (
+                    <li>⚠️ Wake lock available but not active</li>
+                  )}
+                </ul>
+                <p className="background-warning-note">
+                  <strong>Note:</strong> Background location tracking is limited on mobile devices.
+                  Location updates may stop when the app is backgrounded.
+                </p>
+              </div>
+              <div className="background-warning-actions">
+                <button
+                  className="background-warning-dismiss"
+                  onClick={handleDismissBackgroundWarning}
+                >
+                  Got it!
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Optional: Member Status Panel - uncomment to enable */}
         {/*

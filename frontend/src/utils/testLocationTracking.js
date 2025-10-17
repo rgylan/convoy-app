@@ -197,6 +197,106 @@ export const createTestConvoyAndMember = async () => {
 };
 
 // Export for use in browser console
+/**
+ * Test background/sleep mode detection and wake lock functionality
+ */
+export const testBackgroundDetection = () => {
+  console.log('🧪 Testing Background/Sleep Mode Detection');
+
+  const results = {
+    pageVisibilitySupported: typeof document.hidden !== 'undefined',
+    wakeLockSupported: 'wakeLock' in navigator,
+    currentVisibilityState: document.visibilityState,
+    isHidden: document.hidden,
+    timestamp: new Date().toISOString()
+  };
+
+  console.log('📱 Page Visibility API Support:', results.pageVisibilitySupported);
+  console.log('🔒 Wake Lock API Support:', results.wakeLockSupported);
+  console.log('👁️ Current Visibility State:', results.currentVisibilityState);
+  console.log('🙈 Is Hidden:', results.isHidden);
+
+  if (results.pageVisibilitySupported) {
+    console.log('✅ Page Visibility API is supported - background detection will work');
+
+    // Add a temporary listener to test visibility changes
+    const testListener = () => {
+      console.log('📱 Visibility changed:', {
+        hidden: document.hidden,
+        visibilityState: document.visibilityState,
+        timestamp: new Date().toISOString()
+      });
+    };
+
+    document.addEventListener('visibilitychange', testListener);
+
+    // Remove listener after 30 seconds
+    setTimeout(() => {
+      document.removeEventListener('visibilitychange', testListener);
+      console.log('🧹 Test visibility listener removed');
+    }, 30000);
+
+    console.log('👂 Test visibility listener added for 30 seconds - try switching tabs or minimizing browser');
+  } else {
+    console.warn('⚠️ Page Visibility API not supported - background detection will not work');
+  }
+
+  if (results.wakeLockSupported) {
+    console.log('✅ Wake Lock API is supported - screen can be kept awake');
+  } else {
+    console.warn('⚠️ Wake Lock API not supported - screen may sleep during tracking');
+  }
+
+  return results;
+};
+
+/**
+ * Test wake lock functionality (if supported)
+ */
+export const testWakeLock = async () => {
+  console.log('🧪 Testing Wake Lock Functionality');
+
+  if (!('wakeLock' in navigator)) {
+    console.warn('⚠️ Wake Lock API not supported in this browser');
+    return { supported: false };
+  }
+
+  try {
+    console.log('🔒 Requesting screen wake lock...');
+    const wakeLock = await navigator.wakeLock.request('screen');
+
+    console.log('✅ Wake lock acquired successfully');
+    console.log('🔒 Wake lock type:', wakeLock.type);
+    console.log('🔒 Wake lock released:', wakeLock.released);
+
+    // Listen for release
+    wakeLock.addEventListener('release', () => {
+      console.log('🔓 Wake lock was released');
+    });
+
+    // Release after 5 seconds for testing
+    setTimeout(() => {
+      wakeLock.release();
+      console.log('🔓 Wake lock manually released after 5 seconds');
+    }, 5000);
+
+    return {
+      supported: true,
+      acquired: true,
+      type: wakeLock.type,
+      released: wakeLock.released
+    };
+
+  } catch (err) {
+    console.error('❌ Failed to acquire wake lock:', err);
+    return {
+      supported: true,
+      acquired: false,
+      error: err.message
+    };
+  }
+};
+
 if (typeof window !== 'undefined') {
   window.locationTrackingTests = {
     testLocationServiceMock,
@@ -205,8 +305,11 @@ if (typeof window !== 'undefined') {
     testGeolocationSupport,
     testLocationPermission,
     runAllLocationTests,
-    createTestConvoyAndMember
+    createTestConvoyAndMember,
+    testBackgroundDetection,
+    testWakeLock
   };
-  
+
   console.log('🔧 Location tracking tests available in window.locationTrackingTests');
+  console.log('📱 New tests: testBackgroundDetection(), testWakeLock()');
 }

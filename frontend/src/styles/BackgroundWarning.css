@@ -1,0 +1,313 @@
+/* Background Tracking Warning Component */
+/* Apple Maps-inspired glassmorphism design with responsive behavior */
+
+.background-warning-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 20px;
+  animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.background-warning-panel {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    0 2px 8px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  max-width: 480px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.background-warning-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 24px 16px 24px;
+  border-bottom: 1px solid rgba(26, 44, 66, 0.1);
+}
+
+.background-warning-header h3 {
+  color: #1A2C42;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.background-warning-close {
+  background: rgba(46, 134, 222, 0.1);
+  color: #2E86DE;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+  margin-left: 16px;
+}
+
+.background-warning-close:hover {
+  background: rgba(46, 134, 222, 0.2);
+  transform: scale(1.05);
+}
+
+.background-warning-close:focus {
+  outline: 2px solid #1A2C42;
+  outline-offset: 2px;
+}
+
+.background-warning-content {
+  padding: 16px 24px 24px 24px;
+}
+
+.background-warning-content p {
+  color: #1A2C42;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  margin: 0 0 16px 0;
+}
+
+.background-warning-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+}
+
+.background-warning-content li {
+  color: #1A2C42;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.6;
+  padding: 8px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.background-warning-note {
+  background: rgba(46, 134, 222, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 16px !important;
+  border-left: 4px solid #2E86DE;
+}
+
+.background-warning-note strong {
+  color: #1A2C42;
+  font-weight: 600;
+}
+
+.background-warning-actions {
+  padding: 0 24px 24px 24px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.background-warning-dismiss {
+  background: #1A2C42;
+  color: white;
+  border: none;
+  border-radius: 16px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 44px;
+}
+
+.background-warning-dismiss:hover {
+  background: #2E4A66;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(26, 44, 66, 0.3);
+}
+
+.background-warning-dismiss:focus {
+  outline: 2px solid #2E86DE;
+  outline-offset: 2px;
+}
+
+.background-warning-dismiss:active {
+  transform: translateY(0);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Responsive Design */
+
+/* Mobile (≤768px) */
+@media (max-width: 768px) {
+  .background-warning-overlay {
+    padding: 16px;
+    align-items: flex-end;
+  }
+  
+  .background-warning-panel {
+    border-radius: 20px 20px 0 0;
+    max-height: 85vh;
+    width: 100%;
+    margin-bottom: 0;
+  }
+  
+  .background-warning-header {
+    padding: 20px 20px 16px 20px;
+  }
+  
+  .background-warning-header h3 {
+    font-size: 17px;
+  }
+  
+  .background-warning-close {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+  
+  .background-warning-content {
+    padding: 16px 20px 20px 20px;
+  }
+  
+  .background-warning-content p {
+    font-size: 15px;
+  }
+  
+  .background-warning-content li {
+    font-size: 14px;
+  }
+  
+  .background-warning-actions {
+    padding: 0 20px 20px 20px;
+  }
+  
+  .background-warning-dismiss {
+    width: 100%;
+    padding: 16px 24px;
+    font-size: 17px;
+    min-height: 50px;
+  }
+}
+
+/* Tablet (769px-1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .background-warning-overlay {
+    padding: 24px;
+  }
+  
+  .background-warning-panel {
+    max-width: 520px;
+  }
+}
+
+/* Desktop (1025px+) */
+@media (min-width: 1025px) {
+  .background-warning-overlay {
+    padding: 32px;
+  }
+  
+  .background-warning-panel {
+    max-width: 560px;
+  }
+  
+  .background-warning-header h3 {
+    font-size: 19px;
+  }
+  
+  .background-warning-content p {
+    font-size: 17px;
+  }
+  
+  .background-warning-content li {
+    font-size: 16px;
+  }
+}
+
+/* Browser compatibility fallbacks */
+@supports not (backdrop-filter: blur(20px)) {
+  .background-warning-overlay {
+    background: rgba(0, 0, 0, 0.6);
+  }
+  
+  .background-warning-panel {
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 
+      0 12px 40px rgba(0, 0, 0, 0.15),
+      0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .background-warning-panel {
+    border: 2px solid #1A2C42;
+  }
+  
+  .background-warning-close {
+    border: 1px solid #2E86DE;
+  }
+  
+  .background-warning-dismiss {
+    border: 2px solid #1A2C42;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .background-warning-overlay,
+  .background-warning-panel,
+  .background-warning-close,
+  .background-warning-dismiss {
+    animation: none;
+    transition: none;
+  }
+  
+  .background-warning-close:hover,
+  .background-warning-dismiss:hover {
+    transform: none;
+  }
+}
