@@ -11,10 +11,10 @@ import (
 	"time"
 )
 
-// Monitoring thresholds
+// Monitoring thresholds - Conservative values to reduce false alerts while maintaining safety
 const (
-	MaxDistanceFromConvoy        = 2.0  // kilometers
-	DisconnectedTimeout          = 30   // seconds - time before marking as inactive
+	MaxDistanceFromConvoy        = 3.0  // kilometers - accommodates normal highway convoy spread and traffic separation
+	DisconnectedTimeout          = 60   // seconds - reduces false alerts from temporary GPS/network issues while maintaining timely detection
 	InactiveCleanupTimeout       = 3600 // 1 hour - time before closing inactive WebSocket connections
 	ScatteredThreshold           = 0.5  // 50% of members far from center
 	SingleMemberScatteredTimeout = 300  // 5 minutes for single-member convoys
