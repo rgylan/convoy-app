@@ -1,5 +1,5 @@
-import React from 'react';
-import { MapContainer, Marker, Popup, Tooltip } from 'react-leaflet';
+import React, { useEffect, useRef } from 'react';
+import { MapContainer, Marker, Popup, Tooltip, useMap } from 'react-leaflet';
 import { Icon, DivIcon } from 'leaflet';
 import MapSidebar from './MapSidebar';
 import ZoomControl from './ZoomControl';
@@ -100,6 +100,41 @@ const destinationIcon = new Icon({
   shadowSize: [41, 41]
 });
 
+// Component to handle auto-focus on current user's location (one-time on initial render)
+const AutoFocusOnUser = ({ members, currentUserId }) => {
+  const map = useMap();
+  const hasAutoFocused = useRef(false);
+
+  useEffect(() => {
+    // Only auto-focus once on initial render
+    if (hasAutoFocused.current || !currentUserId || !members.length) {
+      return;
+    }
+
+    // Find current user's member object
+    const currentUserMember = members.find(member =>
+      member.id.toString() === currentUserId.toString()
+    );
+
+    if (currentUserMember && currentUserMember.location) {
+      // Auto-focus on current user's location with zoom level 13
+      map.setView(currentUserMember.location, 13);
+      hasAutoFocused.current = true;
+
+      if (process.env.NODE_ENV === 'development') {
+        console.log('MapComponent: Auto-focused on current user location', {
+          userId: currentUserId,
+          userName: currentUserMember.name,
+          location: currentUserMember.location,
+          zoom: 13
+        });
+      }
+    }
+  }, [map, members, currentUserId]);
+
+  return null; // This component doesn't render anything
+};
+
 // A new component to automatically adjust the map's view
 const MapComponent = ({
   members,
@@ -110,7 +145,8 @@ const MapComponent = ({
   onToggleStatus,
   convoyHealth,
   alerts = [], // Add alerts prop for StatusPanel
-  locationTracking = null // Optional location tracking props
+  locationTracking = null, // Optional location tracking props
+  currentUserId = null // Current user ID for auto-focus functionality
 }) => {
   // Set an initial center
   const initialCenter = [14.5995, 120.9842]; // Manila
@@ -156,6 +192,9 @@ const MapComponent = ({
         className="map-container"
         zoomControl={false} // Disable default zoom control
       >
+        {/* Auto-focus on current user's location (one-time on initial render) */}
+        <AutoFocusOnUser members={members} currentUserId={currentUserId} />
+
         {/* OpenFreeMap vector tiles using MapLibre GL */}
         <OpenFreeMapLayer
           mapStyle="liberty"

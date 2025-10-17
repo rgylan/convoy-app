@@ -361,6 +361,7 @@ const ConvoyMap = () => {
           onToggleStatus={handleToggleStatus}
           convoyHealth={getConvoyHealthStatus()}
           alerts={alerts}
+          currentUserId={memberId} // Pass current user ID for auto-focus functionality
           locationTracking={{
             isTracking,
             permissionStatus,

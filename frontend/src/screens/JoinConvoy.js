@@ -35,9 +35,43 @@ const JoinConvoy = () => {
         userAgent: navigator.userAgent
       });
 
-      // Hardcode location to Makati City for viewing purposes
-      const latitude = 14.5547;
-      const longitude = 121.0244;
+      // Try to get user's actual location, fallback to Manila if not available
+      let latitude, longitude;
+
+      try {
+        // Attempt to get current position with timeout
+        const position = await new Promise((resolve, reject) => {
+          if (!navigator.geolocation) {
+            reject(new Error('Geolocation not supported'));
+            return;
+          }
+
+          navigator.geolocation.getCurrentPosition(
+            resolve,
+            reject,
+            {
+              timeout: 5000, // 5 second timeout
+              enableHighAccuracy: true,
+              maximumAge: 60000 // Accept cached position up to 1 minute old
+            }
+          );
+        });
+
+        latitude = position.coords.latitude;
+        longitude = position.coords.longitude;
+
+        console.log('📱 [MOBILE] Using actual user location:', { latitude, longitude });
+
+      } catch (error) {
+        // Fallback to Manila coordinates if geolocation fails
+        latitude = 14.5995;  // Manila coordinates
+        longitude = 120.9842;
+
+        console.log('📱 [MOBILE] Geolocation failed, using Manila default:', {
+          error: error.message,
+          fallbackLocation: { latitude, longitude }
+        });
+      }
 
       const newMember = {
         name: trimmedName,
