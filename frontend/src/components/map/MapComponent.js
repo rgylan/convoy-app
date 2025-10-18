@@ -5,9 +5,9 @@ import MapSidebar from './MapSidebar';
 import ZoomControl from './ZoomControl';
 import OpenFreeMapLayer from './OpenFreeMapLayer';
 import MapAutoFocusController from './MapAutoFocusController';
+import CustomTeardropMarker from './CustomTeardropMarker';
 
 import LocationStatusControl from './LocationStatusControl';
-import MemberStatusIndicator from '../convoy/MemberStatusIndicator';
 import './LocationStatusControl.css';
 import './ZoomControl.css';
 
@@ -15,42 +15,8 @@ import './ZoomControl.css';
 
 
 
-// Custom icons for better visualization with status indicators
-const carIcon = new Icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-});
-
-const carIconDisconnected = new Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
-
-const carIconLagging = new Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
-
-const getMarkerIcon = (memberStatus) => {
-  switch (memberStatus) {
-    case 'disconnected':
-      return carIconDisconnected;
-    case 'lagging':
-      return carIconLagging;
-    case 'connected':
-    default:
-      return carIcon;
-  }
-};
+// Note: Custom teardrop markers are now used for member markers
+// Destination marker still uses traditional Leaflet icon
 
 const getMarkerOpacity = (memberStatus) => {
   switch (memberStatus) {
@@ -167,40 +133,19 @@ const MapComponent = ({
           </Marker>
         )}
 
-      {/* Markers for each convoy member with status indicators */}
+      {/* Custom teardrop markers for each convoy member */}
       {members.map(member => {
         const adjustedPosition = applyMarkerOffset(member.location, destination);
-        const memberIcon = getMarkerIcon(member.status);
         const memberOpacity = getMarkerOpacity(member.status);
-        
+
         return (
-          <Marker 
-            key={member.id} 
-            position={adjustedPosition} 
-            icon={memberIcon}
+          <CustomTeardropMarker
+            key={member.id}
+            member={member}
+            destination={destination}
+            position={adjustedPosition}
             opacity={memberOpacity}
-          >
-            <Popup>
-              <MemberStatusIndicator
-                member={member}
-                destination={destination}
-                variant="card"
-                showDetails={true}
-              />
-            </Popup>
-            <Tooltip
-              direction="top"
-              offset={[0, -45]}
-              permanent={true}
-              className="convoy-member-tooltip"
-            >
-              <MemberStatusIndicator
-                member={member}
-                destination={destination}
-                variant="visual-only-tooltip"
-              />
-            </Tooltip>
-          </Marker>
+          />
         );
       })}
 
