@@ -7,7 +7,7 @@
   max-height: 75vh;
   overflow-y: auto;
   pointer-events: none;
-  padding: 3px;
+  padding: 2px;
 }
 
 /* Position variants - adjusted to avoid map controls */
@@ -38,7 +38,7 @@
   box-shadow:
     0 6px 24px rgba(0, 0, 0, 0.08),
     0 2px 6px rgba(0, 0, 0, 0.12);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   overflow: hidden;
   pointer-events: auto;
   animation: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1);
@@ -110,7 +110,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 6px 32px 6px 14px; /* Reduced right padding for smaller floating close button */
+  padding: 4px 32px 4px 14px; /* Optimized vertical padding for compact layout */
   background: rgba(255, 255, 255, 0.3);
 }
 
@@ -118,8 +118,8 @@
 .alert-main-content {
   display: flex;
   align-items: flex-start;
-  padding: 9px 32px 9px 14px; /* Reduced right padding for smaller floating close button */
-  gap: 12px;
+  padding: 7px 32px 7px 14px; /* Optimized vertical padding for compact layout */
+  gap: 10px;
 }
 
 /* Icon container - Left side of main content */
@@ -171,7 +171,7 @@
   font-weight: 600;
   color: rgba(0, 0, 0, 0.95);
   line-height: 1.5;
-  margin-bottom: 5px;
+  margin-bottom: 3px;
   letter-spacing: -0.25px;
   font-family: 'Poppins', 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
 }
@@ -182,7 +182,7 @@
   line-height: 1.4;
   font-weight: 400;
   font-family: 'Poppins', 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
-  margin-top: 3px;
+  margin-top: 2px;
 }
 
 /* Clean Animations for Right-Side Entry */
@@ -247,12 +247,12 @@
   }
 
   .alert-top-bar {
-    padding: 5px 30px 5px 13px; /* Reduced right padding for smaller floating close button */
+    padding: 4px 30px 4px 13px; /* Optimized vertical padding for compact layout */
   }
 
   .alert-main-content {
-    padding: 8px 30px 8px 13px; /* Reduced right padding for smaller floating close button */
-    gap: 10px;
+    padding: 6px 30px 6px 13px; /* Optimized vertical padding for compact layout */
+    gap: 8px;
   }
 
   .alert-message {
@@ -289,7 +289,7 @@
   .alert-panel {
     max-width: 92%;
     width: 92%;
-    padding: 2px;
+    padding: 1px;
   }
 
   .alert-panel--top-right,
@@ -307,12 +307,12 @@
   }
 
   .alert-top-bar {
-    padding: 5px 28px 5px 12px; /* Reduced right padding for smaller floating close button */
+    padding: 4px 28px 4px 12px; /* Optimized vertical padding for compact layout */
   }
 
   .alert-main-content {
-    padding: 7px 28px 7px 12px; /* Reduced right padding for smaller floating close button */
-    gap: 8px;
+    padding: 6px 28px 6px 12px; /* Optimized vertical padding for compact layout */
+    gap: 6px;
   }
 
   .alert-message {
@@ -356,24 +356,24 @@
   }
 
   .alert-top-bar {
-    padding: 4px 24px 4px 10px; /* Reduced right padding for smaller floating close button */
+    padding: 3px 24px 3px 10px; /* Optimized vertical padding for compact layout */
   }
 
   .alert-main-content {
-    padding: 5px 24px 5px 10px; /* Reduced right padding for smaller floating close button */
-    gap: 6px;
+    padding: 4px 24px 4px 10px; /* Optimized vertical padding for compact layout */
+    gap: 5px;
   }
 
   .alert-message {
     font-size: 17px;
     line-height: 1.4;
-    margin-bottom: 3px;
+    margin-bottom: 2px;
   }
 
   .alert-details {
     font-size: 13px;
     line-height: 1.4;
-    margin-top: 2px;
+    margin-top: 1px;
   }
 
   .alert-timestamp {
@@ -407,24 +407,24 @@
   }
 
   .alert-top-bar {
-    padding: 3px 20px 3px 8px; /* Reduced right padding for smaller floating close button */
+    padding: 2px 20px 2px 8px; /* Optimized vertical padding for compact layout */
   }
 
   .alert-main-content {
-    padding: 4px 20px 4px 8px; /* Reduced right padding for smaller floating close button */
-    gap: 5px;
+    padding: 3px 20px 3px 8px; /* Optimized vertical padding for compact layout */
+    gap: 4px;
   }
 
   .alert-message {
     font-size: 16px;
     line-height: 1.4;
-    margin-bottom: 2px;
+    margin-bottom: 1px;
   }
 
   .alert-details {
     font-size: 12px;
     line-height: 1.4;
-    margin-top: 1px;
+    margin-top: 0px;
   }
 
   .alert-timestamp {
