@@ -110,7 +110,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 4px 32px 4px 14px; /* Optimized vertical padding for compact layout */
+  padding: 4px 32px 2px 14px; /* Reduced bottom padding for tighter spacing */
   background: rgba(255, 255, 255, 0.3);
 }
 
@@ -118,7 +118,7 @@
 .alert-main-content {
   display: flex;
   align-items: flex-start;
-  padding: 7px 32px 7px 14px; /* Optimized vertical padding for compact layout */
+  padding: 4px 32px 7px 14px; /* Reduced top padding for tighter spacing */
   gap: 10px;
 }
 
@@ -134,6 +134,7 @@
 .alert-text-content {
   flex: 1;
   min-width: 0; /* Allows text to wrap properly */
+  text-align: left; /* Left-align all text content */
 }
 
 .alert-icon {
@@ -155,9 +156,10 @@
 }
 
 /* AlertPanel-specific close button size override - Reduced visual prominence */
-.alert-item .close-button--floating {
-  width: 28px;
-  height: 28px;
+.alert-item .close-button.close-button--floating {
+  width: 28px !important;
+  height: 28px !important;
+  min-height: 28px !important; /* Override global min-height: 44px */
   top: 6px;
   right: 6px;
 }
@@ -247,11 +249,11 @@
   }
 
   .alert-top-bar {
-    padding: 4px 30px 4px 13px; /* Optimized vertical padding for compact layout */
+    padding: 4px 30px 2px 13px; /* Reduced bottom padding for tighter spacing */
   }
 
   .alert-main-content {
-    padding: 6px 30px 6px 13px; /* Optimized vertical padding for compact layout */
+    padding: 4px 30px 6px 13px; /* Reduced top padding for tighter spacing */
     gap: 8px;
   }
 
@@ -270,17 +272,18 @@
   }
 }
 
-/* AlertPanel close button mobile override - WCAG AA compliant */
+/* AlertPanel close button mobile override - Reduced visual prominence */
 @media (max-width: 768px) {
-  .alert-item .close-button--floating {
-    width: 36px;
-    height: 36px;
+  /* More specific selector to override CloseButton.css mobile styles */
+  .alert-item .close-button.close-button--floating {
+    width: 28px !important;
+    height: 28px !important;
     top: 5px;
     right: 5px;
   }
 
   .alert-item .close-button--floating .material-icons {
-    font-size: 18px;
+    font-size: 16px;
   }
 }
 
@@ -307,11 +310,11 @@
   }
 
   .alert-top-bar {
-    padding: 4px 28px 4px 12px; /* Optimized vertical padding for compact layout */
+    padding: 4px 28px 2px 12px; /* Reduced bottom padding for tighter spacing */
   }
 
   .alert-main-content {
-    padding: 6px 28px 6px 12px; /* Optimized vertical padding for compact layout */
+    padding: 4px 28px 6px 12px; /* Reduced top padding for tighter spacing */
     gap: 6px;
   }
 
@@ -356,11 +359,11 @@
   }
 
   .alert-top-bar {
-    padding: 3px 24px 3px 10px; /* Optimized vertical padding for compact layout */
+    padding: 3px 24px 2px 10px; /* Reduced bottom padding for tighter spacing */
   }
 
   .alert-main-content {
-    padding: 4px 24px 4px 10px; /* Optimized vertical padding for compact layout */
+    padding: 3px 24px 4px 10px; /* Reduced top padding for tighter spacing */
     gap: 5px;
   }
 
@@ -407,11 +410,11 @@
   }
 
   .alert-top-bar {
-    padding: 2px 20px 2px 8px; /* Optimized vertical padding for compact layout */
+    padding: 2px 20px 1px 8px; /* Reduced bottom padding for tighter spacing */
   }
 
   .alert-main-content {
-    padding: 3px 20px 3px 8px; /* Optimized vertical padding for compact layout */
+    padding: 2px 20px 3px 8px; /* Reduced top padding for tighter spacing */
     gap: 4px;
   }
 
