@@ -134,20 +134,7 @@ main {
   background-color: #ff8e53;
 }
 
-.close-button {
-  padding: 12px 25px;
-  border: none;
-  background-color: #6c757d;
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.2s;
-}
 
-.close-button:hover {
-  background-color: #5a6268;
-}
 
 /* Modal responsive design */
 @media (max-width: 768px) {
@@ -185,10 +172,7 @@ main {
     font-size: 14px;
   }
 
-  .close-button {
-    padding: 10px 20px;
-    font-size: 14px;
-  }
+
 }
 
 @media (max-width: 480px) {
@@ -231,11 +215,7 @@ main {
     width: 100%;
   }
 
-  .close-button {
-    padding: 8px 15px;
-    font-size: 13px;
-    width: 100%;
-  }
+
 }
 
 /* Home Screen Styles - Moved to frontend/src/screens/Home.css */

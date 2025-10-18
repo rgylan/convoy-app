@@ -1,0 +1,126 @@
+/* 
+ * Shared Close Button Component Styles
+ * Apple Maps-inspired glassmorphism design standards
+ * Supports standard and floating variants with responsive sizing
+ */
+
+/* Base Close Button Styles */
+.close-button {
+  background: rgba(46, 134, 222, 0.1);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+}
+
+.close-button:hover {
+  background: rgba(46, 134, 222, 0.15);
+  transform: scale(1.05);
+}
+
+.close-button:focus {
+  outline: 2px solid #54A0FF;
+  outline-offset: 2px;
+}
+
+.close-button:focus-visible {
+  outline: 2px solid #54A0FF;
+  outline-offset: 2px;
+}
+
+.close-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.close-button:disabled:hover {
+  background: rgba(46, 134, 222, 0.1);
+  transform: none;
+}
+
+.close-button .material-icons {
+  font-size: 18px;
+  color: #2E86DE;
+  user-select: none;
+}
+
+/* Standard Variant - For headers and panels */
+/* .close-button--standard inherits all base .close-button styles */
+
+/* Floating Variant - For overlays and alerts */
+.close-button--floating {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  border: 1px solid rgba(46, 134, 222, 0.12);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px); /* Safari support */
+}
+
+.close-button--floating:hover {
+  background: rgba(46, 134, 222, 0.15);
+  transform: scale(1.05);
+}
+
+/* Mobile Responsive Sizing - WCAG AA Touch Target Compliance */
+@media (max-width: 768px) {
+  .close-button {
+    width: 44px;
+    height: 44px;
+  }
+
+  .close-button .material-icons {
+    font-size: 20px;
+  }
+
+  .close-button--floating {
+    top: 6px;
+    right: 6px;
+  }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .close-button {
+    background: rgba(46, 134, 222, 0.2);
+    border: 2px solid #2E86DE;
+  }
+
+  .close-button:hover {
+    background: rgba(46, 134, 222, 0.3);
+  }
+
+  .close-button--floating {
+    border: 2px solid #2E86DE;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .close-button {
+    transition: none;
+  }
+
+  .close-button:hover {
+    transform: none;
+  }
+
+  .close-button--floating:hover {
+    transform: none;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .close-button {
+    display: none;
+  }
+}

@@ -1,4 +1,5 @@
 import React from 'react';
+import CloseButton from '../common/CloseButton';
 import './LeaveConvoyModal.css';
 
 const LeaveConvoyModal = ({ memberCount, isLeader, convoyHealth, onConfirm, onCancel }) => {
@@ -19,13 +20,10 @@ const LeaveConvoyModal = ({ memberCount, isLeader, convoyHealth, onConfirm, onCa
       >
         <div className="modal-header">
           <h2 id="leave-modal-title">Leave Convoy?</h2>
-          <button
-            className="standard-close-button"
-            onClick={onCancel} // X button
-            aria-label="Close leave convoy modal"
-          >
-            <span className="material-icons">close</span>
-          </button>
+          <CloseButton
+            onClick={onCancel}
+            ariaLabel="Close leave convoy modal"
+          />
         </div>
         <p id="leave-modal-description">
           You'll stop sharing your location and won't receive convoy updates.

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import CloseButton from '../common/CloseButton';
 import './AlertPanel.css';
 
 const AlertPanel = ({
@@ -149,13 +150,11 @@ const AlertPanel = ({
       >
         {/* Floating close button in top-right corner */}
         {currentAlert.dismissible !== false && (
-          <button
-            className="standard-close-button alert-close--floating"
+          <CloseButton
+            variant="floating"
             onClick={() => handleDismiss(currentAlert.id)}
-            aria-label="Dismiss alert"
-          >
-            <span className="material-icons">close</span>
-          </button>
+            ariaLabel="Dismiss alert"
+          />
         )}
 
         {/* Top bar with timestamp only */}

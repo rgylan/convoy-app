@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import CloseButton from '../common/CloseButton';
 import './SearchPanel.css';
 
 const SearchPanel = ({ isExpanded, onClose, onDestinationSelect }) => {
@@ -151,13 +152,10 @@ const SearchPanel = ({ isExpanded, onClose, onDestinationSelect }) => {
             <span className="material-icons">search</span>
             <span>Search Destination</span>
           </div>
-          <button
-            className="standard-close-button"
+          <CloseButton
             onClick={onClose}
-            aria-label="Close search panel"
-          >
-            <span className="material-icons">close</span>
-          </button>
+            ariaLabel="Close search panel"
+          />
         </div>
         
         <div className="search-input-container">

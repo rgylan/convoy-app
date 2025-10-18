@@ -1,4 +1,5 @@
 import React from 'react';
+import CloseButton from '../common/CloseButton';
 import './StatusPanel.css';
 
 const StatusPanel = ({ 
@@ -120,8 +121,7 @@ const StatusPanel = ({
                 {criticalAlerts}
               </span>
             )}
-            <button
-              className="standard-close-button"
+            <CloseButton
               onClick={onClose}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
@@ -129,11 +129,8 @@ const StatusPanel = ({
                   onClose();
                 }
               }}
-              aria-label="Close status panel"
-              type="button"
-            >
-              <span className="material-icons">close</span>
-            </button>
+              ariaLabel="Close status panel"
+            />
           </div>
         </div>
 

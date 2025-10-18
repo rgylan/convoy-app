@@ -73,35 +73,7 @@
   letter-spacing: -0.5px;
 }
 
-/* Standard Close Button */
-.standard-close-button {
-  background: rgba(46, 134, 222, 0.1);
-  border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  flex-shrink: 0;
-}
 
-.standard-close-button:hover {
-  background: rgba(46, 134, 222, 0.15);
-  transform: scale(1.05);
-}
-
-.standard-close-button .material-icons {
-  font-size: 18px;
-  color: #2E86DE;
-}
-
-.standard-close-button:focus {
-  outline: 2px solid #54A0FF;
-  outline-offset: 2px;
-}
 
 /* Modal Description */
 .modal-content p {
@@ -177,16 +149,6 @@
 
 /* Mobile Responsive Design */
 @media (max-width: 768px) {
-  /* Mobile close button */
-  .standard-close-button {
-    width: 44px;
-    height: 44px;
-  }
-
-  .standard-close-button .material-icons {
-    font-size: 20px;
-  }
-
   .modal-content {
     width: 95%;
     max-width: none;

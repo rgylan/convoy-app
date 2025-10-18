@@ -110,7 +110,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 6px 36px 6px 14px; /* Extra right padding for floating close button */
+  padding: 6px 32px 6px 14px; /* Reduced right padding for smaller floating close button */
   background: rgba(255, 255, 255, 0.3);
 }
 
@@ -118,7 +118,7 @@
 .alert-main-content {
   display: flex;
   align-items: flex-start;
-  padding: 9px 36px 9px 14px; /* Extra right padding for floating close button */
+  padding: 9px 32px 9px 14px; /* Reduced right padding for smaller floating close button */
   gap: 12px;
 }
 
@@ -154,84 +154,16 @@
   font-family: 'Poppins', 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* Standard Close Button */
-.standard-close-button {
-  background: rgba(46, 134, 222, 0.1);
-  border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  flex-shrink: 0;
+/* AlertPanel-specific close button size override - Reduced visual prominence */
+.alert-item .close-button--floating {
+  width: 28px;
+  height: 28px;
+  top: 6px;
+  right: 6px;
 }
 
-.standard-close-button:hover {
-  background: rgba(46, 134, 222, 0.15);
-  transform: scale(1.05);
-}
-
-.standard-close-button .material-icons {
-  font-size: 18px;
-  color: #2E86DE;
-}
-
-.standard-close-button:focus {
-  outline: 2px solid #54A0FF;
-  outline-offset: 2px;
-}
-
-/* Mobile close button */
-@media (max-width: 768px) {
-  .standard-close-button {
-    width: 44px;
-    height: 44px;
-  }
-
-  .standard-close-button .material-icons {
-    font-size: 20px;
-  }
-}
-
-/* Floating close button positioned in top-right corner */
-.alert-close--floating {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 10;
-  background: rgba(46, 134, 222, 0.1);
-  border: 1px solid rgba(46, 134, 222, 0.12);
-  backdrop-filter: blur(4px);
-  width: 32px;
-  height: 32px;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.alert-close--floating:hover {
-  background: rgba(46, 134, 222, 0.15);
-  transform: scale(1.05);
-}
-
-.alert-close--floating .material-icons {
-  font-size: 18px;
-  color: #2E86DE;
-}
-
-/* Mobile: Scale up for touch targets */
-@media (max-width: 768px) {
-  .alert-close--floating {
-    width: 44px;
-    height: 44px;
-    top: 6px;
-    right: 6px;
-  }
-
-  .alert-close--floating .material-icons {
-    font-size: 20px;
-  }
+.alert-item .close-button--floating .material-icons {
+  font-size: 16px;
 }
 
 .alert-message {
@@ -315,11 +247,11 @@
   }
 
   .alert-top-bar {
-    padding: 5px 33px 5px 13px; /* Extra right padding for floating close button */
+    padding: 5px 30px 5px 13px; /* Reduced right padding for smaller floating close button */
   }
 
   .alert-main-content {
-    padding: 8px 33px 8px 13px; /* Extra right padding for floating close button */
+    padding: 8px 30px 8px 13px; /* Reduced right padding for smaller floating close button */
     gap: 10px;
   }
 
@@ -335,6 +267,20 @@
 
   .alert-timestamp {
     font-size: 13px;
+  }
+}
+
+/* AlertPanel close button mobile override - WCAG AA compliant */
+@media (max-width: 768px) {
+  .alert-item .close-button--floating {
+    width: 36px;
+    height: 36px;
+    top: 5px;
+    right: 5px;
+  }
+
+  .alert-item .close-button--floating .material-icons {
+    font-size: 18px;
   }
 }
 
@@ -361,11 +307,11 @@
   }
 
   .alert-top-bar {
-    padding: 5px 30px 5px 12px; /* Extra right padding for floating close button */
+    padding: 5px 28px 5px 12px; /* Reduced right padding for smaller floating close button */
   }
 
   .alert-main-content {
-    padding: 7px 30px 7px 12px; /* Extra right padding for floating close button */
+    padding: 7px 28px 7px 12px; /* Reduced right padding for smaller floating close button */
     gap: 8px;
   }
 
@@ -384,20 +330,7 @@
     letter-spacing: -0.25px;
   }
 
-  /* Mobile close button */
-  .standard-close-button {
-    width: 44px;
-    height: 44px;
-  }
 
-  .standard-close-button .material-icons {
-    font-size: 20px;
-  }
-
-  .alert-close--floating {
-    top: 6px;
-    right: 6px;
-  }
 }
 
 /* Very Small Mobile (320px - 480px) */
@@ -423,11 +356,11 @@
   }
 
   .alert-top-bar {
-    padding: 4px 26px 4px 10px; /* Extra right padding for floating close button */
+    padding: 4px 24px 4px 10px; /* Reduced right padding for smaller floating close button */
   }
 
   .alert-main-content {
-    padding: 5px 26px 5px 10px; /* Extra right padding for floating close button */
+    padding: 5px 24px 5px 10px; /* Reduced right padding for smaller floating close button */
     gap: 6px;
   }
 
@@ -448,10 +381,7 @@
     letter-spacing: -0.25px;
   }
 
-  .alert-close--floating {
-    top: 5px;
-    right: 5px;
-  }
+
 }
 
 /* Extra Small Mobile (<320px) */
@@ -477,11 +407,11 @@
   }
 
   .alert-top-bar {
-    padding: 3px 22px 3px 8px; /* Extra right padding for floating close button */
+    padding: 3px 20px 3px 8px; /* Reduced right padding for smaller floating close button */
   }
 
   .alert-main-content {
-    padding: 4px 22px 4px 8px; /* Extra right padding for floating close button */
+    padding: 4px 20px 4px 8px; /* Reduced right padding for smaller floating close button */
     gap: 5px;
   }
 
@@ -502,10 +432,7 @@
     letter-spacing: -0.25px;
   }
 
-  .alert-close--floating {
-    top: 4px;
-    right: 4px;
-  }
+
 }
 
 /* Landscape Mobile Optimization */

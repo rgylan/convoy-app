@@ -98,40 +98,7 @@
   color: #2E86DE;
 }
 
-/* Standard Close Button */
-.standard-close-button {
-  background: rgba(46, 134, 222, 0.1);
-  border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  flex-shrink: 0;
-}
 
-.standard-close-button:hover {
-  background: rgba(46, 134, 222, 0.15);
-  transform: scale(1.05);
-}
-
-.standard-close-button .material-icons {
-  font-size: 18px;
-  color: #2E86DE;
-}
-
-.standard-close-button:focus {
-  outline: 2px solid #54A0FF;
-  outline-offset: 2px;
-}
-
-.standard-close-button:focus-visible {
-  outline: 2px solid #54A0FF;
-  outline-offset: 2px;
-}
 
 .search-input-container {
   position: relative;
@@ -684,17 +651,7 @@
 /* Dark Mode Support Removed - Ensuring consistent white/light glassmorphism design across all browsers and operating systems */
 /* This prevents the dark blue theme from appearing on Windows 11 Chrome while maintaining the intended Apple Maps-inspired design */
 
-/* Mobile Close Button Enhancement */
-@media (max-width: 480px) {
-  .standard-close-button {
-    width: 40px;
-    height: 40px;
-  }
 
-  .standard-close-button .material-icons {
-    font-size: 20px;
-  }
-}
 
 /* Mobile Clear Search Button Enhancement - WCAG AA Touch Target Compliance */
 @media (max-width: 768px) {

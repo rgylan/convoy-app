@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
+import CloseButton from '../common/CloseButton';
 import './ShareConvoy.css';
 
 const ShareConvoy = ({ convoyId, onClose }) => {
@@ -98,13 +99,10 @@ const ShareConvoy = ({ convoyId, onClose }) => {
             <span className="material-icons">share</span>
             <span>Share Convoy</span>
           </h2>
-          <button
-            className="standard-close-button"
+          <CloseButton
             onClick={onClose}
-            aria-label="Close share modal"
-          >
-            <span className="material-icons">close</span>
-          </button>
+            ariaLabel="Close share modal"
+          />
         </div>
 
         <p id="share-modal-description">
