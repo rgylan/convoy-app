@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { showErrorToast, showSuccessToast } from '../utils/errorHandler';
 import { API_ENDPOINTS } from '../config/api';
+import locationService from '../services/locationService';
 import './JoinConvoy.css';
 
 const JoinConvoy = () => {
@@ -9,6 +10,37 @@ const JoinConvoy = () => {
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Default fallback location: Luneta Park (Kilometer Zero), Manila
+  const DEFAULT_LOCATION = {
+    lat: 14.5832,
+    lng: 120.9794
+  };
+
+  /**
+   * Attempts to get the user's current location, falls back to Luneta Park if unsuccessful
+   * @returns {Promise<{lat: number, lng: number}>} Location coordinates
+   */
+  const getMemberLocation = async () => {
+    try {
+      console.log('🌍 Attempting to fetch user\'s current location...');
+
+      // Try to get the user's actual current location
+      const position = await locationService.getCurrentPosition();
+      const actualLocation = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+
+      console.log('✅ Successfully obtained user location:', actualLocation);
+      return actualLocation;
+
+    } catch (error) {
+      console.warn('⚠️ Failed to get user location, using Luneta Park fallback:', error.message);
+      console.log('📍 Using default location: Luneta Park (Kilometer Zero), Manila');
+      return DEFAULT_LOCATION;
+    }
+  };
 
   const handleJoin = async (e) => {
     e.preventDefault();
@@ -35,16 +67,18 @@ const JoinConvoy = () => {
         userAgent: navigator.userAgent
       });
 
-      // Hardcode location to Makati City for viewing purposes
-      const latitude = 14.5547;
-      const longitude = 121.0244;
+      // Get member's location (actual location or Luneta Park fallback)
+      const memberLocation = await getMemberLocation();
 
       const newMember = {
         name: trimmedName,
-        location: { lat: latitude, lng: longitude },
+        location: memberLocation,
       };
 
-      console.log('📱 [MOBILE] Attempting to join convoy with:', newMember);
+      console.log('📱 [MOBILE] Attempting to join convoy with:', {
+        ...newMember,
+        locationSource: memberLocation === DEFAULT_LOCATION ? 'fallback (Luneta Park)' : 'user geolocation'
+      });
 
       const addMemberResponse = await fetch(API_ENDPOINTS.CONVOY_MEMBERS(convoyId), {
         method: 'POST',

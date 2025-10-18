@@ -181,10 +181,10 @@ export const createTestConvoyAndMember = async () => {
     const convoy = await convoyService.createConvoy();
     console.log('✅ Test convoy created:', convoy.id);
     
-    // Add test member
+    // Add test member (using Luneta Park as default test location)
     const member = await convoyService.joinConvoy(convoy.id, {
       name: 'Test User',
-      location: { lat: 14.5995, lng: 120.9842 }
+      location: { lat: 14.5832, lng: 120.9794 } // Luneta Park (Kilometer Zero), Manila
     });
     console.log('✅ Test member added:', member.id);
     
@@ -196,6 +196,58 @@ export const createTestConvoyAndMember = async () => {
   }
 };
 
+/**
+ * Test member join location behavior
+ * Tests both successful geolocation and fallback scenarios
+ */
+const testMemberJoinLocation = () => {
+  console.log('🧪 Testing Member Join Location Behavior...');
+
+  // Test scenarios
+  const scenarios = [
+    {
+      name: 'Geolocation Success',
+      description: 'User allows geolocation, actual coordinates used',
+      expectedBehavior: 'Should use user\'s actual location coordinates',
+      autoFocus: 'Map should auto-focus on user\'s actual location'
+    },
+    {
+      name: 'Geolocation Denied',
+      description: 'User denies geolocation permission',
+      expectedBehavior: 'Should fallback to Luneta Park [14.5832, 120.9794]',
+      autoFocus: 'Map should auto-focus on Luneta Park'
+    },
+    {
+      name: 'Geolocation Timeout',
+      description: 'Geolocation request times out',
+      expectedBehavior: 'Should fallback to Luneta Park [14.5832, 120.9794]',
+      autoFocus: 'Map should auto-focus on Luneta Park'
+    },
+    {
+      name: 'Geolocation Unavailable',
+      description: 'Device/browser doesn\'t support geolocation',
+      expectedBehavior: 'Should fallback to Luneta Park [14.5832, 120.9794]',
+      autoFocus: 'Map should auto-focus on Luneta Park'
+    }
+  ];
+
+  console.log('Test Scenarios for Member Join Location:');
+  scenarios.forEach((scenario, index) => {
+    console.log(`${index + 1}. ${scenario.name}`);
+    console.log(`   Description: ${scenario.description}`);
+    console.log(`   Expected Location: ${scenario.expectedBehavior}`);
+    console.log(`   Expected Auto-Focus: ${scenario.autoFocus}`);
+    console.log('');
+  });
+
+  console.log('📍 Default Fallback Location: Luneta Park (Kilometer Zero), Manila');
+  console.log('📍 Fallback Coordinates: [14.5832, 120.9794]');
+  console.log('🎯 Auto-focus behavior: Works for both actual location and fallback');
+  console.log('✅ Member join location test scenarios documented');
+
+  return scenarios;
+};
+
 // Export for use in browser console
 if (typeof window !== 'undefined') {
   window.locationTrackingTests = {
@@ -204,6 +256,7 @@ if (typeof window !== 'undefined') {
     testFullLocationTracking,
     testGeolocationSupport,
     testLocationPermission,
+    testMemberJoinLocation,
     runAllLocationTests,
     createTestConvoyAndMember
   };

@@ -4,6 +4,7 @@ import { Icon } from 'leaflet';
 import MapSidebar from './MapSidebar';
 import ZoomControl from './ZoomControl';
 import OpenFreeMapLayer from './OpenFreeMapLayer';
+import MapAutoFocusController from './MapAutoFocusController';
 
 import LocationStatusControl from './LocationStatusControl';
 import MemberStatusIndicator from '../convoy/MemberStatusIndicator';
@@ -87,7 +88,7 @@ const MapComponent = ({
   locationTracking = null // Optional location tracking props
 }) => {
   // Set an initial center
-  const initialCenter = [14.5995, 120.9842]; // Manila
+  const initialCenter = [14.5832, 120.9794]; // Luneta Park (Kilometer Zero), Manila
 
   // Sidebar button handlers (search is now handled by MapSidebar)
 
@@ -134,6 +135,12 @@ const MapComponent = ({
         <OpenFreeMapLayer
           mapStyle="liberty"
           attribution='OpenFreeMap © OpenMapTiles Data from OpenStreetMap'
+        />
+
+        {/* Auto-focus controller for member joins and destination selection */}
+        <MapAutoFocusController
+          members={members}
+          destination={destination}
         />
 
         {/* Custom zoom control positioned at bottom-left */}

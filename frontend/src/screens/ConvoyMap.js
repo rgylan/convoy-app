@@ -20,6 +20,11 @@ if (process.env.NODE_ENV === 'development') {
     window.locationTrackingTests = module;
     console.log('🔧 Location tracking tests loaded. Use window.locationTrackingTests to run tests.');
   });
+
+  import('../utils/testMapAutoFocus').then(module => {
+    window.mapAutoFocusTests = module;
+    console.log('🔧 Map auto-focus tests loaded. Use window.mapAutoFocusTests to run tests.');
+  });
 }
 
 const ConvoyMap = () => {
