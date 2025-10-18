@@ -311,16 +311,7 @@ const MapComponent = ({
               {destination.name}<br />
               Lat: {destination.location[0].toFixed(4)}, Lng: {destination.location[1].toFixed(4)}
             </Popup>
-            <Tooltip
-              direction="top"
-              offset={[0, -45]}
-              permanent={true}
-              className="convoy-destination-tooltip"
-            >
-              <div className="destination-tooltip-text">
-                {destination.name}
-              </div>
-            </Tooltip>
+            {/* Destination tooltip removed - only popup remains */}
           </Marker>
         )}
 
@@ -351,7 +342,6 @@ const MapComponent = ({
               />
             </Popup>
             {/* Enhanced member tooltip with reverse geocoding and Apple Maps-inspired design */}
-            {/* Phase 2: Implemented reverse geocoding with human-readable location names */}
             <Tooltip
               direction="top"
               offset={[0, -55]}
